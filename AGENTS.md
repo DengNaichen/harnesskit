@@ -1,0 +1,107 @@
+# 贡献者指南
+
+本指南是 `mykit` 仓库的 agent 操作入口。它应保持简洁、面向规则和导航；项目定位、产品背景和长期设计讨论放在 `README.md`、`design.md` 或 `docs/` 中。
+
+## 策略与强制规则
+
+### 必须按需使用仓库本地技能
+
+仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
+
+- `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.mykit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
+- `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock` 或构建/测试行为时，在标记完成前运行。当前完整验证命令是 `uv run python -m unittest discover -s tests`。
+- `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
+- `$fill-agent-guidance`：初始化或刷新 `AGENTS.md`、移除占位符、同步 `CLAUDE.md` 指向关系，或把仓库事实整理为 agent 指南时使用。
+
+### 可跳过完整验证的情况
+
+以下变更默认不需要运行 `$code-change-verification`，除非用户明确要求：
+
+- 仅修改 `AGENTS.md`、`.agents/` 或其他 agent 元数据。
+- 仅修改 `README.md`、`design.md`、`docs/` 等无行为影响的说明文档。
+- 仅进行对话、审查或规划，没有改动文件。
+
+### 兼容性边界
+
+`mykit` 是 Context Harness CLI 和 Codex-facing toolkit。以下面向外部使用者或目标仓库，修改前必须明确兼容性决策：
+
+- Typer CLI：`mykit init`、`mykit integration list`、`mykit integration install`、参数、退出行为和用户可见消息。
+- 持久配置：目标仓库中的 `.mykit/config.json`，当前 `schema_version` 为 `1`。
+- 模板输出：`templates/` 以及 integration 模板会复制或渲染到目标仓库，属于用户可见行为。
+- 支持的 integration：当前仅支持 `codex`，并且它是默认值。
+- Jinja 模板使用 `StrictUndefined`；新增模板变量必须同步提供渲染上下文，或明确保留为目标仓库中的 TODO。
+
+### ExecPlan（执行计划）
+
+只有当任务多步骤、跨多个文件、涉及新功能或重构，且会影响最新发布标签中的行为或已发布/明确支持的持久外部状态边界时，才使用 ExecPlan。计划从 `PLANS.md` 的模板和规则开始；如果仓库中没有该文件，不要临时发明格式，先向用户说明缺失。
+
+## 项目结构
+
+### 概述
+
+`mykit` 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端信息，Jinja2 渲染模板，Hatchling 构建包。使用 `uv` 管理和运行本仓库命令。
+
+### 重要目录与文件
+
+- `src/mykit/`：核心库和 CLI 实现。
+- `src/mykit/cli.py`：Typer 入口，定义 `mykit init` 和 `mykit integration ...` 命令。
+- `src/mykit/init.py`：项目初始化、模板复制、integration 安装和 `.mykit/config.json` 写入逻辑。
+- `templates/`：`mykit init` 安装到目标仓库的 Context Harness 模板；其中 `templates/integrations/codex/` 存放 Codex integration 资产。
+- `tests/`：`unittest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
+- `.agents/skills/`：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
+- `README.md`：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
+- `design.md`：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
+- `docs/references/harness-builder/`：harness 研究笔记和参考资料。
+- `pyproject.toml`：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
+- `uv.lock`：锁定依赖版本。
+- `CLAUDE.md`：应保持为指向 `AGENTS.md` 的符号链接。
+
+当前仓库没有 Makefile、formatter/linter/type checker 配置、docs build 命令或 GitHub PR 模板；不要在指南、总结或验证计划里虚构这些检查。
+
+## 操作指南
+
+### 环境与命令
+
+- 首次配置或依赖变更后运行 `uv sync`。
+- 运行 Python 命令时优先使用 `uv run python ...`，确保使用仓库环境。
+- 本地 CLI 入口是 `uv run mykit ...`；也可以用 `uv run python -m mykit.cli` 只在确有需要时调试入口模块。
+
+### 开发工作流
+
+1. 先读相关模块、测试和本地技能说明，确认变更触及的边界。
+2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
+3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
+4. 需要验证时从仓库根目录运行 `uv run python -m unittest discover -s tests`。
+5. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
+6. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
+
+### 测试与自动化检查
+
+当前完整验证栈只有：
+
+```bash
+uv run python -m unittest discover -s tests
+```
+
+仓库目前没有可证实的 `make format`、`make lint`、`make typecheck`、`pytest` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
+
+### 修改模板时的注意事项
+
+- `templates/AGENTS.md` 和 integration 模板会影响新初始化项目的输出；改动后通常需要更新或新增 `tests/test_init.py` 覆盖。
+- `init_project()` 默认跳过已有文件，`--force` 才覆盖；不要破坏这一行为。
+- `install_integration()` 要求目标仓库已有 `.mykit/config.json`。
+- `.mykit/config.json` 写入 JSON 时保留 `ensure_ascii=False` 和缩进风格，避免无意义 churn。
+
+### Pull Request 与提交规范
+
+- 提交信息使用简洁祈使句，保持提交小而聚焦。
+- 有新行为时尽可能补测试；面向用户的 CLI、配置或模板变化需要同步文档。
+- PR 描述应包含摘要和测试计划；如果使用 `$pr-draft-summary`，按其输出块作为草稿基础。
+
+### 审查关注点
+
+- CLI 行为、错误消息和退出码是否符合现有 Typer 风格。
+- `.mykit/config.json` 的 schema 和 integration 列表是否保持兼容。
+- 模板渲染是否有完整上下文，避免 `StrictUndefined` 在运行时失败。
+- 新行为是否被 `unittest` 覆盖。
+- 文档是否把项目说明和 agent 操作规则分开：`README.md` 讲产品，`AGENTS.md` 讲 agent 如何工作。

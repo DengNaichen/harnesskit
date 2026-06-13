@@ -1,7 +1,7 @@
 [project]
 name = "mykit"
 version = "0.1.0"
-description = "Minimal init CLI example."
+description = "Context Harness CLI and Codex-facing toolkit."
 requires-python = ">=3.11"
 dependencies = [
     "jinja2>=3.1.6",

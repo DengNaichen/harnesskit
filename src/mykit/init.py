@@ -2,14 +2,25 @@
 
 from __future__ import annotations
 
+import json
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Iterable
 
 from jinja2 import Environment, StrictUndefined, TemplateError
 
+from . import __version__
+
 
 JINJA_TEMPLATE_SUFFIX = ".j2"
+DEFAULT_INTEGRATION = "codex"
+SUPPORTED_INTEGRATIONS = ("codex",)
+CONFIG_SCHEMA_VERSION = 1
+MYKIT_DIR = ".mykit"
+CONFIG_FILE = "config.json"
+INTEGRATIONS_TEMPLATE_DIR = "integrations"
+
 JINJA_ENV = Environment(
     autoescape=False,
     keep_trailing_newline=True,
@@ -28,7 +39,18 @@ class InitResult:
     skipped: list[Path]
 
 
-def init_project(project: str | None, *, here: bool = False, force: bool = False) -> InitResult:
+def available_integrations() -> tuple[str, ...]:
+    return SUPPORTED_INTEGRATIONS
+
+
+def init_project(
+    project: str | None,
+    *,
+    here: bool = False,
+    force: bool = False,
+    integration: str = DEFAULT_INTEGRATION,
+) -> InitResult:
+    integration = _validate_integration(integration)
     project_path = _resolve_project_path(project, here=here)
     template_root = _locate_templates()
 
@@ -37,17 +59,83 @@ def init_project(project: str | None, *, here: bool = False, force: bool = False
 
     project_path.mkdir(parents=True, exist_ok=True)
 
+    context = {"PROJECT_NAME": project_path.name}
+    result = _copy_template_tree(
+        template_root,
+        project_path,
+        context,
+        force=force,
+        excluded_top_dirs={INTEGRATIONS_TEMPLATE_DIR},
+    )
+
+    integration_result = _install_integration_assets(
+        project_path,
+        integration,
+        context,
+        force=force,
+    )
+    config_path = _write_config(project_path, integration)
+
+    return InitResult(
+        project_path=project_path,
+        created=[*result.created, *integration_result.created, config_path],
+        skipped=[*result.skipped, *integration_result.skipped],
+    )
+
+
+def install_integration(
+    project_path: str | Path,
+    integration: str,
+    *,
+    force: bool = False,
+) -> InitResult:
+    integration = _validate_integration(integration)
+    resolved_project_path = Path(project_path).expanduser().resolve()
+
+    if not resolved_project_path.is_dir():
+        raise InitError(f"{resolved_project_path} is not a directory")
+
+    if not _config_path(resolved_project_path).is_file():
+        raise InitError("not a mykit project; run `mykit init --here` first")
+
+    context = {"PROJECT_NAME": resolved_project_path.name}
+    result = _install_integration_assets(
+        resolved_project_path,
+        integration,
+        context,
+        force=force,
+    )
+    config_path = _write_config(resolved_project_path, integration)
+
+    return InitResult(
+        project_path=resolved_project_path,
+        created=[*result.created, config_path],
+        skipped=result.skipped,
+    )
+
+
+def _copy_template_tree(
+    source_root: Path,
+    destination_root: Path,
+    context: dict[str, str],
+    *,
+    force: bool,
+    excluded_top_dirs: Iterable[str] = (),
+) -> InitResult:
     created: list[Path] = []
     skipped: list[Path] = []
-    context = {"PROJECT_NAME": project_path.name}
+    excluded = set(excluded_top_dirs)
 
-    for source in sorted(template_root.rglob("*")):
+    for source in sorted(source_root.rglob("*")):
         if source.is_dir():
             continue
 
-        relative_path = source.relative_to(template_root)
-        relative_path = _template_output_path(relative_path)
-        destination = project_path / relative_path
+        source_relative_path = source.relative_to(source_root)
+        if source_relative_path.parts and source_relative_path.parts[0] in excluded:
+            continue
+
+        relative_path = _template_output_path(source_relative_path)
+        destination = destination_root / relative_path
 
         if destination.exists() and not force:
             skipped.append(destination)
@@ -57,7 +145,24 @@ def init_project(project: str | None, *, here: bool = False, force: bool = False
         _copy_template(source, destination, context)
         created.append(destination)
 
-    return InitResult(project_path=project_path, created=created, skipped=skipped)
+    return InitResult(project_path=destination_root, created=created, skipped=skipped)
+
+
+def _install_integration_assets(
+    project_path: Path,
+    integration: str,
+    context: dict[str, str],
+    *,
+    force: bool,
+) -> InitResult:
+    integration = _validate_integration(integration)
+    template_root = _locate_templates()
+    source_root = template_root / INTEGRATIONS_TEMPLATE_DIR / integration
+
+    if not source_root.is_dir():
+        raise InitError(f"templates for integration '{integration}' were not found")
+
+    return _copy_template_tree(source_root, project_path, context, force=force)
 
 
 def _resolve_project_path(project: str | None, *, here: bool) -> Path:
@@ -106,3 +211,59 @@ def _copy_template(source: Path, destination: Path, context: dict[str, str]) -> 
         return
 
     shutil.copy2(source, destination)
+
+
+def _validate_integration(integration: str) -> str:
+    normalized = integration.strip().lower()
+    if normalized not in SUPPORTED_INTEGRATIONS:
+        available = ", ".join(SUPPORTED_INTEGRATIONS)
+        raise InitError(f"unsupported integration '{integration}'. Available integrations: {available}")
+    return normalized
+
+
+def _config_path(project_path: Path) -> Path:
+    return project_path / MYKIT_DIR / CONFIG_FILE
+
+
+def _write_config(project_path: Path, integration: str) -> Path:
+    integration = _validate_integration(integration)
+    config_path = _config_path(project_path)
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+
+    existing = _read_config(project_path)
+    installed = existing.get("installed_integrations", [])
+    if not isinstance(installed, list):
+        installed = []
+
+    installed_integrations = [item for item in installed if isinstance(item, str)]
+    if integration not in installed_integrations:
+        installed_integrations.append(integration)
+
+    config = {
+        "schema_version": CONFIG_SCHEMA_VERSION,
+        "project_name": project_path.name,
+        "mykit_version": __version__,
+        "default_integration": integration,
+        "installed_integrations": installed_integrations,
+    }
+    config_path.write_text(
+        json.dumps(config, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return config_path
+
+
+def _read_config(project_path: Path) -> dict[str, object]:
+    config_path = _config_path(project_path)
+    if not config_path.exists():
+        return {}
+
+    try:
+        raw_config = json.loads(config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise InitError(f"failed to read {config_path}: {exc}") from exc
+
+    if not isinstance(raw_config, dict):
+        raise InitError(f"{config_path} must contain a JSON object")
+
+    return raw_config

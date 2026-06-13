@@ -8,14 +8,16 @@ import typer
 from rich.console import Console
 
 from . import __version__
-from .init import InitError, init_project
+from .init import DEFAULT_INTEGRATION, InitError, available_integrations, init_project, install_integration
 
 
 app = typer.Typer(
     name="mykit",
-    help="Minimal project initializer.",
+    help="Context Harness CLI and Codex-facing toolkit.",
     add_completion=False,
 )
+integration_app = typer.Typer(help="Manage agent integrations.", add_completion=False)
+app.add_typer(integration_app, name="integration")
 console = Console()
 
 
@@ -32,7 +34,7 @@ def callback(
         typer.Option("--version", "-V", callback=_version_callback, is_eager=True, help="Show version and exit."),
     ] = False,
 ) -> None:
-    """Minimal project initializer."""
+    """Context Harness CLI and Codex-facing toolkit."""
 
 
 @app.command("init")
@@ -43,17 +45,50 @@ def init_command(
     ] = None,
     here: Annotated[bool, typer.Option("--here", help="Initialize the current directory.")] = False,
     force: Annotated[bool, typer.Option("--force", help="Overwrite existing generated files.")] = False,
+    integration: Annotated[
+        str,
+        typer.Option("--integration", help="Agent integration to install. Currently only 'codex' is supported."),
+    ] = DEFAULT_INTEGRATION,
 ) -> None:
-    """Create a project from bundled templates."""
+    """Initialize a Context Harness from bundled templates."""
     try:
-        result = init_project(project, here=here, force=force)
+        result = init_project(project, here=here, force=force, integration=integration)
     except InitError as exc:
         console.print(f"[red]error:[/red] {exc}")
         raise typer.Exit(1) from exc
 
     console.print(f"Initialized [green]{result.project_path}[/green]")
+    _print_result_files(result)
+
+
+@integration_app.command("list")
+def integration_list_command() -> None:
+    """List supported agent integrations."""
+    console.print("Available integrations:")
+    for integration in available_integrations():
+        default_label = " [dim](default)[/dim]" if integration == DEFAULT_INTEGRATION else ""
+        console.print(f"  [cyan]{integration}[/cyan]{default_label}")
+
+
+@integration_app.command("install")
+def integration_install_command(
+    integration: Annotated[str, typer.Argument(help="Integration key to install. Currently only 'codex'.")],
+    force: Annotated[bool, typer.Option("--force", help="Overwrite existing integration files.")] = False,
+) -> None:
+    """Install an agent integration into the current mykit project."""
+    try:
+        result = install_integration(".", integration, force=force)
+    except InitError as exc:
+        console.print(f"[red]error:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+    console.print(f"Installed [cyan]{integration}[/cyan] integration in [green]{result.project_path}[/green]")
+    _print_result_files(result)
+
+
+def _print_result_files(result) -> None:
     if result.created:
-        console.print("Created:")
+        console.print("Written:")
         for path in result.created:
             console.print(f"  {path.relative_to(result.project_path)}")
     if result.skipped:
