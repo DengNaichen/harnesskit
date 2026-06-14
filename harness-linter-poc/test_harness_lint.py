@@ -93,13 +93,11 @@ def test_architecture_map_direct_children_must_be_declared(tmp_path: Path) -> No
     source_dir.mkdir(parents=True)
     (source_dir / "__init__.py").write_text("", encoding="utf-8")
     (source_dir / "core.py").write_text("VALUE = 1\n", encoding="utf-8")
-    write_architecture_map(
+    write_architecture_doc(
         project,
         """
-        - path: src/demo/
-          coverage: direct-children
-        - path: src/demo/__init__.py
-          coverage: file
+        - [`src/demo/`](src/demo/) <!-- harnesskit:coverage=direct-children -->
+        - [`src/demo/__init__.py`](src/demo/__init__.py)
         """,
     )
 
@@ -114,7 +112,7 @@ def test_architecture_map_direct_children_must_be_declared(tmp_path: Path) -> No
     assert issue.found == "src/demo/core.py"
     assert (
         issue.expected
-        == "add `- path: src/demo/core.py` to the architecture map or list it under ignore"
+        == "add a Markdown link to `src/demo/core.py` in ARCHITECTURE.md or list it in the coverage hint ignore attribute"
     )
 
 
@@ -124,15 +122,11 @@ def test_architecture_map_direct_children_can_be_ignored(tmp_path: Path) -> None
     source_dir.mkdir(parents=True)
     (source_dir / "__init__.py").write_text("", encoding="utf-8")
     (source_dir / "generated.py").write_text("VALUE = 1\n", encoding="utf-8")
-    write_architecture_map(
+    write_architecture_doc(
         project,
         """
-        - path: src/demo/
-          coverage: direct-children
-          ignore:
-            - src/demo/generated.py
-        - path: src/demo/__init__.py
-          coverage: file
+        - [`src/demo/`](src/demo/) <!-- harnesskit:coverage=direct-children ignore=src/demo/generated.py -->
+        - [`src/demo/__init__.py`](src/demo/__init__.py)
         """,
     )
 
@@ -145,11 +139,10 @@ def test_architecture_map_direct_children_can_be_ignored(tmp_path: Path) -> None
 
 def test_architecture_map_paths_must_exist(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    write_architecture_map(
+    write_architecture_doc(
         project,
         """
-        - path: src/missing.py
-          coverage: file
+        - [`src/missing/`](src/missing/) <!-- harnesskit:coverage=direct-children -->
         """,
     )
 
@@ -157,6 +150,31 @@ def test_architecture_map_paths_must_exist(tmp_path: Path) -> None:
 
     assert not report.passed
     assert_issue(report, "architecture.path_missing")
+
+
+def test_architecture_placeholder_descriptions_warn(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    write_architecture_doc(
+        project,
+        """
+        - [`AGENTS.md`](AGENTS.md): TODO: placeholder responsibility.
+        """,
+    )
+
+    report = lint_project(project)
+
+    assert report.passed, report.issues
+    assert_issue(report, "architecture.placeholder_description")
+    issue = next(
+        item
+        for item in report.issues
+        if item.code == "architecture.placeholder_description"
+    )
+    assert issue.severity == "warning"
+    assert issue.path == "ARCHITECTURE.md"
+    assert (
+        issue.found == "- [`AGENTS.md`](AGENTS.md): TODO: placeholder responsibility."
+    )
 
 
 def test_tech_stack_block_matches_repo_facts(tmp_path: Path) -> None:
@@ -653,12 +671,11 @@ def append_verification_block(path: Path, entries: dict[str, str]) -> None:
         file.write("\n" + verification_block(entries))
 
 
-def write_architecture_map(project: Path, block: str) -> None:
+def write_architecture_doc(project: Path, block: str) -> None:
     (project / "ARCHITECTURE.md").write_text(
         "# Architecture\n\n"
-        "<!-- harnesskit:architecture-map:start -->\n"
         + "\n".join(line.strip() for line in block.strip().splitlines())
-        + "\n<!-- harnesskit:architecture-map:end -->\n",
+        + "\n",
         encoding="utf-8",
     )
 

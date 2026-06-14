@@ -1,4 +1,4 @@
-"""Markdown collection, link, marker, and external lint checks."""
+"""Harness Markdown collection, link, marker, and external lint checks."""
 
 from __future__ import annotations
 
@@ -6,16 +6,16 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import unquote, urldefrag, urlparse
 
-from .constants import (
+from core.constants import (
     HARNESS_MARKDOWN_GLOBS,
     MARKDOWN_LINK_PATTERN,
     TODO_CHECKLIST_END,
     TODO_CHECKLIST_START,
 )
-from .issues import issue
-from .models import Issue, MarkedBlock
+from core.issues import issue
+from core.markdown import normalize_markdown_link
+from core.models import Issue
 
 
 def collect_harness_markdown(project_path: Path) -> list[Path]:
@@ -48,8 +48,14 @@ def check_markdown_links(
                         "error",
                         "markdown.link.missing",
                         project_path,
-                        f"local markdown link target does not exist: {raw_target}",
+                        "local markdown link target does not exist",
                         markdown_file,
+                        found=raw_target,
+                        expected="local Markdown links must point to existing files",
+                        suggested_fix=(
+                            "Update the stale link to the current file path, or remove it "
+                            "if the referenced file is no longer part of the harness documentation."
+                        ),
                     )
                 )
 
@@ -86,108 +92,6 @@ def check_todo_checklist_markers(
                     markdown_file,
                 )
             )
-
-
-def extract_marked_blocks(
-    project_path: Path,
-    markdown_file: Path,
-    text: str,
-    start_marker: str,
-    end_marker: str,
-    issue_code: str,
-    issues: list[Issue],
-) -> list[str]:
-    return [
-        block.content
-        for block in extract_marked_blocks_with_lines(
-            project_path,
-            markdown_file,
-            text,
-            start_marker,
-            end_marker,
-            issue_code,
-            issues,
-        )
-    ]
-
-
-def extract_marked_blocks_with_lines(
-    project_path: Path,
-    markdown_file: Path,
-    text: str,
-    start_marker: str,
-    end_marker: str,
-    issue_code: str,
-    issues: list[Issue],
-) -> list[MarkedBlock]:
-    blocks: list[MarkedBlock] = []
-    current: list[str] | None = None
-    current_start_line: int | None = None
-
-    for line_number, line in enumerate(text.splitlines(), start=1):
-        if start_marker in line:
-            if current is not None:
-                issues.append(
-                    issue(
-                        "error",
-                        issue_code,
-                        project_path,
-                        "nested marker block is not allowed",
-                        markdown_file,
-                    )
-                )
-                return blocks
-            current = []
-            current_start_line = line_number
-            continue
-        if end_marker in line:
-            if current is None:
-                issues.append(
-                    issue(
-                        "error",
-                        issue_code,
-                        project_path,
-                        "end marker appears before a start marker",
-                        markdown_file,
-                    )
-                )
-                return blocks
-            blocks.append(
-                MarkedBlock(
-                    start_line=current_start_line or line_number,
-                    content="\n".join(current),
-                )
-            )
-            current = None
-            current_start_line = None
-            continue
-        if current is not None:
-            current.append(line)
-
-    if current is not None:
-        issues.append(
-            issue(
-                "error",
-                issue_code,
-                project_path,
-                "start marker is missing a matching end marker",
-                markdown_file,
-            )
-        )
-
-    return blocks
-
-
-def normalize_markdown_link(raw_target: str) -> Path | None:
-    target_without_fragment, _fragment = urldefrag(raw_target)
-    if not target_without_fragment:
-        return None
-
-    parsed = urlparse(target_without_fragment)
-    if parsed.scheme or target_without_fragment.startswith("#"):
-        return None
-
-    return Path(unquote(target_without_fragment))
 
 
 def run_external_markdownlint(

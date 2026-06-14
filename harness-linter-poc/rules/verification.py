@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Iterable
 
-from .constants import (
+from core.constants import (
     PACKAGE_BUILD_COMMAND,
     RUFF_CHECK_COMMAND,
     RUFF_FORMAT_CHECK_COMMAND,
@@ -16,9 +16,9 @@ from .constants import (
     VERIFICATION_START,
     VERIFICATION_TEXT_CONTEXT_PATTERNS,
 )
-from .issues import issue, relative_path
-from .markdown import extract_marked_blocks_with_lines
-from .models import Issue, MarkedBlock
+from core.issues import issue, relative_path
+from core.markdown import extract_marked_blocks_with_lines
+from core.models import Issue, MarkedBlock
 from .tech_stack import declared_python_tools, detect_tech_stack_facts, toml_section
 
 

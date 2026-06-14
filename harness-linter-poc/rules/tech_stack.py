@@ -6,10 +6,10 @@ import re
 from pathlib import Path
 from typing import Iterable
 
-from .constants import TECH_STACK_END, TECH_STACK_ENTRY_PATTERN, TECH_STACK_START
-from .issues import issue
-from .markdown import extract_marked_blocks
-from .models import Issue
+from core.constants import TECH_STACK_END, TECH_STACK_ENTRY_PATTERN, TECH_STACK_START
+from core.issues import issue
+from core.markdown import extract_marked_blocks
+from core.models import Issue
 
 
 def check_tech_stack_blocks(

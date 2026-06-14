@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .constants import CODEX_SKILLS
-from .issues import issue
-from .models import Issue
+from core.constants import CODEX_SKILLS
+from core.issues import issue
+from core.models import Issue
 
 
 def check_core_files(project_path: Path, issues: list[Issue]) -> None:

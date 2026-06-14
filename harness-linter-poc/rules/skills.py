@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .constants import SKILL_REFERENCE_PATTERN
-from .issues import issue
-from .models import Issue
+from core.constants import SKILL_REFERENCE_PATTERN
+from core.issues import issue
+from core.models import Issue
 
 
 def check_skill_frontmatter(project_path: Path, issues: list[Issue]) -> None:

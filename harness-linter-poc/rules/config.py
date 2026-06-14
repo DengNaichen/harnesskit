@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .constants import CONFIG_SCHEMA_VERSION, SUPPORTED_INTEGRATIONS
-from .issues import issue
-from .models import Issue
+from core.constants import CONFIG_SCHEMA_VERSION, SUPPORTED_INTEGRATIONS
+from core.issues import issue
+from core.models import Issue
 
 
 def check_config(project_path: Path, issues: list[Issue]) -> dict[str, object] | None:

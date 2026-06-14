@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .issues import issue
-from .models import Issue
+from core.issues import issue
+from core.models import Issue
 
 
 def check_project_path(project_path: Path) -> Issue | None:
