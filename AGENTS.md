@@ -45,6 +45,7 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 - [`tests/`](tests/)：`pytest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
 - [`.agents/skills/`](.agents/skills/)：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
 - [`README.md`](README.md)：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
+- [`ARCHITECTURE.md`](ARCHITECTURE.md)：粗粒度仓库地图，说明主要目录和关键文件分别负责什么。
 - [`docs/DESIGN.md`](docs/DESIGN.md)：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
 - [`docs/references/harness-builder/`](docs/references/harness-builder/)：harness 研究笔记和参考资料。
 - [`candidate.md`](candidate.md)：日常发现的命令、约定、坑和待确认事项暂存区；不是权威规则，定期回看后再沉淀到指南、技能或文档。

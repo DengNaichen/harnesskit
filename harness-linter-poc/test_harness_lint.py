@@ -87,6 +87,78 @@ def test_todo_checklist_markers_must_be_paired(tmp_path: Path) -> None:
     assert_issue(report, "markdown.todo_checklist.unpaired")
 
 
+def test_architecture_map_direct_children_must_be_declared(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    source_dir = project / "src/demo"
+    source_dir.mkdir(parents=True)
+    (source_dir / "__init__.py").write_text("", encoding="utf-8")
+    (source_dir / "core.py").write_text("VALUE = 1\n", encoding="utf-8")
+    write_architecture_map(
+        project,
+        """
+        - path: src/demo/
+          coverage: direct-children
+        - path: src/demo/__init__.py
+          coverage: file
+        """,
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "architecture.coverage_missing")
+    issue = next(
+        item for item in report.issues if item.code == "architecture.coverage_missing"
+    )
+    assert issue.path == "ARCHITECTURE.md"
+    assert issue.found == "src/demo/core.py"
+    assert (
+        issue.expected
+        == "add `- path: src/demo/core.py` to the architecture map or list it under ignore"
+    )
+
+
+def test_architecture_map_direct_children_can_be_ignored(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    source_dir = project / "src/demo"
+    source_dir.mkdir(parents=True)
+    (source_dir / "__init__.py").write_text("", encoding="utf-8")
+    (source_dir / "generated.py").write_text("VALUE = 1\n", encoding="utf-8")
+    write_architecture_map(
+        project,
+        """
+        - path: src/demo/
+          coverage: direct-children
+          ignore:
+            - src/demo/generated.py
+        - path: src/demo/__init__.py
+          coverage: file
+        """,
+    )
+
+    report = lint_project(project)
+
+    assert not any(
+        item.code == "architecture.coverage_missing" for item in report.issues
+    ), report.issues
+
+
+def test_architecture_map_paths_must_exist(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    write_architecture_map(
+        project,
+        """
+        - path: src/missing.py
+          coverage: file
+        """,
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "architecture.path_missing")
+
+
 def test_tech_stack_block_matches_repo_facts(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     add_python_stack(project)
@@ -579,6 +651,16 @@ def append_tech_stack_block(path: Path, entries: dict[str, str]) -> None:
 def append_verification_block(path: Path, entries: dict[str, str]) -> None:
     with path.open("a", encoding="utf-8") as file:
         file.write("\n" + verification_block(entries))
+
+
+def write_architecture_map(project: Path, block: str) -> None:
+    (project / "ARCHITECTURE.md").write_text(
+        "# Architecture\n\n"
+        "<!-- harnesskit:architecture-map:start -->\n"
+        + "\n".join(line.strip() for line in block.strip().splitlines())
+        + "\n<!-- harnesskit:architecture-map:end -->\n",
+        encoding="utf-8",
+    )
 
 
 def verification_block(entries: dict[str, str]) -> str:
