@@ -35,7 +35,7 @@ Use this skill before editing code when the task changes runtime behavior or any
 - Prefer deletion or replacement over aliases, overloads, shims, feature flags, and dual-write logic when the old shape is unreleased.
 - Do not preserve a confusing abstraction just because it exists in the current branch diff.
 - If review feedback claims a change is breaking, verify it against the latest release tag and actual external impact before accepting the feedback.
-- If a change truly crosses the latest released contract boundary, call that out explicitly in the ExecPlan, release notes context, and user-facing summary.
+- If a change truly crosses the latest released contract boundary, call that out explicitly in implementation notes, release notes context, and the user-facing summary.
 
 ## Project-specific compatibility rules
 
