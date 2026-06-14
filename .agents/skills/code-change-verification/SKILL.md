@@ -15,6 +15,7 @@ Ensure work is only marked complete after the repository's available verificatio
 2. If dependencies are not installed or have changed, run `uv sync`.
 3. Run from the repository root:
    ```bash
+   lychee './**/*.md'
    uv run pytest
    ```
 4. If the command fails, fix the issue, rerun it, and report the failing output.
@@ -23,6 +24,7 @@ Ensure work is only marked complete after the repository's available verificatio
 ## Manual workflow
 
 - If dependencies are not installed or have changed, run `uv sync` first.
+- Run `lychee './**/*.md'` from the repository root to validate local Markdown links.
 - Run `uv run pytest` from the repository root.
-- This repository currently has no Makefile, formatter, linter, type checker, or docs build command. Do not invent those checks.
+- This repository currently has no Makefile, formatter, type checker, or docs build command. Do not invent those checks.
 - Re-run the test command after applying fixes so the reported verification matches the final working tree.

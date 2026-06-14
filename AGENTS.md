@@ -9,7 +9,7 @@
 仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
 
 - `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.mykit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
-- `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock` 或构建/测试行为时，在标记完成前运行。当前完整验证命令是 `uv run pytest`。
+- `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前运行。当前完整验证栈是 `lychee './**/*.md'` 和 `uv run pytest`。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
 
 ### 可跳过完整验证的情况
@@ -38,21 +38,22 @@
 
 ### 重要目录与文件
 
-- `src/mykit/`：核心库和 CLI 实现。
-- `src/mykit/cli.py`：Typer 入口，定义 `mykit init` 和 `mykit integration ...` 命令。
-- `src/mykit/init.py`：项目初始化、模板复制、integration 安装和 `.mykit/config.json` 写入逻辑。
-- `templates/`：`mykit init` 安装到目标仓库的 Context Harness 模板；其中 `templates/integrations/codex/` 存放 Codex integration 资产。
-- `tests/`：`pytest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
-- `.agents/skills/`：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
-- `README.md`：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
-- `design.md`：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
-- `docs/references/harness-builder/`：harness 研究笔记和参考资料。
-- `candidate.md`：日常发现的命令、约定、坑和待确认事项暂存区；不是权威规则，定期回看后再沉淀到指南、技能或文档。
-- `pyproject.toml`：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
-- `uv.lock`：锁定依赖版本。
-- `CLAUDE.md`：应保持为指向 `AGENTS.md` 的符号链接。
+- [`src/mykit/`](src/mykit/)：核心库和 CLI 实现。
+- [`src/mykit/cli.py`](src/mykit/cli.py)：Typer 入口，定义 `mykit init` 和 `mykit integration ...` 命令。
+- [`src/mykit/init.py`](src/mykit/init.py)：项目初始化、模板复制、integration 安装和 `.mykit/config.json` 写入逻辑。
+- [`templates/`](templates/)：`mykit init` 安装到目标仓库的 Context Harness 模板；其中 [`templates/integrations/codex/`](templates/integrations/codex/) 存放 Codex integration 资产。
+- [`tests/`](tests/)：`pytest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
+- [`.agents/skills/`](.agents/skills/)：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
+- [`README.md`](README.md)：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
+- [`docs/DESIGN.md`](docs/DESIGN.md)：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
+- [`docs/references/harness-builder/`](docs/references/harness-builder/)：harness 研究笔记和参考资料。
+- [`candidate.md`](candidate.md)：日常发现的命令、约定、坑和待确认事项暂存区；不是权威规则，定期回看后再沉淀到指南、技能或文档。
+- [`pyproject.toml`](pyproject.toml)：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
+- [`lychee.toml`](lychee.toml)：Markdown 链接检查配置，默认只检查本地链接。
+- [`uv.lock`](uv.lock)：锁定依赖版本。
+- [`CLAUDE.md`](CLAUDE.md)：应保持为指向 [`AGENTS.md`](AGENTS.md) 的符号链接。
 
-当前仓库没有 Makefile、formatter/linter/type checker 配置、docs build 命令或 GitHub PR 模板；不要在指南、总结或验证计划里虚构这些检查。
+当前仓库没有 Makefile、formatter/type checker 配置、docs build 命令或 GitHub PR 模板；不要在指南、总结或验证计划里虚构这些检查。Markdown 链接 lint 使用 `lychee`，并由 [`lychee.toml`](lychee.toml) 限定为 offline 本地链接检查。
 
 ## 操作指南
 
@@ -61,6 +62,7 @@
 - 首次配置或依赖变更后运行 `uv sync`。
 - 运行 Python 命令时优先使用 `uv run python ...`，确保使用仓库环境。
 - 本地 CLI 入口是 `uv run mykit ...`；也可以用 `uv run python -m mykit.cli` 只在确有需要时调试入口模块。
+- Markdown 链接检查需要本机安装 `lychee`；本地可用 Homebrew 安装：`brew install lychee`。
 
 ### 开发工作流
 
@@ -68,19 +70,20 @@
 2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
 3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
 4. 日常发现可复用命令、仓库约定、坑或待确认事项时，先追加到 `candidate.md`；只有稳定且反复有用的内容才沉淀到 `AGENTS.md`、`.agents/skills/` 或文档。
-5. 需要验证时从仓库根目录运行 `uv run pytest`。
+5. 需要验证时从仓库根目录运行完整验证栈：`lychee './**/*.md'`，然后 `uv run pytest`。
 6. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
 7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
 
 ### 测试与自动化检查
 
-当前完整验证栈只有：
+当前完整验证栈：
 
 ```bash
+lychee './**/*.md'
 uv run pytest
 ```
 
-仓库目前没有可证实的 `make format`、`make lint`、`make typecheck` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
+仓库目前没有可证实的 `make format`、`make typecheck` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
 
 ### 修改模板时的注意事项
 

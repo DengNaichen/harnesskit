@@ -23,8 +23,8 @@
 - 中文 URL: https://openai.com/zh-Hans-CN/index/unrolling-the-codex-agent-loop/
 - Source audit: 已核验为 OpenAI Engineering 文章。
 - 本地摘录与总结：
-  - 原文摘录：[source.md](articles/openai-unrolling-the-codex-agent-loop/source.md)
-  - 总结报告：[summary.md](articles/openai-unrolling-the-codex-agent-loop/summary.md)
+  - 原文摘录：[source.md](openai-unrolling-the-codex-agent-loop/source.md)
+  - 总结报告：[summary.md](openai-unrolling-the-codex-agent-loop/summary.md)
 
 
 
@@ -57,8 +57,8 @@
   - repository knowledge as system of record、agent legibility、architecture / taste invariants、evaluation harnesses、background cleanup / garbage collection。
 - 本地摘录与总结：
   - 原文链接：[OpenAI - Harness engineering](https://openai.com/index/harness-engineering/)
-  - 本地摘录：[source.md](articles/openai-harness-engineering/source.md)
-  - 总结报告：[summary.md](articles/openai-harness-engineering/summary.md)
+  - 本地摘录：[source.md](openai-harness-engineering/source.md)
+  - 总结报告：[summary.md](openai-harness-engineering/summary.md)
 
 
 
@@ -68,8 +68,8 @@
 - Source URL: https://openai.com/zh-Hans-CN/index/open-source-codex-orchestration-symphony/
 - Source audit: 已核验为 OpenAI 工程文章中文页面。
 - 本地摘录与总结：
-  - 原文摘录：[source.md](articles/openai-open-source-codex-orchestration-symphony/source.md)
-  - 总结报告：[summary.md](articles/openai-open-source-codex-orchestration-symphony/summary.md)
+  - 原文摘录：[source.md](openai-open-source-codex-orchestration-symphony/source.md)
+  - 总结报告：[summary.md](openai-open-source-codex-orchestration-symphony/summary.md)
 - 主题：Codex orchestration / 多 agent 编排规范。
 - 关注点：
   - 如何把 harness engineering 的原则推进到多 agent 编排。
@@ -88,8 +88,8 @@
 - Source URL: https://openai.com/zh-Hans-CN/index/building-self-improving-tax-agents-with-codex/
 - Source audit: 已核验为 OpenAI 工程文章中文页面。
 - 本地摘录与总结：
-  - 原文摘录：[source.md](articles/openai-building-self-improving-tax-agents-with-codex/source.md)
-  - 总结报告：[summary.md](articles/openai-building-self-improving-tax-agents-with-codex/summary.md)
+  - 原文摘录：[source.md](openai-building-self-improving-tax-agents-with-codex/source.md)
+  - 总结报告：[summary.md](openai-building-self-improving-tax-agents-with-codex/summary.md)
 - 主题：基于 harness engineering 和 Symphony 原则的垂直案例。
 - 关注点：
   - 如何让任务对 Codex 可读。

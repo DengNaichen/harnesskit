@@ -1,0 +1,3 @@
+# Keep Markdown link lint deterministic for local agent workflows.
+offline = true
+no_progress = true
