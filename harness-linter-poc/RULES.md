@@ -38,12 +38,18 @@ This file describes the first rule set for the standalone Harness Linter POC.
 - `markdown.link.missing`: local Markdown link targets inside harness files must exist.
 - `markdown.todo_checklist.unpaired`: `harnesskit:todo-checklist` start and end markers must be paired and ordered.
 - `markdown.tech_stack.unpaired`: `harnesskit:tech-stack` start and end markers must be paired and ordered.
+- `markdown.verification.unpaired`: `harnesskit:verification` start and end markers must be paired and ordered.
 - `external.markdownlint`: optional external markdownlint run failed.
 - `external.markdownlint.missing`: optional external markdownlint was requested but no supported binary was installed.
 
 ### Tech Stack
 
 - `tech_stack.mismatch`: values declared inside a `harnesskit:tech-stack` block must match repository facts detected from configuration, lock files, and tests.
+
+### Verification
+
+- `verification.block_missing`: verification docs must use a `harnesskit:verification` block when repository facts expose declared verification tools.
+- `verification.tool_not_documented`: tool dependencies such as Ruff must be documented inside each `harnesskit:verification` block as active verification gates or explicitly inactive.
 
 ## Non-Goals
 

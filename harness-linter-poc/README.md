@@ -22,6 +22,8 @@ Current checks:
 - Local Markdown links inside harness files point to existing files.
 - `harnesskit:todo-checklist` start/end markers are paired.
 - Optional `harnesskit:tech-stack` blocks match repository facts from config, lock files, and tests.
+- Verification docs use `harnesskit:verification` blocks for machine-readable completion gates.
+- Declared tool dependencies such as Ruff are documented inside each verification block as active verification gates or explicitly inactive.
 
 Example tech stack block:
 
@@ -35,6 +37,25 @@ Example tech stack block:
 - Build backend: Hatchling
 - Tests: pytest
 <!-- harnesskit:tech-stack:end -->
+```
+
+Example verification block:
+
+```markdown
+<!-- harnesskit:verification:start -->
+- Markdown links: lychee './**/*.md'
+- Tests: uv run pytest
+- Python lint: uv run ruff check .
+<!-- harnesskit:verification:end -->
+```
+
+If an installed tool is intentionally not part of the completion gate, declare it explicitly:
+
+```markdown
+<!-- harnesskit:verification:start -->
+- Tests: uv run pytest
+- Python lint: Ruff installed, inactive
+<!-- harnesskit:verification:end -->
 ```
 
 Optional integration:

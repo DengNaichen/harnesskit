@@ -16,6 +16,7 @@ Ensure work is only marked complete after the repository's available verificatio
 3. Run from the repository root:
    ```bash
    lychee './**/*.md'
+   uv run ruff check .
    uv run pytest
    ```
 4. If the command fails, fix the issue, rerun it, and report the failing output.
@@ -25,6 +26,13 @@ Ensure work is only marked complete after the repository's available verificatio
 
 - If dependencies are not installed or have changed, run `uv sync` first.
 - Run `lychee './**/*.md'` from the repository root to validate local Markdown links.
+- Run `uv run ruff check .` from the repository root.
 - Run `uv run pytest` from the repository root.
 - This repository currently has no Makefile, formatter, type checker, or docs build command. Do not invent those checks.
 - Re-run the test command after applying fixes so the reported verification matches the final working tree.
+
+<!-- harnesskit:verification:start -->
+- Markdown links: lychee './**/*.md'
+- Python lint: uv run ruff check .
+- Tests: uv run pytest
+<!-- harnesskit:verification:end -->

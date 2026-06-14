@@ -134,6 +134,20 @@ def test_tech_stack_markers_must_be_paired(tmp_path: Path) -> None:
     assert_issue(report, "markdown.tech_stack.unpaired")
 
 
+def test_verification_markers_must_be_paired(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"])
+    (project / "AGENTS.md").write_text(
+        "<!-- harnesskit:verification:start -->\n- Tests: uv run pytest\n",
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "markdown.verification.unpaired")
+
+
 def test_verification_docs_must_match_pytest_facts(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     add_python_stack(project)
@@ -166,6 +180,68 @@ def test_unittest_docs_are_allowed_for_unittest_projects(tmp_path: Path) -> None
     report = lint_project(project)
 
     assert report.passed, report.issues
+
+
+def test_declared_ruff_requires_verification_block(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"])
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\nRuff is installed but not currently a completion gate.\n",
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "verification.block_missing")
+    issue = next(item for item in report.issues if item.code == "verification.block_missing")
+    assert issue.severity == "error"
+    assert issue.path == "AGENTS.md"
+    assert issue.found == "AGENTS.md has no verification block"
+    assert issue.expected
+    assert issue.evidence == ["pyproject.toml declares ruff", "AGENTS.md is a verification doc"]
+    assert issue.suggested_fix
+    assert issue.verify_command == "uv run ruff check ."
+
+
+def test_declared_ruff_reports_each_verification_doc_that_omits_it(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"])
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n" + verification_block({"Tests": "uv run pytest"}),
+        encoding="utf-8",
+    )
+    write_skill(
+        project,
+        "code-change-verification",
+        "# Verification\n\n" + verification_block({"Tests": "uv run pytest"}),
+    )
+
+    report = lint_project(project)
+
+    issues = [item for item in report.issues if item.code == "verification.tool_not_documented"]
+    assert {item.path for item in issues} == {
+        "AGENTS.md",
+        ".agents/skills/code-change-verification/SKILL.md",
+    }
+    verification_skill_issue = next(
+        item for item in issues if item.path == ".agents/skills/code-change-verification/SKILL.md"
+    )
+    assert verification_skill_issue.found == "harnesskit:verification block does not mention Ruff"
+    assert verification_skill_issue.expected == "add Ruff to the verification block as an active gate or explicitly inactive"
+
+
+def test_documented_ruff_dependency_is_allowed(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"])
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n" + verification_block({"Tests": "uv run pytest", "Python lint": "uv run ruff check ."}),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not any(item.code == "verification.tool_not_documented" for item in report.issues), report.issues
 
 
 def test_main_exit_code(tmp_path: Path) -> None:
@@ -211,19 +287,38 @@ def make_project(root: Path) -> Path:
     (project / "CLAUDE.md").symlink_to("AGENTS.md")
 
     for skill_name in ("harnesskit-audit", "harnesskit-refresh", "harnesskit-explain"):
-        skill_dir = project / ".agents" / "skills" / skill_name
-        skill_dir.mkdir(parents=True)
-        (skill_dir / "SKILL.md").write_text(
-            f"---\nname: {skill_name}\ndescription: Test skill.\n---\n\n# {skill_name}\n",
-            encoding="utf-8",
-        )
+        write_skill(project, skill_name, f"# {skill_name}\n")
 
     return project
 
 
-def add_python_stack(project: Path, *, test_framework: str = "pytest") -> None:
+def write_skill(project: Path, skill_name: str, body: str) -> None:
+    skill_dir = project / ".agents" / "skills" / skill_name
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text(
+        f"---\nname: {skill_name}\ndescription: Test skill.\n---\n\n{body}",
+        encoding="utf-8",
+    )
+
+
+def add_python_stack(
+    project: Path,
+    *,
+    test_framework: str = "pytest",
+    dev_dependencies: list[str] | None = None,
+) -> None:
+    dev_dependency_lines = ""
+    if dev_dependencies:
+        entries = "\n".join(f'    "{dependency}",' for dependency in dev_dependencies)
+        dev_dependency_lines = f"""
+[dependency-groups]
+dev = [
+{entries}
+]
+"""
+
     (project / "pyproject.toml").write_text(
-        """[project]
+        f"""[project]
 name = "demo"
 requires-python = ">=3.11"
 dependencies = [
@@ -235,6 +330,7 @@ dependencies = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+{dev_dependency_lines}
 """,
         encoding="utf-8",
     )
@@ -257,3 +353,13 @@ def append_tech_stack_block(path: Path, entries: dict[str, str]) -> None:
     ]
     with path.open("a", encoding="utf-8") as file:
         file.write("\n".join(lines))
+
+
+def verification_block(entries: dict[str, str]) -> str:
+    lines = [
+        "<!-- harnesskit:verification:start -->",
+        *[f"- {key}: {value}" for key, value in entries.items()],
+        "<!-- harnesskit:verification:end -->",
+        "",
+    ]
+    return "\n".join(lines)

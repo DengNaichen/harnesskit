@@ -12,7 +12,6 @@ import json
 import re
 import shutil
 import subprocess
-import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, Literal
@@ -34,12 +33,28 @@ HARNESS_MARKDOWN_GLOBS = (
     "CLAUDE.md",
     ".agents/skills/*/SKILL.md",
 )
+VERIFICATION_DOC_PATHS = (
+    "AGENTS.md",
+    ".agents/skills/code-change-verification/SKILL.md",
+)
+VERIFICATION_COMMAND_CONTEXT_PATTERNS = (
+    r"\bpytest\b",
+    r"\blychee\b",
+    r"\bunittest\b",
+    r"\buv\s+run\b",
+)
+VERIFICATION_TEXT_CONTEXT_PATTERNS = (
+    r"\bverification\b",
+    r"验证",
+)
 MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 SKILL_REFERENCE_PATTERN = re.compile(r"(?<![\w`])\$([A-Za-z][A-Za-z0-9_-]*)")
 TODO_CHECKLIST_START = "<!-- harnesskit:todo-checklist:start -->"
 TODO_CHECKLIST_END = "<!-- harnesskit:todo-checklist:end -->"
 TECH_STACK_START = "<!-- harnesskit:tech-stack:start -->"
 TECH_STACK_END = "<!-- harnesskit:tech-stack:end -->"
+VERIFICATION_START = "<!-- harnesskit:verification:start -->"
+VERIFICATION_END = "<!-- harnesskit:verification:end -->"
 TECH_STACK_ENTRY_PATTERN = re.compile(r"^\s*[-*]\s*([^:]+):\s*(.+?)\s*$")
 
 
@@ -75,6 +90,12 @@ class Report:
         return not self.errors
 
 
+@dataclass(frozen=True)
+class MarkedBlock:
+    start_line: int
+    content: str
+
+
 def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> Report:
     project_path = project_path.expanduser().resolve()
     issues: list[Issue] = []
@@ -94,6 +115,7 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
     check_todo_checklist_markers(project_path, markdown_files, issues)
     check_tech_stack_blocks(project_path, markdown_files, issues)
     check_verification_drift(project_path, markdown_files, issues)
+    check_declared_tool_documentation(project_path, markdown_files, issues)
 
     if external_markdownlint:
         run_external_markdownlint(project_path, markdown_files, issues)
@@ -415,6 +437,109 @@ def check_verification_drift(project_path: Path, markdown_files: Iterable[Path],
             )
 
 
+def check_declared_tool_documentation(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+    declared_tools = declared_python_tools(project_path)
+    if "ruff" not in declared_tools:
+        return
+
+    documentation_targets = verification_documentation_targets(project_path, markdown_files)
+    for markdown_file in documentation_targets:
+        text = markdown_file.read_text(encoding="utf-8")
+        verification_blocks = extract_marked_blocks_with_lines(
+            project_path,
+            markdown_file,
+            text,
+            VERIFICATION_START,
+            VERIFICATION_END,
+            "markdown.verification.unpaired",
+            issues,
+        )
+        if not verification_blocks:
+            if VERIFICATION_START in text or VERIFICATION_END in text:
+                continue
+
+            line_match = find_verification_context_line(text)
+            line_number = line_match[0] if line_match else None
+            found = line_match[1] if line_match else f"{relative_path(project_path, markdown_file)} has no verification block"
+            issues.append(
+                issue(
+                    "error",
+                    "verification.block_missing",
+                    project_path,
+                    "verification documentation must use a harnesskit:verification block",
+                    markdown_file,
+                    line=line_number,
+                    found=found,
+                    expected=f"add {VERIFICATION_START} / {VERIFICATION_END} with verification commands",
+                    evidence=[
+                        "pyproject.toml declares ruff",
+                        f"{relative_path(project_path, markdown_file)} is a verification doc",
+                    ],
+                    suggested_fix=verification_block_suggestion(),
+                    verify_command="uv run ruff check .",
+                )
+            )
+            continue
+
+        if marked_blocks_document_tool(verification_blocks, "ruff"):
+            continue
+
+        first_block = verification_blocks[0]
+        issues.append(
+            issue(
+                "error",
+                "verification.tool_not_documented",
+                project_path,
+                "harnesskit:verification block omits declared tool Ruff",
+                markdown_file,
+                line=first_block.start_line,
+                found="harnesskit:verification block does not mention Ruff",
+                expected="add Ruff to the verification block as an active gate or explicitly inactive",
+                evidence=[
+                    "pyproject.toml declares ruff",
+                    f"{relative_path(project_path, markdown_file)} verification block does not mention ruff",
+                ],
+                suggested_fix=verification_block_suggestion(),
+                verify_command="uv run ruff check .",
+            )
+        )
+
+
+def verification_documentation_targets(project_path: Path, markdown_files: Iterable[Path]) -> list[Path]:
+    markdown_by_relative_path = {relative_path(project_path, path): path for path in markdown_files}
+    targets = [
+        markdown_by_relative_path[relative]
+        for relative in VERIFICATION_DOC_PATHS
+        if relative in markdown_by_relative_path
+    ]
+    if targets:
+        return targets
+    return list(markdown_files)
+
+
+def find_verification_context_line(text: str) -> tuple[int, str] | None:
+    command_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in VERIFICATION_COMMAND_CONTEXT_PATTERNS]
+    command_match = find_first_line_match(text, command_patterns)
+    if command_match is not None:
+        return command_match
+
+    text_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in VERIFICATION_TEXT_CONTEXT_PATTERNS]
+    return find_first_line_match(text, text_patterns)
+
+
+def marked_blocks_document_tool(blocks: Iterable[MarkedBlock], tool_name: str) -> bool:
+    pattern = re.compile(rf"\b{re.escape(tool_name)}\b", re.IGNORECASE)
+    return any(pattern.search(block.content) for block in blocks)
+
+
+def verification_block_suggestion() -> str:
+    return (
+        f"Add a block like `{VERIFICATION_START}` with entries such as "
+        "`- Python lint: uv run ruff check .`, or `- Python lint: Ruff installed, inactive`, "
+        f"then close it with `{VERIFICATION_END}`."
+    )
+
+
 def find_first_line_match(text: str, patterns: Iterable[re.Pattern[str]]) -> tuple[int, str] | None:
     for line_number, line in enumerate(text.splitlines(), start=1):
         for pattern in patterns:
@@ -489,6 +614,15 @@ def detect_tech_stack_facts(project_path: Path) -> dict[str, str]:
     return facts
 
 
+def declared_python_tools(project_path: Path) -> set[str]:
+    pyproject_path = project_path / "pyproject.toml"
+    if not pyproject_path.is_file():
+        return set()
+
+    text = pyproject_path.read_text(encoding="utf-8")
+    return {dependency_name(item) for item in re.findall(r'"([^"]+)"', text)}
+
+
 def detect_python_test_framework(project_path: Path) -> str | None:
     test_files = list((project_path / "tests").glob("**/*.py"))
     for test_file in test_files:
@@ -514,22 +648,48 @@ def extract_marked_blocks(
     issue_code: str,
     issues: list[Issue],
 ) -> list[str]:
-    blocks: list[str] = []
-    current: list[str] | None = None
+    return [
+        block.content
+        for block in extract_marked_blocks_with_lines(
+            project_path,
+            markdown_file,
+            text,
+            start_marker,
+            end_marker,
+            issue_code,
+            issues,
+        )
+    ]
 
-    for line in text.splitlines():
+
+def extract_marked_blocks_with_lines(
+    project_path: Path,
+    markdown_file: Path,
+    text: str,
+    start_marker: str,
+    end_marker: str,
+    issue_code: str,
+    issues: list[Issue],
+) -> list[MarkedBlock]:
+    blocks: list[MarkedBlock] = []
+    current: list[str] | None = None
+    current_start_line: int | None = None
+
+    for line_number, line in enumerate(text.splitlines(), start=1):
         if start_marker in line:
             if current is not None:
                 issues.append(issue("error", issue_code, project_path, "nested marker block is not allowed", markdown_file))
                 return blocks
             current = []
+            current_start_line = line_number
             continue
         if end_marker in line:
             if current is None:
                 issues.append(issue("error", issue_code, project_path, "end marker appears before a start marker", markdown_file))
                 return blocks
-            blocks.append("\n".join(current))
+            blocks.append(MarkedBlock(start_line=current_start_line or line_number, content="\n".join(current)))
             current = None
+            current_start_line = None
             continue
         if current is not None:
             current.append(line)
@@ -653,11 +813,7 @@ def issue(
     suggested_fix: str | None = None,
     verify_command: str | None = None,
 ) -> Issue:
-    try:
-        relative = path.resolve().relative_to(project_path.resolve())
-        display_path = str(relative)
-    except ValueError:
-        display_path = str(path)
+    display_path = relative_path(project_path, path)
     return Issue(
         severity=severity,
         code=code,
@@ -670,6 +826,14 @@ def issue(
         suggested_fix=suggested_fix,
         verify_command=verify_command,
     )
+
+
+def relative_path(project_path: Path, path: Path) -> str:
+    try:
+        relative = path.resolve().relative_to(project_path.resolve())
+        return str(relative)
+    except ValueError:
+        return str(path)
 
 
 def print_text_report(report: Report) -> None:
