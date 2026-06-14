@@ -45,3 +45,4 @@ TECH_STACK_ENTRY_PATTERN = re.compile(r"^\s*[-*]\s*([^:]+):\s*(.+?)\s*$")
 RUFF_CHECK_COMMAND = "uv run ruff check ."
 RUFF_FORMAT_CHECK_COMMAND = "uv run ruff format --check ."
 PACKAGE_BUILD_COMMAND = "uv build"
+PRE_COMMIT_COMMAND = "uv run pre-commit run --all-files"

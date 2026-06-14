@@ -569,6 +569,62 @@ def test_configured_package_build_can_be_marked_inactive(tmp_path: Path) -> None
     ), report.issues
 
 
+def test_configured_pre_commit_requires_verification_gate(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project)
+    (project / ".pre-commit-config.yaml").write_text("repos: []\n", encoding="utf-8")
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n"
+        + verification_block(
+            {
+                "Tests": "uv run pytest",
+                "Package build": "uv build",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "verification.pre_commit_not_documented")
+    issue = next(
+        item
+        for item in report.issues
+        if item.code == "verification.pre_commit_not_documented"
+    )
+    assert issue.path == "AGENTS.md"
+    assert issue.found == "harnesskit:verification block does not mention pre-commit"
+    assert (
+        issue.expected
+        == "add `uv run pre-commit run --all-files` as a pre-commit gate or explicitly mark pre-commit inactive"
+    )
+    assert issue.verify_command == "uv run pre-commit run --all-files"
+
+
+def test_configured_pre_commit_gate_is_allowed(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project)
+    (project / ".pre-commit-config.yaml").write_text("repos: []\n", encoding="utf-8")
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n"
+        + verification_block(
+            {
+                "Tests": "uv run pytest",
+                "Package build": "uv build",
+                "Pre-commit hooks": "uv run pre-commit run --all-files",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not any(
+        item.code == "verification.pre_commit_not_documented" for item in report.issues
+    ), report.issues
+
+
 def test_main_exit_code(tmp_path: Path) -> None:
     project = make_project(tmp_path)
 

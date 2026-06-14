@@ -1,0 +1,44 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv
+        args: ["run", "ruff", "check", "."]
+        language: system
+        pass_filenames: false
+
+      - id: ruff-format-check
+        name: ruff format --check
+        entry: uv
+        args: ["run", "ruff", "format", "--check", "."]
+        language: system
+        pass_filenames: false
+
+      - id: harness-lint
+        name: harness lint
+        entry: python3
+        args: ["harness-linter-poc/harness_lint.py", "."]
+        language: system
+        pass_filenames: false
+
+      - id: pytest
+        name: pytest
+        entry: uv
+        args: ["run", "pytest"]
+        language: system
+        pass_filenames: false
+
+      - id: markdown-links
+        name: markdown links
+        entry: lychee
+        args: ["./**/*.md"]
+        language: system
+        pass_filenames: false
+
+      - id: package-build
+        name: package build
+        entry: sh
+        args: ["-c", "uv build && rm -rf dist"]
+        language: system
+        pass_filenames: false

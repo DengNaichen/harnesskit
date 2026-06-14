@@ -33,6 +33,7 @@ from rules.tech_stack import check_tech_stack_blocks
 from rules.verification import (
     check_declared_tool_documentation,
     check_package_build_documentation,
+    check_pre_commit_documentation,
     check_verification_drift,
 )
 
@@ -64,6 +65,7 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
     check_verification_drift(project_path, markdown_files, issues)
     check_declared_tool_documentation(project_path, markdown_files, issues)
     check_package_build_documentation(project_path, markdown_files, issues)
+    check_pre_commit_documentation(project_path, markdown_files, issues)
 
     if external_markdownlint:
         run_external_markdownlint(project_path, markdown_files, issues)

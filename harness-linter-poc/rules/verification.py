@@ -8,6 +8,7 @@ from typing import Iterable
 
 from core.constants import (
     PACKAGE_BUILD_COMMAND,
+    PRE_COMMIT_COMMAND,
     RUFF_CHECK_COMMAND,
     RUFF_FORMAT_CHECK_COMMAND,
     VERIFICATION_COMMAND_CONTEXT_PATTERNS,
@@ -287,6 +288,81 @@ def check_package_build_documentation(
         )
 
 
+def check_pre_commit_documentation(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
+    if not pre_commit_configured(project_path):
+        return
+
+    documentation_targets = verification_documentation_targets(
+        project_path, markdown_files
+    )
+    for markdown_file in documentation_targets:
+        text = markdown_file.read_text(encoding="utf-8")
+        verification_blocks = extract_marked_blocks_with_lines(
+            project_path,
+            markdown_file,
+            text,
+            VERIFICATION_START,
+            VERIFICATION_END,
+            "markdown.verification.unpaired",
+            issues,
+        )
+        if not verification_blocks:
+            if VERIFICATION_START in text or VERIFICATION_END in text:
+                continue
+
+            line_match = find_verification_context_line(text)
+            line_number = line_match[0] if line_match else None
+            found = (
+                line_match[1]
+                if line_match
+                else f"{relative_path(project_path, markdown_file)} has no verification block"
+            )
+            issues.append(
+                issue(
+                    "error",
+                    "verification.block_missing",
+                    project_path,
+                    "verification documentation must use a harnesskit:verification block",
+                    markdown_file,
+                    line=line_number,
+                    found=found,
+                    expected=f"add {VERIFICATION_START} / {VERIFICATION_END} with pre-commit verification",
+                    evidence=[
+                        "repository configures pre-commit",
+                        f"{relative_path(project_path, markdown_file)} is a verification doc",
+                    ],
+                    suggested_fix=pre_commit_suggestion(),
+                    verify_command=PRE_COMMIT_COMMAND,
+                )
+            )
+            continue
+
+        if marked_blocks_document_pre_commit(verification_blocks):
+            continue
+
+        first_block = verification_blocks[0]
+        issues.append(
+            issue(
+                "error",
+                "verification.pre_commit_not_documented",
+                project_path,
+                "harnesskit:verification block omits configured pre-commit hook suite",
+                markdown_file,
+                line=first_block.start_line,
+                found="harnesskit:verification block does not mention pre-commit",
+                expected=f"add `{PRE_COMMIT_COMMAND}` as a pre-commit gate or explicitly mark pre-commit inactive",
+                evidence=[
+                    "repository configures pre-commit",
+                    f"{relative_path(project_path, markdown_file)} verification block does not mention pre-commit",
+                ],
+                suggested_fix=pre_commit_suggestion(),
+                verify_command=PRE_COMMIT_COMMAND,
+            )
+        )
+
+
 def verification_documentation_targets(
     project_path: Path, markdown_files: Iterable[Path]
 ) -> list[Path]:
@@ -359,6 +435,17 @@ def marked_blocks_document_package_build(blocks: Iterable[MarkedBlock]) -> bool:
     )
 
 
+def marked_blocks_document_pre_commit(blocks: Iterable[MarkedBlock]) -> bool:
+    return any(
+        re.search(r"\bpre-commit\b", block.content, re.IGNORECASE)
+        and (
+            re.search(r"\brun\s+--all-files\b", block.content, re.IGNORECASE)
+            or re.search(r"\binactive\b", block.content, re.IGNORECASE)
+        )
+        for block in blocks
+    )
+
+
 def ruff_formatter_configured(project_path: Path) -> bool:
     pyproject_path = project_path / "pyproject.toml"
     if not pyproject_path.is_file():
@@ -379,6 +466,12 @@ def package_build_configured(project_path: Path) -> bool:
     )
 
 
+def pre_commit_configured(project_path: Path) -> bool:
+    return (project_path / ".pre-commit-config.yaml").is_file() or (
+        "pre-commit" in declared_python_tools(project_path)
+    )
+
+
 def verification_block_suggestion() -> str:
     return (
         f"Add a block like `{VERIFICATION_START}` with entries such as "
@@ -391,6 +484,13 @@ def package_build_suggestion() -> str:
     return (
         f"Add `- Package build: {PACKAGE_BUILD_COMMAND}` to the verification block, "
         "or document `- Package build: inactive`."
+    )
+
+
+def pre_commit_suggestion() -> str:
+    return (
+        f"Add `- Pre-commit hooks: {PRE_COMMIT_COMMAND}` to the verification block, "
+        "or document `- Pre-commit hooks: inactive`."
     )
 
 

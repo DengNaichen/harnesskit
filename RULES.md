@@ -15,7 +15,7 @@ HarnessKit 当前通过 Harness Linter POC 支持以下确定性 guard。
 - Architecture map：`ARCHITECTURE.md` 的 Markdown 链接可以声明 `harnesskit:coverage=direct-children`；hint 语法必须有效，被覆盖目录的直接子项必须被文档记录。
 - Architecture placeholder：`ARCHITECTURE.md` 中的 placeholder 职责描述会报告 warning。
 - 技术栈漂移：`harnesskit:tech-stack` block 会和仓库中检测到的事实对齐。
-- 验证流程漂移：当仓库中存在对应工具时，验证文档会检查 pytest/unittest、Ruff check、Ruff format check 和 package build gate 是否对齐。
+- 验证流程漂移：当仓库中存在对应工具时，验证文档会检查 pytest/unittest、Ruff check、Ruff format check、package build 和 pre-commit gate 是否对齐。
 - 可选 Markdown 风格检查：传入 `--external-markdownlint` 时，会在已安装 markdownlint 的情况下运行它。
 
 ## 非目标
