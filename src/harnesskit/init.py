@@ -17,7 +17,7 @@ JINJA_TEMPLATE_SUFFIX = ".j2"
 DEFAULT_INTEGRATION = "codex"
 SUPPORTED_INTEGRATIONS = ("codex",)
 CONFIG_SCHEMA_VERSION = 1
-MYKIT_DIR = ".mykit"
+HARNESSKIT_DIR = ".harnesskit"
 CONFIG_FILE = "config.json"
 INTEGRATIONS_TEMPLATE_DIR = "integrations"
 SKILLS_TEMPLATE_DIR = "skills"
@@ -101,7 +101,7 @@ def install_integration(
         raise InitError(f"{resolved_project_path} is not a directory")
 
     if not _config_path(resolved_project_path).is_file():
-        raise InitError("not a mykit project; run `mykit init --here` first")
+        raise InitError("not a harnesskit project; run `harnesskit init --here` first")
 
     context = {"PROJECT_NAME": resolved_project_path.name}
     result = _install_integration_assets(
@@ -283,7 +283,7 @@ def _validate_integration(integration: str) -> str:
 
 
 def _config_path(project_path: Path) -> Path:
-    return project_path / MYKIT_DIR / CONFIG_FILE
+    return project_path / HARNESSKIT_DIR / CONFIG_FILE
 
 
 def _write_config(project_path: Path, integration: str) -> Path:
@@ -303,7 +303,7 @@ def _write_config(project_path: Path, integration: str) -> Path:
     config = {
         "schema_version": CONFIG_SCHEMA_VERSION,
         "project_name": project_path.name,
-        "mykit_version": __version__,
+        "harnesskit_version": __version__,
         "default_integration": integration,
         "installed_integrations": installed_integrations,
     }

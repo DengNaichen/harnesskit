@@ -1,8 +1,8 @@
 ---
-name: mykit-explain
+name: harnesskit-explain
 description: Explain the installed Context Harness assets.
 ---
 
-# mykit-explain
+# harnesskit-explain
 
 Fixture skill.

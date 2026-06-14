@@ -1,4 +1,4 @@
-"""Command-line entry point for mykit."""
+"""Command-line entry point for harnesskit."""
 
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ from .init import DEFAULT_INTEGRATION, InitError, available_integrations, init_p
 
 
 app = typer.Typer(
-    name="mykit",
-    help="Context Harness CLI and Codex-facing toolkit.",
+    name="harnesskit",
+    help="HarnessKit Context Harness CLI and Codex-facing toolkit.",
     add_completion=False,
 )
 integration_app = typer.Typer(help="Manage agent integrations.", add_completion=False)
@@ -23,7 +23,7 @@ console = Console()
 
 def _version_callback(value: bool) -> None:
     if value:
-        console.print(f"mykit {__version__}")
+        console.print(f"harnesskit {__version__}")
         raise typer.Exit()
 
 
@@ -34,7 +34,7 @@ def callback(
         typer.Option("--version", "-V", callback=_version_callback, is_eager=True, help="Show version and exit."),
     ] = False,
 ) -> None:
-    """Context Harness CLI and Codex-facing toolkit."""
+    """HarnessKit Context Harness CLI and Codex-facing toolkit."""
 
 
 @app.command("init")
@@ -75,7 +75,7 @@ def integration_install_command(
     integration: Annotated[str, typer.Argument(help="Integration key to install. Currently only 'codex'.")],
     force: Annotated[bool, typer.Option("--force", help="Overwrite existing integration files.")] = False,
 ) -> None:
-    """Install an agent integration into the current mykit project."""
+    """Install an agent integration into the current harnesskit project."""
     try:
         result = install_integration(".", integration, force=force)
     except InitError as exc:

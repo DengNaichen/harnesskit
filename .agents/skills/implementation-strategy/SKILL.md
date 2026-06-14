@@ -39,9 +39,9 @@ Use this skill before editing code when the task changes runtime behavior or any
 
 ## Project-specific compatibility rules
 
-- Treat the Typer CLI surface (`mykit init`, `mykit integration ...`, flags, arguments, exit behavior, and user-facing messages) as compatibility-sensitive once released.
-- Treat `.mykit/config.json` as durable external state. Its current `schema_version` is `1`; structure changes need tests and an explicit compatibility decision.
-- Treat generated template output under `templates/` as user-facing behavior because `mykit init` copies or renders it into target repositories.
+- Treat the Typer CLI surface (`harnesskit init`, `harnesskit integration ...`, flags, arguments, exit behavior, and user-facing messages) as compatibility-sensitive once released.
+- Treat `.harnesskit/config.json` as durable external state. Its current `schema_version` is `1`; structure changes need tests and an explicit compatibility decision.
+- Treat generated template output under `templates/` as user-facing behavior because `harnesskit init` copies or renders it into target repositories.
 - Current supported integration is `codex`; adding or renaming integrations affects CLI behavior, template layout, README guidance, and tests.
 - Jinja templates use `StrictUndefined`; adding template variables requires corresponding render context or an intentional target-repo TODO.
 

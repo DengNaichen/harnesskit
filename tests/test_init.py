@@ -11,16 +11,16 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-import mykit.init as init_module  # noqa: E402
-from mykit.init import InitError, init_project, install_integration  # noqa: E402
+import harnesskit.init as init_module  # noqa: E402
+from harnesskit.init import InitError, init_project, install_integration  # noqa: E402
 
 
 SHARED_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
     ".agents/skills/implementation-strategy/SKILL.md",
-    ".agents/skills/mykit-audit/SKILL.md",
-    ".agents/skills/mykit-refresh/SKILL.md",
-    ".agents/skills/mykit-explain/SKILL.md",
+    ".agents/skills/harnesskit-audit/SKILL.md",
+    ".agents/skills/harnesskit-refresh/SKILL.md",
+    ".agents/skills/harnesskit-explain/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
 )
 
@@ -53,7 +53,7 @@ def test_default_integration_is_codex(tmp_path: Path) -> None:
 
     config = read_config(project)
     assert config["default_integration"] == "codex"
-    assert (project / ".agents/skills/mykit-audit/SKILL.md").is_file()
+    assert (project / ".agents/skills/harnesskit-audit/SKILL.md").is_file()
 
 
 def test_agent_guidance_outputs_do_not_leak_template_placeholders(tmp_path: Path) -> None:
@@ -102,15 +102,15 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
         "candidate.md": 1,
         ".agents/skills/code-change-verification/SKILL.md": 1,
         ".agents/skills/implementation-strategy/SKILL.md": 1,
-        ".agents/skills/mykit-audit/SKILL.md": 1,
-        ".agents/skills/mykit-explain/SKILL.md": 1,
-        ".agents/skills/mykit-refresh/SKILL.md": 1,
+        ".agents/skills/harnesskit-audit/SKILL.md": 1,
+        ".agents/skills/harnesskit-explain/SKILL.md": 1,
+        ".agents/skills/harnesskit-refresh/SKILL.md": 1,
         ".agents/skills/pr-draft-summary/SKILL.md": 2,
     }
     for relative_path, expected_count in expected_checklist_counts.items():
         text = (project / relative_path).read_text(encoding="utf-8")
-        assert text.count("<!-- mykit:todo-checklist:start -->") == expected_count, relative_path
-        assert text.count("<!-- mykit:todo-checklist:end -->") == expected_count, relative_path
+        assert text.count("<!-- harnesskit:todo-checklist:start -->") == expected_count, relative_path
+        assert text.count("<!-- harnesskit:todo-checklist:end -->") == expected_count, relative_path
 
 
 def test_agent_guidance_outputs_claude_symlink_from_dereferenced_template(
@@ -152,7 +152,7 @@ def test_existing_files_are_skipped_without_force(tmp_path: Path) -> None:
 
 def test_existing_shared_skills_are_skipped_without_force(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "mykit-audit" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "harnesskit-audit" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -176,7 +176,7 @@ def test_force_overwrites_existing_template_files(tmp_path: Path) -> None:
 
 def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "mykit-audit" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "harnesskit-audit" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -189,12 +189,12 @@ def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
 def test_install_integration_repairs_missing_codex_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
     init_project(str(project), integration="codex")
-    shutil.rmtree(project / ".agents" / "skills" / "mykit-audit")
+    shutil.rmtree(project / ".agents" / "skills" / "harnesskit-audit")
 
     result = install_integration(project, "codex")
 
-    assert (project / ".agents/skills/mykit-audit/SKILL.md").is_file()
-    assert project / ".agents/skills/mykit-audit/SKILL.md" in result.created
+    assert (project / ".agents/skills/harnesskit-audit/SKILL.md").is_file()
+    assert project / ".agents/skills/harnesskit-audit/SKILL.md" in result.created
     config = read_config(project)
     assert config["installed_integrations"] == ["codex"]
 
@@ -203,9 +203,9 @@ def test_install_integration_requires_initialized_project(tmp_path: Path) -> Non
     project = (tmp_path / "demo").resolve()
     project.mkdir()
 
-    with pytest.raises(InitError, match="mykit init --here"):
+    with pytest.raises(InitError, match="harnesskit init --here"):
         install_integration(project, "codex")
 
 
 def read_config(project: Path) -> dict[str, object]:
-    return json.loads((project / ".mykit" / "config.json").read_text(encoding="utf-8"))
+    return json.loads((project / ".harnesskit" / "config.json").read_text(encoding="utf-8"))

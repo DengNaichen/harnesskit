@@ -1,8 +1,8 @@
 ---
-name: mykit-refresh
+name: harnesskit-refresh
 description: Refresh missing Context Harness assets.
 ---
 
-# mykit-refresh
+# harnesskit-refresh
 
 Fixture skill.

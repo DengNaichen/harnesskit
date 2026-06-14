@@ -22,7 +22,7 @@ def test_valid_harness_passes(tmp_path: Path) -> None:
 
 def test_missing_codex_skill_fails(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/mykit-audit/SKILL.md").unlink()
+    (project / ".agents/skills/harnesskit-audit/SKILL.md").unlink()
 
     report = lint_project(project)
 
@@ -32,7 +32,7 @@ def test_missing_codex_skill_fails(tmp_path: Path) -> None:
 
 def test_bad_config_json_fails(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".mykit/config.json").write_text("{broken\n", encoding="utf-8")
+    (project / ".harnesskit/config.json").write_text("{broken\n", encoding="utf-8")
 
     report = lint_project(project)
 
@@ -42,7 +42,7 @@ def test_bad_config_json_fails(tmp_path: Path) -> None:
 
 def test_skill_frontmatter_is_required(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/mykit-audit/SKILL.md").write_text("# no frontmatter\n", encoding="utf-8")
+    (project / ".agents/skills/harnesskit-audit/SKILL.md").write_text("# no frontmatter\n", encoding="utf-8")
 
     report = lint_project(project)
 
@@ -73,7 +73,7 @@ def test_skill_references_must_exist(tmp_path: Path) -> None:
 def test_todo_checklist_markers_must_be_paired(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     (project / "AGENTS.md").write_text(
-        "<!-- mykit:todo-checklist:start -->\nopen checklist\n",
+        "<!-- harnesskit:todo-checklist:start -->\nopen checklist\n",
         encoding="utf-8",
     )
 
@@ -124,7 +124,7 @@ def test_tech_stack_block_must_match_repo_facts(tmp_path: Path) -> None:
 def test_tech_stack_markers_must_be_paired(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     (project / "AGENTS.md").write_text(
-        "<!-- mykit:tech-stack:start -->\n- Package manager: uv\n",
+        "<!-- harnesskit:tech-stack:start -->\n- Package manager: uv\n",
         encoding="utf-8",
     )
 
@@ -174,7 +174,7 @@ def test_main_exit_code(tmp_path: Path) -> None:
     with redirect_stdout(StringIO()):
         assert main([str(project)]) == 0
 
-    (project / ".mykit/config.json").unlink()
+    (project / ".harnesskit/config.json").unlink()
     with redirect_stdout(StringIO()):
         assert main([str(project)]) == 1
 
@@ -187,13 +187,13 @@ def make_project(root: Path) -> Path:
     project = root / "demo"
     project.mkdir()
 
-    (project / ".mykit").mkdir()
-    (project / ".mykit/config.json").write_text(
+    (project / ".harnesskit").mkdir()
+    (project / ".harnesskit/config.json").write_text(
         json.dumps(
             {
                 "schema_version": 1,
                 "project_name": "demo",
-                "mykit_version": "0.1.0",
+                "harnesskit_version": "0.1.0",
                 "default_integration": "codex",
                 "installed_integrations": ["codex"],
             },
@@ -205,12 +205,12 @@ def make_project(root: Path) -> Path:
     )
 
     (project / "AGENTS.md").write_text(
-        "# AGENTS\n\nUse $mykit-audit, $mykit-refresh, and $mykit-explain as needed.\n",
+        "# AGENTS\n\nUse $harnesskit-audit, $harnesskit-refresh, and $harnesskit-explain as needed.\n",
         encoding="utf-8",
     )
     (project / "CLAUDE.md").symlink_to("AGENTS.md")
 
-    for skill_name in ("mykit-audit", "mykit-refresh", "mykit-explain"):
+    for skill_name in ("harnesskit-audit", "harnesskit-refresh", "harnesskit-explain"):
         skill_dir = project / ".agents" / "skills" / skill_name
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text(
@@ -250,9 +250,9 @@ build-backend = "hatchling.build"
 def append_tech_stack_block(path: Path, entries: dict[str, str]) -> None:
     lines = [
         "",
-        "<!-- mykit:tech-stack:start -->",
+        "<!-- harnesskit:tech-stack:start -->",
         *[f"- {key}: {value}" for key, value in entries.items()],
-        "<!-- mykit:tech-stack:end -->",
+        "<!-- harnesskit:tech-stack:end -->",
         "",
     ]
     with path.open("a", encoding="utf-8") as file:

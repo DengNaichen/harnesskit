@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "project_name": "mykit",
-  "mykit_version": "0.1.0",
+  "project_name": "valid",
+  "harnesskit_version": "0.1.0",
   "default_integration": "codex",
   "installed_integrations": [
     "codex"

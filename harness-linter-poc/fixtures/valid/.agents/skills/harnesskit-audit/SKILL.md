@@ -1,8 +1,8 @@
 ---
-name: mykit-audit
+name: harnesskit-audit
 description: Audit the installed Context Harness assets.
 ---
 
-# mykit-audit
+# harnesskit-audit
 
 Fixture skill.

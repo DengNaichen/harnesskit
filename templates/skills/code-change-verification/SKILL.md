@@ -11,12 +11,12 @@ Ensure work is only marked complete after the repository's own verification chec
 
 ## Repository verification stack
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 Before filling this section:
 - Verify each command from repository files such as manifests, scripts, locks, or CI config.
 - Leave unavailable checks as `TODO` instead of inventing generic commands.
 - After the real stack is configured, remove this checklist block.
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - Setup command: TODO
 - Format command: TODO

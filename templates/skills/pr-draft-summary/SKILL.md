@@ -10,12 +10,12 @@ Produce the PR-ready summary required in this repository after substantive code 
 
 ## When to Trigger
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 Before adjusting this section:
 - Match trigger rules to the repository's real review and release expectations.
 - Keep skip cases explicit for docs-only, metadata-only, or conversation-only work.
 - Do not require a PR block for workflows the repository does not use.
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - The task for this repo is finished (or ready for review) and it touched runtime code, tests, examples, docs with behavior impact, or build/test configuration.
 - Treat this as the default final handoff step for substantive code work. Run it after any required verification or changeset work and before sending the "work complete" response.
@@ -23,12 +23,12 @@ Before adjusting this section:
 
 ## Inputs to Collect Automatically (do not ask the user)
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 Before adjusting this section:
 - Verify branch, release tag, base reference, and hosting assumptions from repository evidence.
 - Replace generic category signals with this repository's actual runtime, test, template, docs, and config paths.
 - Remove commands that cannot run in the repository's normal environment.
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - Current branch: `git rev-parse --abbrev-ref HEAD`.
 - Working tree: `git status -sb`.

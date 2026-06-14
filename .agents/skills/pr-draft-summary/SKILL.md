@@ -24,7 +24,7 @@ Produce the PR-ready summary required in this repository after substantive code 
   - `BASE_COMMIT=$(git merge-base --fork-point "$BASE_REF" HEAD || git merge-base "$BASE_REF" HEAD || echo "$BASE_REF")`.
 - Commits ahead of the base fork point: `git log --oneline --no-merges ${BASE_COMMIT}..HEAD`.
 - Category signals for this repo:
-  - Runtime CLI or library behavior: `src/mykit/**`
+  - Runtime CLI or library behavior: `src/harnesskit/**`
   - Generated harness/template behavior: `templates/**`
   - Tests: `tests/**`
   - Packaging/build metadata: `pyproject.toml`, `uv.lock`

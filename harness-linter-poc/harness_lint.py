@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Standalone Context Harness linter POC.
 
-This script is intentionally outside src/mykit. It proves the linting shape
+This script is intentionally outside src/harnesskit. It proves the linting shape
 without changing the product CLI or package runtime.
 """
 
@@ -24,9 +24,9 @@ Severity = Literal["error", "warning"]
 CONFIG_SCHEMA_VERSION = 1
 SUPPORTED_INTEGRATIONS = {"codex"}
 CODEX_SKILLS = (
-    ".agents/skills/mykit-audit/SKILL.md",
-    ".agents/skills/mykit-refresh/SKILL.md",
-    ".agents/skills/mykit-explain/SKILL.md",
+    ".agents/skills/harnesskit-audit/SKILL.md",
+    ".agents/skills/harnesskit-refresh/SKILL.md",
+    ".agents/skills/harnesskit-explain/SKILL.md",
 )
 HARNESS_MARKDOWN_GLOBS = (
     "README.md",
@@ -36,10 +36,10 @@ HARNESS_MARKDOWN_GLOBS = (
 )
 MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 SKILL_REFERENCE_PATTERN = re.compile(r"(?<![\w`])\$([A-Za-z][A-Za-z0-9_-]*)")
-TODO_CHECKLIST_START = "<!-- mykit:todo-checklist:start -->"
-TODO_CHECKLIST_END = "<!-- mykit:todo-checklist:end -->"
-TECH_STACK_START = "<!-- mykit:tech-stack:start -->"
-TECH_STACK_END = "<!-- mykit:tech-stack:end -->"
+TODO_CHECKLIST_START = "<!-- harnesskit:todo-checklist:start -->"
+TODO_CHECKLIST_END = "<!-- harnesskit:todo-checklist:end -->"
+TECH_STACK_START = "<!-- harnesskit:tech-stack:start -->"
+TECH_STACK_END = "<!-- harnesskit:tech-stack:end -->"
 TECH_STACK_ENTRY_PATTERN = re.compile(r"^\s*[-*]\s*([^:]+):\s*(.+?)\s*$")
 
 
@@ -102,9 +102,9 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
 
 
 def check_config(project_path: Path, issues: list[Issue]) -> dict[str, object] | None:
-    config_path = project_path / ".mykit" / "config.json"
+    config_path = project_path / ".harnesskit" / "config.json"
     if not config_path.is_file():
-        issues.append(issue("error", "config.missing", project_path, "missing .mykit/config.json", config_path))
+        issues.append(issue("error", "config.missing", project_path, "missing .harnesskit/config.json", config_path))
         return None
 
     try:

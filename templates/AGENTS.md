@@ -6,12 +6,12 @@
 
 ### 必须按需使用仓库本地技能
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - `.agents/skills/` 中列出的技能真实存在，且名称和触发条件一致。
 - 删除本仓库不需要的技能规则，避免 agent 追随不存在的流程。
 - 新增技能时只写触发条件和路径，执行细节放在对应 `SKILL.md`。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
 
@@ -23,12 +23,12 @@
 
 ### 可跳过完整验证的情况
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 只列出对本仓库确实低风险的改动类型。
 - 如果文档、模板或元数据会改变用户可见行为，不要放进跳过项。
 - 与 `$code-change-verification` 的触发条件保持一致。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 以下变更默认不需要运行完整验证栈，除非用户明确要求：
 
@@ -38,12 +38,12 @@
 
 ### 兼容性边界
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 找出本仓库已经对外承诺的 CLI、API、配置、schema、协议和生成输出。
 - 明确最新发布标签、发布分支或“尚未发布”的判断依据。
 - 没有证据的兼容性规则保留为待确认，不要从示例项目套用。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 修改下列内容前，必须明确兼容性决策：
 
@@ -68,12 +68,12 @@
 
 ### 重要目录与文件
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 只记录仓库中真实存在、对 agent 操作有导航价值的路径。
 - 从构建清单、目录结构、测试文件和文档中验证每条说明。
 - 补完并确认后，可以删除这个 checklist 块。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 维护本文件时，用仓库中真实存在的路径替换或补充本节。常见入口包括：
 
@@ -90,12 +90,12 @@
 
 ### 环境与命令
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 从仓库清单、锁文件、脚本或 CI 中验证包管理器和运行命令。
 - 区分首次依赖安装、日常运行、调试入口和发布命令。
 - 没有配置的工具不要写入本节。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - 首次配置或依赖变更后，使用仓库实际支持的包管理命令安装依赖。
 - 运行语言工具、测试或 CLI 时，优先使用仓库声明的环境管理器，确保依赖和版本一致。
@@ -103,12 +103,12 @@
 
 ### 开发工作流
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 工作流步骤符合本仓库真实的开发、测试和交付习惯。
 - 模板、生成物、配置和运行时代码的处理顺序清楚。
 - 删除不适用于本仓库的通用步骤。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 1. 先读相关模块、测试、文档和本地技能说明，确认变更触及的边界。
 2. 如果会改变运行时、公开接口、配置、模板输出、测试行为或用户可见行为，先使用 `$implementation-strategy`。
@@ -120,12 +120,12 @@
 
 ### 测试与自动化检查
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 只写已经从仓库配置、脚本、锁文件或 CI 中验证过的命令。
 - 没有对应工具时说明未配置，不要填入通用示例命令。
 - 同步更新 `.agents/skills/code-change-verification/SKILL.md` 中的验证栈。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 当前仓库的完整验证栈应记录在 `.agents/skills/code-change-verification/SKILL.md` 中。若该技能仍有 `TODO`，说明验证尚未配置；不要把 TODO 或通用示例当作真实命令。
 
@@ -133,12 +133,12 @@
 
 ### Pull Request 与提交规范
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 只记录仓库实际采用的提交、分支、PR 描述和 review 要求。
 - 没有 PR 模板、CI 或发布流程时不要虚构。
 - 与 `$pr-draft-summary` 的输出要求保持一致。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - 提交信息使用简洁祈使句，保持提交小而聚焦。
 - 有新行为时尽可能补测试；面向用户的 CLI、配置、模板或文档变化需要同步说明。
@@ -146,12 +146,12 @@
 
 ### 审查关注点
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
 - 审查项覆盖本仓库最容易出错的行为边界和数据边界。
 - 保留能指导 agent 做代码审查的风险项，删除空泛条目。
 - 新增关键模块或生成流程后同步更新本节。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 - 用户可见行为、错误消息和退出码是否符合现有风格。
 - 持久配置、schema、协议和生成输出是否保持兼容或明确说明迁移方式。

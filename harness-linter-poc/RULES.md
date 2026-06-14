@@ -6,8 +6,8 @@ This file describes the first rule set for the standalone Harness Linter POC.
 
 ### Config
 
-- `config.missing`: `.mykit/config.json` must exist.
-- `config.invalid_json`: `.mykit/config.json` must parse as JSON.
+- `config.missing`: `.harnesskit/config.json` must exist.
+- `config.invalid_json`: `.harnesskit/config.json` must parse as JSON.
 - `config.not_object`: config must be a JSON object.
 - `config.schema_version`: `schema_version` must match the supported schema.
 - `config.default_integration`: `default_integration` must be supported.
@@ -36,14 +36,14 @@ This file describes the first rule set for the standalone Harness Linter POC.
 ### Markdown
 
 - `markdown.link.missing`: local Markdown link targets inside harness files must exist.
-- `markdown.todo_checklist.unpaired`: `mykit:todo-checklist` start and end markers must be paired and ordered.
-- `markdown.tech_stack.unpaired`: `mykit:tech-stack` start and end markers must be paired and ordered.
+- `markdown.todo_checklist.unpaired`: `harnesskit:todo-checklist` start and end markers must be paired and ordered.
+- `markdown.tech_stack.unpaired`: `harnesskit:tech-stack` start and end markers must be paired and ordered.
 - `external.markdownlint`: optional external markdownlint run failed.
 - `external.markdownlint.missing`: optional external markdownlint was requested but no supported binary was installed.
 
 ### Tech Stack
 
-- `tech_stack.mismatch`: values declared inside a `mykit:tech-stack` block must match repository facts detected from configuration, lock files, and tests.
+- `tech_stack.mismatch`: values declared inside a `harnesskit:tech-stack` block must match repository facts detected from configuration, lock files, and tests.
 
 ## Non-Goals
 

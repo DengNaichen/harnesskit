@@ -4,12 +4,12 @@
 
 ## 待沉淀
 
-<!-- mykit:todo-checklist:start -->
+<!-- harnesskit:todo-checklist:start -->
 记录本节前请确认：
 - 这里只放尚未稳定的命令、约定、坑或待确认线索。
 - 已验证且反复有用的内容应沉淀到 `AGENTS.md`、`.agents/skills/` 或项目文档。
 - 沉淀后删除或移动对应条目，保持本文件短而可回看。
-<!-- mykit:todo-checklist:end -->
+<!-- harnesskit:todo-checklist:end -->
 
 ### 命令
 

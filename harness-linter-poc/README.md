@@ -1,40 +1,40 @@
 # Harness Linter POC
 
-This folder is a standalone proof of concept for a `mykit` Harness Linter.
-It does not modify `src/mykit/`, does not register a CLI command, and does not change existing tests.
+This folder is a standalone proof of concept for a HarnessKit Harness Linter.
+It does not modify `src/harnesskit/`, does not register a CLI command, and does not change existing tests.
 
 ## Scope
 
-The linter only checks Context Harness assets created or maintained by `mykit`.
+The linter only checks Context Harness assets created or maintained by HarnessKit.
 It does not lint or format the target project's application code.
 
 Current checks:
 
-- `.mykit/config.json` exists, is valid JSON, and uses `schema_version: 1`.
+- `.harnesskit/config.json` exists, is valid JSON, and uses `schema_version: 1`.
 - `AGENTS.md` and `CLAUDE.md` exist and are not empty.
 - `CLAUDE.md` points to `AGENTS.md`, either as a symlink or by referencing it.
 - Installed Codex harness skills exist:
-  - `.agents/skills/mykit-audit/SKILL.md`
-  - `.agents/skills/mykit-refresh/SKILL.md`
-  - `.agents/skills/mykit-explain/SKILL.md`
+  - `.agents/skills/harnesskit-audit/SKILL.md`
+  - `.agents/skills/harnesskit-refresh/SKILL.md`
+  - `.agents/skills/harnesskit-explain/SKILL.md`
 - Every `.agents/skills/*/SKILL.md` has minimal frontmatter with `name` and `description`.
 - `$skill-name` references in `AGENTS.md` point to installed local skills.
 - Local Markdown links inside harness files point to existing files.
-- `mykit:todo-checklist` start/end markers are paired.
-- Optional `mykit:tech-stack` blocks match repository facts from config, lock files, and tests.
+- `harnesskit:todo-checklist` start/end markers are paired.
+- Optional `harnesskit:tech-stack` blocks match repository facts from config, lock files, and tests.
 
 Example tech stack block:
 
 ```markdown
-<!-- mykit:tech-stack:start -->
+<!-- harnesskit:tech-stack:start -->
 - Language: Python 3.11+
 - Package manager: uv
 - CLI: Typer
 - Terminal output: Rich
 - Templates: Jinja2
 - Build backend: Hatchling
-- Tests: unittest
-<!-- mykit:tech-stack:end -->
+- Tests: pytest
+<!-- harnesskit:tech-stack:end -->
 ```
 
 Optional integration:
@@ -46,7 +46,7 @@ Optional integration:
 ```bash
 python harness-linter-poc/harness_lint.py /path/to/project
 python harness-linter-poc/harness_lint.py /path/to/project --json
-python harness-linter-poc/test_harness_lint.py
+uv run pytest harness-linter-poc/test_harness_lint.py
 ```
 
 Demo fixture:
