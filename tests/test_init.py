@@ -34,6 +34,7 @@ class InitProjectTests(unittest.TestCase):
             init_project(str(project), integration="codex")
 
             self.assertTrue((project / "AGENTS.md").is_file())
+            self.assertTrue((project / "candidate.md").is_file())
             self.assertTrue((project / "CLAUDE.md").is_file())
             self.assertTrue((project / "CLAUDE.md").is_symlink())
             self.assertEqual((project / "CLAUDE.md").readlink(), Path("AGENTS.md"))
@@ -68,8 +69,14 @@ class InitProjectTests(unittest.TestCase):
             self.assertNotIn("}}", agents)
             self.assertNotIn("{{#", agents)
             self.assertIn(".agents/skills/", agents)
+            self.assertIn("candidate.md", agents)
             self.assertTrue((project / "CLAUDE.md").is_symlink())
             self.assertEqual((project / "CLAUDE.md").readlink(), Path("AGENTS.md"))
+
+            candidate = (project / "candidate.md").read_text(encoding="utf-8")
+            self.assertNotIn("{{", candidate)
+            self.assertNotIn("}}", candidate)
+            self.assertIn("待沉淀", candidate)
 
     def test_shared_skill_outputs_do_not_leak_template_placeholders(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -86,6 +93,35 @@ class InitProjectTests(unittest.TestCase):
                 self.assertNotIn("CATEGORY_SIGNALS", text, skill)
                 self.assertNotIn("GITHUB_REPO_URL", text, skill)
                 self.assertNotIn("PROJECT_SPECIFIC_COMPATIBILITY_RULES", text, skill)
+
+    def test_generated_placeholder_sections_include_checklists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = (Path(tmp) / "demo").resolve()
+
+            init_project(str(project))
+
+            expected_checklist_counts = {
+                "AGENTS.md": 9,
+                "candidate.md": 1,
+                ".agents/skills/code-change-verification/SKILL.md": 1,
+                ".agents/skills/implementation-strategy/SKILL.md": 1,
+                ".agents/skills/mykit-audit/SKILL.md": 1,
+                ".agents/skills/mykit-explain/SKILL.md": 1,
+                ".agents/skills/mykit-refresh/SKILL.md": 1,
+                ".agents/skills/pr-draft-summary/SKILL.md": 2,
+            }
+            for relative_path, expected_count in expected_checklist_counts.items():
+                text = (project / relative_path).read_text(encoding="utf-8")
+                self.assertEqual(
+                    text.count("<!-- mykit:todo-checklist:start -->"),
+                    expected_count,
+                    relative_path,
+                )
+                self.assertEqual(
+                    text.count("<!-- mykit:todo-checklist:end -->"),
+                    expected_count,
+                    relative_path,
+                )
 
     def test_agent_guidance_outputs_claude_symlink_from_dereferenced_template(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

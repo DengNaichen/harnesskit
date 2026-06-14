@@ -40,6 +40,13 @@ Use this skill before editing code when the task changes runtime behavior or any
 
 ## Project-specific compatibility rules
 
+<!-- mykit:todo-checklist:start -->
+Before filling this section:
+- Identify released public surfaces, generated outputs, persisted data, and CLI/config contracts from repository evidence.
+- Record the release tag or branch policy only if the repository already defines one.
+- After the real compatibility boundary is documented, remove this checklist block.
+<!-- mykit:todo-checklist:end -->
+
 Fill this section in the target repository after inspecting real project contracts. Until it is filled, do not infer project policy from examples.
 
 - TODO: Document released public APIs, CLI/config/env surfaces, persisted schemas, wire protocols, generated outputs, or package boundaries that must remain compatible.
