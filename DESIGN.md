@@ -34,6 +34,21 @@ MVP 只负责 Context Harness：初始化并维护目标项目中 agent-friendly
 
 不需要控制 agent 怎么跑（那是 Runtime 的事），只需要控制它**提交什么**。Git hook 就是那道门。
 
+### 为什么需要 Context Harness
+
+AI agent 需要稳定、可复用、随代码一起演进的本地上下文，而不是依赖某一次对话里的临时说明。Context Harness 的作用，就是把项目知识沉淀成仓库中的文件：
+
+- `AGENTS.md`：agent 的操作规则和仓库导航入口
+- 架构或质量文档：更深入的工程约束
+- 生成或人工整理的参考资料：避免 agent 凭空猜测关键事实
+- 验证入口：把自然语言规则连接到可执行检查
+
+`AGENTS.md` 应该保持克制，专注于“agent 在这个仓库里应该怎么工作”。至于 `mykit` 是什么、为什么存在、MVP 边界在哪里，这些项目定位说明应该放在 `README.md`。
+
+### Harness Preservation 与 Harness Evolution
+
+MVP 暂不追求让 harness 在使用中自动进化成更完整的架构体系；这属于后续的 Harness Evolution。当前更重要的是 Harness Preservation：确认已有的 `AGENTS.md`、skills、配置、验证入口和文档引用仍然存在、可读、可解释，并且没有明显漂移。
+
 ---
 
 ## 3. 核心循环：Scan → Rule → Guard

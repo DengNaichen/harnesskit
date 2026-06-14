@@ -26,22 +26,14 @@
 4. `mykit` 同时安装 Codex skills 到 `.agents/skills/`。
 5. 用户回到 Codex 对话框里，通过 `$mykit-*` skills 继续审计、刷新和解释 harness。
 
+<!--
 第一版内置三个 Codex skills：
 
 - `$mykit-audit`：只读审计当前仓库的 Context Harness 状态。
 - `$mykit-refresh`：补装或刷新 harness 资产，默认不覆盖已有文件。
 - `$mykit-explain`：解释当前仓库里的 mykit 资产和使用方式。
-
-## 为什么需要 Context Harness
-
-AI agent 需要稳定、可复用、随代码一起演进的本地上下文，而不是依赖某一次对话里的临时说明。Context Harness 的作用，就是把项目知识沉淀成仓库中的文件：
-
-- `AGENTS.md`：agent 的操作规则和仓库导航入口
-- 架构或质量文档：更深入的工程约束
-- 生成或人工整理的参考资料：避免 agent 凭空猜测关键事实
-- 验证入口：把自然语言规则连接到可执行检查
-
-`AGENTS.md` 应该保持克制，专注于“agent 在这个仓库里应该怎么工作”。至于 `mykit` 是什么、为什么存在、MVP 边界在哪里，这些项目定位说明应该放在 `README.md`。
+-->
+<!-- 我认为这部分应该属于 roadmap，因为它描述的是第一版 skill 组合，而不是 README 必须保留的当前使用入口。 -->
 
 ## 当前结构
 
@@ -74,8 +66,12 @@ mykit integration install codex
 - 让生成资产在进一步自动化之前保持容易审查
 - 维护已安装 harness 的完整性，避免它在使用中腐坏或与仓库事实脱节
 
-MVP 暂不追求让 harness 在使用中自动进化成更完整的架构体系；这属于后续的 Harness Evolution。当前更重要的是 Harness Preservation：确认已有的 `AGENTS.md`、skills、配置、验证入口和文档引用仍然存在、可读、可解释，并且没有明显漂移。
-
+<!--
 为了实施 Harness Preservation，`mykit` 后续应提供或整合确定性的 Harness Check / Harness Lint 能力。它不是目标项目的通用代码 linter 或 formatter，而是优先检查和维护 mykit 生成的 harness 资产，例如 `AGENTS.md`、`.agents/skills/`、`.mykit/config.json`、文档链接、验证入口和模板资产。必要时可以提供安全的 `--fix` 能力，但不应默认接管目标项目自身的代码风格。
+-->
+<!-- 我认为这部分应该属于 roadmap，因为它描述的是后续 Harness Check / Harness Lint 的能力形态。 -->
 
+<!--
 未来可以继续加入 Claude Code 或内部产品 integration、仓库扫描、更丰富的模板、机器生成事实、sensors、evals 或 evidence 收集。但这些能力应该建立在 Context Harness 的边界之上，而不是把 `mykit` 做成 agent runtime。
+-->
+<!-- 我认为这部分应该属于 roadmap，因为它列的是未来可能加入的 integration、scan、sensors、evals 和 evidence 能力。 -->
