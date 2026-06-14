@@ -15,7 +15,7 @@ Ensure work is only marked complete after the repository's available verificatio
 2. If dependencies are not installed or have changed, run `uv sync`.
 3. Run from the repository root:
    ```bash
-   uv run python -m unittest discover -s tests
+   uv run pytest
    ```
 4. If the command fails, fix the issue, rerun it, and report the failing output.
 5. Confirm completion only when the command succeeds with no remaining issues.
@@ -23,6 +23,6 @@ Ensure work is only marked complete after the repository's available verificatio
 ## Manual workflow
 
 - If dependencies are not installed or have changed, run `uv sync` first.
-- Run `uv run python -m unittest discover -s tests` from the repository root.
-- This repository currently has no Makefile, formatter, linter, type checker, pytest config, or docs build command. Do not invent those checks.
+- Run `uv run pytest` from the repository root.
+- This repository currently has no Makefile, formatter, linter, type checker, or docs build command. Do not invent those checks.
 - Re-run the test command after applying fixes so the reported verification matches the final working tree.

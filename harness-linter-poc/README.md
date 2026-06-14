@@ -1,0 +1,68 @@
+# Harness Linter POC
+
+This folder is a standalone proof of concept for a `mykit` Harness Linter.
+It does not modify `src/mykit/`, does not register a CLI command, and does not change existing tests.
+
+## Scope
+
+The linter only checks Context Harness assets created or maintained by `mykit`.
+It does not lint or format the target project's application code.
+
+Current checks:
+
+- `.mykit/config.json` exists, is valid JSON, and uses `schema_version: 1`.
+- `AGENTS.md` and `CLAUDE.md` exist and are not empty.
+- `CLAUDE.md` points to `AGENTS.md`, either as a symlink or by referencing it.
+- Installed Codex harness skills exist:
+  - `.agents/skills/mykit-audit/SKILL.md`
+  - `.agents/skills/mykit-refresh/SKILL.md`
+  - `.agents/skills/mykit-explain/SKILL.md`
+- Every `.agents/skills/*/SKILL.md` has minimal frontmatter with `name` and `description`.
+- `$skill-name` references in `AGENTS.md` point to installed local skills.
+- Local Markdown links inside harness files point to existing files.
+- `mykit:todo-checklist` start/end markers are paired.
+- Optional `mykit:tech-stack` blocks match repository facts from config, lock files, and tests.
+
+Example tech stack block:
+
+```markdown
+<!-- mykit:tech-stack:start -->
+- Language: Python 3.11+
+- Package manager: uv
+- CLI: Typer
+- Terminal output: Rich
+- Templates: Jinja2
+- Build backend: Hatchling
+- Tests: unittest
+<!-- mykit:tech-stack:end -->
+```
+
+Optional integration:
+
+- `--external-markdownlint` will call `markdownlint-cli2` or `markdownlint` when either tool is installed.
+
+## Usage
+
+```bash
+python harness-linter-poc/harness_lint.py /path/to/project
+python harness-linter-poc/harness_lint.py /path/to/project --json
+python harness-linter-poc/test_harness_lint.py
+```
+
+Demo fixture:
+
+```bash
+python harness-linter-poc/harness_lint.py harness-linter-poc/fixtures/valid
+python harness-linter-poc/harness_lint.py harness-linter-poc/fixtures/valid --json
+```
+
+Exit codes:
+
+- `0`: no errors
+- `1`: one or more lint errors
+- `2`: invalid invocation or unexpected crash
+
+## Product Notes
+
+This POC is intentionally conservative. It is a Harness Preservation tool, not a Harness Evolution system.
+It should help keep an installed harness present, readable, and internally consistent without taking over the target repository's code style.

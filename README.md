@@ -47,6 +47,7 @@ mykit integration install codex
 - 初始化一套最小 Context Harness
 - 让 `AGENTS.md` 成为简洁的 agent 地图
 - 安装 Codex 本地 skills 到 `.agents/skills/`
+- 提供 `candidate.md` 作为日常发现的暂存区，定期把稳定规则沉淀到指南、skills 或文档
 - 把项目说明和 agent 操作规则分开
 - 让生成资产在进一步自动化之前保持容易审查
 - 维护已安装 harness 的完整性，避免它在使用中腐坏或与仓库事实脱节

@@ -20,6 +20,11 @@ CONFIG_SCHEMA_VERSION = 1
 MYKIT_DIR = ".mykit"
 CONFIG_FILE = "config.json"
 INTEGRATIONS_TEMPLATE_DIR = "integrations"
+SKILLS_TEMPLATE_DIR = "skills"
+CODEX_SKILL_OUTPUT_DIR = Path(".agents") / "skills"
+TEMPLATE_SYMLINKS = {
+    Path("CLAUDE.md"): Path("AGENTS.md"),
+}
 
 JINJA_ENV = Environment(
     autoescape=False,
@@ -65,7 +70,7 @@ def init_project(
         project_path,
         context,
         force=force,
-        excluded_top_dirs={INTEGRATIONS_TEMPLATE_DIR},
+        excluded_top_dirs={INTEGRATIONS_TEMPLATE_DIR, SKILLS_TEMPLATE_DIR},
     )
 
     integration_result = _install_integration_assets(
@@ -136,13 +141,17 @@ def _copy_template_tree(
 
         relative_path = _template_output_path(source_relative_path)
         destination = destination_root / relative_path
+        symlink_target = _template_symlink_target(source_relative_path, source)
 
-        if destination.exists() and not force:
+        if (destination.exists() or destination.is_symlink()) and not force:
             skipped.append(destination)
             continue
 
         destination.parent.mkdir(parents=True, exist_ok=True)
-        _copy_template(source, destination, context)
+        if symlink_target is not None:
+            _write_symlink(destination, symlink_target)
+        else:
+            _copy_template(source, destination, context)
         created.append(destination)
 
     return InitResult(project_path=destination_root, created=created, skipped=skipped)
@@ -159,10 +168,43 @@ def _install_integration_assets(
     template_root = _locate_templates()
     source_root = template_root / INTEGRATIONS_TEMPLATE_DIR / integration
 
-    if not source_root.is_dir():
+    if source_root.exists() and not source_root.is_dir():
         raise InitError(f"templates for integration '{integration}' were not found")
 
-    return _copy_template_tree(source_root, project_path, context, force=force)
+    if source_root.is_dir():
+        integration_result = _copy_template_tree(source_root, project_path, context, force=force)
+    else:
+        integration_result = InitResult(project_path=project_path, created=[], skipped=[])
+
+    if integration == DEFAULT_INTEGRATION:
+        skill_result = _install_shared_skill_assets(project_path, context, force=force)
+        return InitResult(
+            project_path=project_path,
+            created=[*integration_result.created, *skill_result.created],
+            skipped=[*integration_result.skipped, *skill_result.skipped],
+        )
+
+    return integration_result
+
+
+def _install_shared_skill_assets(
+    project_path: Path,
+    context: dict[str, str],
+    *,
+    force: bool,
+) -> InitResult:
+    template_root = _locate_templates()
+    source_root = template_root / SKILLS_TEMPLATE_DIR
+
+    if not source_root.is_dir():
+        raise InitError("shared skill templates were not found")
+
+    return _copy_template_tree(
+        source_root,
+        project_path / CODEX_SKILL_OUTPUT_DIR,
+        context,
+        force=force,
+    )
 
 
 def _resolve_project_path(project: str | None, *, here: bool) -> Path:
@@ -200,7 +242,26 @@ def _template_output_path(path: Path) -> Path:
     return path
 
 
+def _template_symlink_target(path: Path, source: Path) -> Path | None:
+    output_path = _template_output_path(path)
+    if output_path in TEMPLATE_SYMLINKS:
+        return TEMPLATE_SYMLINKS[output_path]
+    if source.is_symlink():
+        return source.readlink()
+    return None
+
+
+def _write_symlink(destination: Path, target: Path) -> None:
+    if destination.exists() or destination.is_symlink():
+        destination.unlink()
+    destination.symlink_to(target)
+
+
 def _copy_template(source: Path, destination: Path, context: dict[str, str]) -> None:
+    if source.is_symlink():
+        _write_symlink(destination, source.readlink())
+        return
+
     if source.name.endswith(JINJA_TEMPLATE_SUFFIX):
         text = source.read_text(encoding="utf-8")
         try:

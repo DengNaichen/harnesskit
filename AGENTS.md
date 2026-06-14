@@ -9,7 +9,7 @@
 仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
 
 - `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.mykit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
-- `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock` 或构建/测试行为时，在标记完成前运行。当前完整验证命令是 `uv run python -m unittest discover -s tests`。
+- `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock` 或构建/测试行为时，在标记完成前运行。当前完整验证命令是 `uv run pytest`。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
 
 ### 可跳过完整验证的情况
@@ -42,11 +42,12 @@
 - `src/mykit/cli.py`：Typer 入口，定义 `mykit init` 和 `mykit integration ...` 命令。
 - `src/mykit/init.py`：项目初始化、模板复制、integration 安装和 `.mykit/config.json` 写入逻辑。
 - `templates/`：`mykit init` 安装到目标仓库的 Context Harness 模板；其中 `templates/integrations/codex/` 存放 Codex integration 资产。
-- `tests/`：`unittest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
+- `tests/`：`pytest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
 - `.agents/skills/`：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
 - `README.md`：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
 - `design.md`：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
 - `docs/references/harness-builder/`：harness 研究笔记和参考资料。
+- `candidate.md`：日常发现的命令、约定、坑和待确认事项暂存区；不是权威规则，定期回看后再沉淀到指南、技能或文档。
 - `pyproject.toml`：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
 - `uv.lock`：锁定依赖版本。
 - `CLAUDE.md`：应保持为指向 `AGENTS.md` 的符号链接。
@@ -66,19 +67,20 @@
 1. 先读相关模块、测试和本地技能说明，确认变更触及的边界。
 2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
 3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
-4. 需要验证时从仓库根目录运行 `uv run python -m unittest discover -s tests`。
-5. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
-6. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
+4. 日常发现可复用命令、仓库约定、坑或待确认事项时，先追加到 `candidate.md`；只有稳定且反复有用的内容才沉淀到 `AGENTS.md`、`.agents/skills/` 或文档。
+5. 需要验证时从仓库根目录运行 `uv run pytest`。
+6. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
+7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
 
 ### 测试与自动化检查
 
 当前完整验证栈只有：
 
 ```bash
-uv run python -m unittest discover -s tests
+uv run pytest
 ```
 
-仓库目前没有可证实的 `make format`、`make lint`、`make typecheck`、`pytest` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
+仓库目前没有可证实的 `make format`、`make lint`、`make typecheck` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
 
 ### 修改模板时的注意事项
 
@@ -98,5 +100,5 @@ uv run python -m unittest discover -s tests
 - CLI 行为、错误消息和退出码是否符合现有 Typer 风格。
 - `.mykit/config.json` 的 schema 和 integration 列表是否保持兼容。
 - 模板渲染是否有完整上下文，避免 `StrictUndefined` 在运行时失败。
-- 新行为是否被 `unittest` 覆盖。
+- 新行为是否被 `pytest` 覆盖。
 - 文档是否把项目说明和 agent 操作规则分开：`README.md` 讲产品，`AGENTS.md` 讲 agent 如何工作。
