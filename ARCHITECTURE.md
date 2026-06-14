@@ -18,7 +18,37 @@ workflow spec, API reference, or detailed design document.
 - path: tests/
   coverage: directory
 - path: harness-linter-poc/
-  coverage: directory
+  coverage: direct-children
+- path: harness-linter-poc/harness_lint.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/
+  coverage: direct-children
+- path: harness-linter-poc/harness_lint_rules/__init__.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/architecture.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/config.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/constants.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/core.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/issues.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/markdown.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/models.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/project.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/skills.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/tech_stack.py
+  coverage: file
+- path: harness-linter-poc/harness_lint_rules/verification.py
+  coverage: file
+- path: harness-linter-poc/test_harness_lint.py
+  coverage: file
 - path: .agents/skills/
   coverage: directory
 - path: docs/
@@ -38,9 +68,22 @@ workflow spec, API reference, or detailed design document.
 - [`src/harnesskit/`](src/harnesskit/): Python package and CLI implementation.
 - [`templates/`](templates/): Context Harness assets copied or rendered into target repositories.
 - [`tests/`](tests/): pytest coverage for initialization and user-visible CLI behavior.
-- [`harness-linter-poc/`](harness-linter-poc/): standalone proof of concept for deterministic harness drift checks.
+- [`harness-linter-poc/`](harness-linter-poc/): standalone proof of concept for deterministic harness drift checks; [`harness_lint_rules/`](harness-linter-poc/harness_lint_rules/) contains extracted rule modules and shared lint models.
 - [`.agents/skills/`](.agents/skills/): repository-local Codex skills used while working on this repository.
 - [`docs/`](docs/): product design notes, roadmap, and research references.
+
+## Harness Linter POC Modules
+
+- [`harness_lint.py`](harness-linter-poc/harness_lint.py): CLI entry point, report rendering, and rule orchestration.
+- [`harness_lint_rules/config.py`](harness-linter-poc/harness_lint_rules/config.py): `.harnesskit/config.json` checks.
+- [`harness_lint_rules/core.py`](harness-linter-poc/harness_lint_rules/core.py): required harness files, Claude pointer, and installed integration assets.
+- [`harness_lint_rules/skills.py`](harness-linter-poc/harness_lint_rules/skills.py): skill frontmatter and `$skill-name` reference checks.
+- [`harness_lint_rules/markdown.py`](harness-linter-poc/harness_lint_rules/markdown.py): Markdown collection, links, marker blocks, and optional external markdownlint.
+- [`harness_lint_rules/architecture.py`](harness-linter-poc/harness_lint_rules/architecture.py): architecture map coverage checks.
+- [`harness_lint_rules/tech_stack.py`](harness-linter-poc/harness_lint_rules/tech_stack.py): repository fact detection and tech-stack block checks.
+- [`harness_lint_rules/verification.py`](harness-linter-poc/harness_lint_rules/verification.py): verification documentation drift checks.
+- [`harness_lint_rules/models.py`](harness-linter-poc/harness_lint_rules/models.py): shared report and block models.
+- [`harness_lint_rules/issues.py`](harness-linter-poc/harness_lint_rules/issues.py): issue construction and path display helpers.
 
 ## Key Files
 
