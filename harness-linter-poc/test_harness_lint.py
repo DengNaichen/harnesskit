@@ -244,6 +244,90 @@ def test_documented_ruff_dependency_is_allowed(tmp_path: Path) -> None:
     assert not any(item.code == "verification.tool_not_documented" for item in report.issues), report.issues
 
 
+def test_configured_ruff_formatter_requires_format_check_gate(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"], ruff_formatter=True)
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n" + verification_block({"Tests": "uv run pytest", "Python lint": "uv run ruff check ."}),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "verification.format_not_documented")
+    issue = next(item for item in report.issues if item.code == "verification.format_not_documented")
+    assert issue.path == "AGENTS.md"
+    assert issue.found == "harnesskit:verification block does not mention Ruff format"
+    assert issue.expected == "add `uv run ruff format --check .` as a format gate or explicitly mark Ruff format inactive"
+    assert issue.verify_command == "uv run ruff format --check ."
+
+
+def test_configured_ruff_formatter_rejects_mutating_format_command(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"], ruff_formatter=True)
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n"
+        + verification_block(
+            {
+                "Tests": "uv run pytest",
+                "Python lint": "uv run ruff check .",
+                "Python format": "uv run ruff format .",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "verification.format_command_mutates")
+    issue = next(item for item in report.issues if item.code == "verification.format_command_mutates")
+    assert issue.found == "- Python format: uv run ruff format ."
+    assert issue.expected == "uv run ruff format --check ."
+    assert issue.verify_command == "uv run ruff format --check ."
+
+
+def test_configured_ruff_formatter_check_gate_is_allowed(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"], ruff_formatter=True)
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n"
+        + verification_block(
+            {
+                "Tests": "uv run pytest",
+                "Python lint": "uv run ruff check .",
+                "Python format": "uv run ruff format --check .",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not any(item.code.startswith("verification.format") for item in report.issues), report.issues
+
+
+def test_configured_ruff_formatter_can_be_marked_inactive(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    add_python_stack(project, dev_dependencies=["ruff>=0.15.17"], ruff_formatter=True)
+    (project / "AGENTS.md").write_text(
+        "# AGENTS\n\n"
+        + verification_block(
+            {
+                "Tests": "uv run pytest",
+                "Python lint": "uv run ruff check .",
+                "Python format": "Ruff format inactive",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = lint_project(project)
+
+    assert not any(item.code.startswith("verification.format") for item in report.issues), report.issues
+
+
 def test_main_exit_code(tmp_path: Path) -> None:
     project = make_project(tmp_path)
 
@@ -306,6 +390,7 @@ def add_python_stack(
     *,
     test_framework: str = "pytest",
     dev_dependencies: list[str] | None = None,
+    ruff_formatter: bool = False,
 ) -> None:
     dev_dependency_lines = ""
     if dev_dependencies:
@@ -315,6 +400,12 @@ def add_python_stack(
 dev = [
 {entries}
 ]
+"""
+    ruff_formatter_lines = ""
+    if ruff_formatter:
+        ruff_formatter_lines = """
+[tool.ruff.format]
+quote-style = "double"
 """
 
     (project / "pyproject.toml").write_text(
@@ -331,6 +422,7 @@ dependencies = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 {dev_dependency_lines}
+{ruff_formatter_lines}
 """,
         encoding="utf-8",
     )

@@ -56,6 +56,8 @@ TECH_STACK_END = "<!-- harnesskit:tech-stack:end -->"
 VERIFICATION_START = "<!-- harnesskit:verification:start -->"
 VERIFICATION_END = "<!-- harnesskit:verification:end -->"
 TECH_STACK_ENTRY_PATTERN = re.compile(r"^\s*[-*]\s*([^:]+):\s*(.+?)\s*$")
+RUFF_CHECK_COMMAND = "uv run ruff check ."
+RUFF_FORMAT_CHECK_COMMAND = "uv run ruff format --check ."
 
 
 @dataclass(frozen=True)
@@ -476,33 +478,102 @@ def check_declared_tool_documentation(project_path: Path, markdown_files: Iterab
                         f"{relative_path(project_path, markdown_file)} is a verification doc",
                     ],
                     suggested_fix=verification_block_suggestion(),
-                    verify_command="uv run ruff check .",
+                    verify_command=RUFF_CHECK_COMMAND,
                 )
             )
             continue
 
-        if marked_blocks_document_tool(verification_blocks, "ruff"):
-            continue
+        check_ruff_lint_documented(project_path, markdown_file, verification_blocks, issues)
+        check_ruff_format_documented(project_path, markdown_file, verification_blocks, issues)
 
-        first_block = verification_blocks[0]
+
+def check_ruff_lint_documented(
+    project_path: Path,
+    markdown_file: Path,
+    verification_blocks: list[MarkedBlock],
+    issues: list[Issue],
+) -> None:
+    if marked_blocks_document_tool(verification_blocks, "ruff"):
+        return
+
+    first_block = verification_blocks[0]
+    issues.append(
+        issue(
+            "error",
+            "verification.tool_not_documented",
+            project_path,
+            "harnesskit:verification block omits declared tool Ruff",
+            markdown_file,
+            line=first_block.start_line,
+            found="harnesskit:verification block does not mention Ruff",
+            expected="add Ruff to the verification block as an active gate or explicitly inactive",
+            evidence=[
+                "pyproject.toml declares ruff",
+                f"{relative_path(project_path, markdown_file)} verification block does not mention ruff",
+            ],
+            suggested_fix=verification_block_suggestion(),
+            verify_command=RUFF_CHECK_COMMAND,
+        )
+    )
+
+
+def check_ruff_format_documented(
+    project_path: Path,
+    markdown_file: Path,
+    verification_blocks: list[MarkedBlock],
+    issues: list[Issue],
+) -> None:
+    if not ruff_formatter_configured(project_path):
+        return
+
+    mutating_command = find_ruff_format_line(verification_blocks, require_check=False)
+    if mutating_command is not None:
+        block, found = mutating_command
         issues.append(
             issue(
                 "error",
-                "verification.tool_not_documented",
+                "verification.format_command_mutates",
                 project_path,
-                "harnesskit:verification block omits declared tool Ruff",
+                "Ruff formatter verification command must be check-only",
                 markdown_file,
-                line=first_block.start_line,
-                found="harnesskit:verification block does not mention Ruff",
-                expected="add Ruff to the verification block as an active gate or explicitly inactive",
+                line=block.start_line,
+                found=found,
+                expected=RUFF_FORMAT_CHECK_COMMAND,
                 evidence=[
-                    "pyproject.toml declares ruff",
-                    f"{relative_path(project_path, markdown_file)} verification block does not mention ruff",
+                    "pyproject.toml configures [tool.ruff.format]",
+                    f"{relative_path(project_path, markdown_file)} verification block uses a mutating Ruff format command",
                 ],
-                suggested_fix=verification_block_suggestion(),
-                verify_command="uv run ruff check .",
+                suggested_fix=f"Replace the mutating format command with `{RUFF_FORMAT_CHECK_COMMAND}`.",
+                verify_command=RUFF_FORMAT_CHECK_COMMAND,
             )
         )
+        return
+
+    if marked_blocks_document_ruff_format(verification_blocks):
+        return
+
+    first_block = verification_blocks[0]
+    issues.append(
+        issue(
+            "error",
+            "verification.format_not_documented",
+            project_path,
+            "harnesskit:verification block omits configured Ruff formatter",
+            markdown_file,
+            line=first_block.start_line,
+            found="harnesskit:verification block does not mention Ruff format",
+            expected=f"add `{RUFF_FORMAT_CHECK_COMMAND}` as a format gate or explicitly mark Ruff format inactive",
+            evidence=[
+                "pyproject.toml configures [tool.ruff.format]",
+                f"{relative_path(project_path, markdown_file)} verification block does not mention ruff format",
+            ],
+            suggested_fix=(
+                f"Add `- Python format: {RUFF_FORMAT_CHECK_COMMAND}` to the verification block, "
+                "or document `- Python format: Ruff format inactive`."
+            ),
+            verify_command=RUFF_FORMAT_CHECK_COMMAND,
+        )
+    )
 
 
 def verification_documentation_targets(project_path: Path, markdown_files: Iterable[Path]) -> list[Path]:
@@ -532,10 +603,41 @@ def marked_blocks_document_tool(blocks: Iterable[MarkedBlock], tool_name: str) -
     return any(pattern.search(block.content) for block in blocks)
 
 
+def marked_blocks_document_ruff_format(blocks: Iterable[MarkedBlock]) -> bool:
+    return find_ruff_format_line(blocks, require_check=True) is not None or any(
+        re.search(r"\bruff\b", block.content, re.IGNORECASE)
+        and re.search(r"\bformat(?:ter)?\b", block.content, re.IGNORECASE)
+        and re.search(r"\binactive\b", block.content, re.IGNORECASE)
+        for block in blocks
+    )
+
+
+def find_ruff_format_line(blocks: Iterable[MarkedBlock], *, require_check: bool) -> tuple[MarkedBlock, str] | None:
+    for block in blocks:
+        for line in block.content.splitlines():
+            if not re.search(r"\bruff\s+format\b", line, re.IGNORECASE):
+                continue
+            if re.search(r"\binactive\b", line, re.IGNORECASE):
+                continue
+            has_check = "--check" in line
+            if has_check == require_check:
+                return block, line.strip()
+    return None
+
+
+def ruff_formatter_configured(project_path: Path) -> bool:
+    pyproject_path = project_path / "pyproject.toml"
+    if not pyproject_path.is_file():
+        return False
+
+    text = pyproject_path.read_text(encoding="utf-8")
+    return bool(toml_section(text, "tool.ruff.format"))
+
+
 def verification_block_suggestion() -> str:
     return (
         f"Add a block like `{VERIFICATION_START}` with entries such as "
-        "`- Python lint: uv run ruff check .`, or `- Python lint: Ruff installed, inactive`, "
+        f"`- Python lint: {RUFF_CHECK_COMMAND}`, or `- Python lint: Ruff installed, inactive`, "
         f"then close it with `{VERIFICATION_END}`."
     )
 
