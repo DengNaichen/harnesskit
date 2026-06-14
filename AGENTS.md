@@ -11,7 +11,6 @@
 - `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.mykit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
 - `$code-change-verification`：当变更影响 `src/mykit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock` 或构建/测试行为时，在标记完成前运行。当前完整验证命令是 `uv run python -m unittest discover -s tests`。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
-- `$fill-agent-guidance`：初始化或刷新 `AGENTS.md`、移除占位符、同步 `CLAUDE.md` 指向关系，或把仓库事实整理为 agent 指南时使用。
 
 ### 可跳过完整验证的情况
 
