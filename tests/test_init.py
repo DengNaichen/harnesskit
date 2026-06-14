@@ -56,7 +56,9 @@ def test_default_integration_is_codex(tmp_path: Path) -> None:
     assert (project / ".agents/skills/harnesskit-audit/SKILL.md").is_file()
 
 
-def test_agent_guidance_outputs_do_not_leak_template_placeholders(tmp_path: Path) -> None:
+def test_agent_guidance_outputs_do_not_leak_template_placeholders(
+    tmp_path: Path,
+) -> None:
     project = (tmp_path / "demo").resolve()
 
     init_project(str(project))
@@ -109,8 +111,12 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
     }
     for relative_path, expected_count in expected_checklist_counts.items():
         text = (project / relative_path).read_text(encoding="utf-8")
-        assert text.count("<!-- harnesskit:todo-checklist:start -->") == expected_count, relative_path
-        assert text.count("<!-- harnesskit:todo-checklist:end -->") == expected_count, relative_path
+        assert (
+            text.count("<!-- harnesskit:todo-checklist:start -->") == expected_count
+        ), relative_path
+        assert text.count("<!-- harnesskit:todo-checklist:end -->") == expected_count, (
+            relative_path
+        )
 
 
 def test_agent_guidance_outputs_claude_symlink_from_dereferenced_template(
@@ -208,4 +214,6 @@ def test_install_integration_requires_initialized_project(tmp_path: Path) -> Non
 
 
 def read_config(project: Path) -> dict[str, object]:
-    return json.loads((project / ".harnesskit" / "config.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (project / ".harnesskit" / "config.json").read_text(encoding="utf-8")
+    )

@@ -172,9 +172,13 @@ def _install_integration_assets(
         raise InitError(f"templates for integration '{integration}' were not found")
 
     if source_root.is_dir():
-        integration_result = _copy_template_tree(source_root, project_path, context, force=force)
+        integration_result = _copy_template_tree(
+            source_root, project_path, context, force=force
+        )
     else:
-        integration_result = InitResult(project_path=project_path, created=[], skipped=[])
+        integration_result = InitResult(
+            project_path=project_path, created=[], skipped=[]
+        )
 
     if integration == DEFAULT_INTEGRATION:
         skill_result = _install_shared_skill_assets(project_path, context, force=force)
@@ -278,7 +282,9 @@ def _validate_integration(integration: str) -> str:
     normalized = integration.strip().lower()
     if normalized not in SUPPORTED_INTEGRATIONS:
         available = ", ".join(SUPPORTED_INTEGRATIONS)
-        raise InitError(f"unsupported integration '{integration}'. Available integrations: {available}")
+        raise InitError(
+            f"unsupported integration '{integration}'. Available integrations: {available}"
+        )
     return normalized
 
 

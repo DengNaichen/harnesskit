@@ -8,7 +8,13 @@ import typer
 from rich.console import Console
 
 from . import __version__
-from .init import DEFAULT_INTEGRATION, InitError, available_integrations, init_project, install_integration
+from .init import (
+    DEFAULT_INTEGRATION,
+    InitError,
+    available_integrations,
+    init_project,
+    install_integration,
+)
 
 
 app = typer.Typer(
@@ -31,7 +37,13 @@ def _version_callback(value: bool) -> None:
 def callback(
     version: Annotated[
         bool,
-        typer.Option("--version", "-V", callback=_version_callback, is_eager=True, help="Show version and exit."),
+        typer.Option(
+            "--version",
+            "-V",
+            callback=_version_callback,
+            is_eager=True,
+            help="Show version and exit.",
+        ),
     ] = False,
 ) -> None:
     """HarnessKit Context Harness CLI and Codex-facing toolkit."""
@@ -43,11 +55,18 @@ def init_command(
         str | None,
         typer.Argument(help="Project directory, or '.' for the current directory."),
     ] = None,
-    here: Annotated[bool, typer.Option("--here", help="Initialize the current directory.")] = False,
-    force: Annotated[bool, typer.Option("--force", help="Overwrite existing generated files.")] = False,
+    here: Annotated[
+        bool, typer.Option("--here", help="Initialize the current directory.")
+    ] = False,
+    force: Annotated[
+        bool, typer.Option("--force", help="Overwrite existing generated files.")
+    ] = False,
     integration: Annotated[
         str,
-        typer.Option("--integration", help="Agent integration to install. Currently only 'codex' is supported."),
+        typer.Option(
+            "--integration",
+            help="Agent integration to install. Currently only 'codex' is supported.",
+        ),
     ] = DEFAULT_INTEGRATION,
 ) -> None:
     """Initialize a Context Harness from bundled templates."""
@@ -66,14 +85,20 @@ def integration_list_command() -> None:
     """List supported agent integrations."""
     console.print("Available integrations:")
     for integration in available_integrations():
-        default_label = " [dim](default)[/dim]" if integration == DEFAULT_INTEGRATION else ""
+        default_label = (
+            " [dim](default)[/dim]" if integration == DEFAULT_INTEGRATION else ""
+        )
         console.print(f"  [cyan]{integration}[/cyan]{default_label}")
 
 
 @integration_app.command("install")
 def integration_install_command(
-    integration: Annotated[str, typer.Argument(help="Integration key to install. Currently only 'codex'.")],
-    force: Annotated[bool, typer.Option("--force", help="Overwrite existing integration files.")] = False,
+    integration: Annotated[
+        str, typer.Argument(help="Integration key to install. Currently only 'codex'.")
+    ],
+    force: Annotated[
+        bool, typer.Option("--force", help="Overwrite existing integration files.")
+    ] = False,
 ) -> None:
     """Install an agent integration into the current harnesskit project."""
     try:
@@ -82,7 +107,9 @@ def integration_install_command(
         console.print(f"[red]error:[/red] {exc}")
         raise typer.Exit(1) from exc
 
-    console.print(f"Installed [cyan]{integration}[/cyan] integration in [green]{result.project_path}[/green]")
+    console.print(
+        f"Installed [cyan]{integration}[/cyan] integration in [green]{result.project_path}[/green]"
+    )
     _print_result_files(result)
 
 

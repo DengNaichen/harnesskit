@@ -58,6 +58,7 @@ VERIFICATION_END = "<!-- harnesskit:verification:end -->"
 TECH_STACK_ENTRY_PATTERN = re.compile(r"^\s*[-*]\s*([^:]+):\s*(.+?)\s*$")
 RUFF_CHECK_COMMAND = "uv run ruff check ."
 RUFF_FORMAT_CHECK_COMMAND = "uv run ruff format --check ."
+PACKAGE_BUILD_COMMAND = "uv build"
 
 
 @dataclass(frozen=True)
@@ -103,7 +104,15 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
     issues: list[Issue] = []
 
     if not project_path.is_dir():
-        issues.append(issue("error", "project.not_directory", project_path, "project path is not a directory", project_path))
+        issues.append(
+            issue(
+                "error",
+                "project.not_directory",
+                project_path,
+                "project path is not a directory",
+                project_path,
+            )
+        )
         return Report(str(project_path), issues)
 
     config = check_config(project_path, issues)
@@ -118,6 +127,7 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
     check_tech_stack_blocks(project_path, markdown_files, issues)
     check_verification_drift(project_path, markdown_files, issues)
     check_declared_tool_documentation(project_path, markdown_files, issues)
+    check_package_build_documentation(project_path, markdown_files, issues)
 
     if external_markdownlint:
         run_external_markdownlint(project_path, markdown_files, issues)
@@ -128,17 +138,41 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
 def check_config(project_path: Path, issues: list[Issue]) -> dict[str, object] | None:
     config_path = project_path / ".harnesskit" / "config.json"
     if not config_path.is_file():
-        issues.append(issue("error", "config.missing", project_path, "missing .harnesskit/config.json", config_path))
+        issues.append(
+            issue(
+                "error",
+                "config.missing",
+                project_path,
+                "missing .harnesskit/config.json",
+                config_path,
+            )
+        )
         return None
 
     try:
         config = json.loads(config_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        issues.append(issue("error", "config.invalid_json", project_path, f"invalid JSON: {exc}", config_path))
+        issues.append(
+            issue(
+                "error",
+                "config.invalid_json",
+                project_path,
+                f"invalid JSON: {exc}",
+                config_path,
+            )
+        )
         return None
 
     if not isinstance(config, dict):
-        issues.append(issue("error", "config.not_object", project_path, "config must be a JSON object", config_path))
+        issues.append(
+            issue(
+                "error",
+                "config.not_object",
+                project_path,
+                "config must be a JSON object",
+                config_path,
+            )
+        )
         return None
 
     if config.get("schema_version") != CONFIG_SCHEMA_VERSION:
@@ -165,7 +199,9 @@ def check_config(project_path: Path, issues: list[Issue]) -> dict[str, object] |
         )
 
     installed = config.get("installed_integrations")
-    if not isinstance(installed, list) or not all(isinstance(item, str) for item in installed):
+    if not isinstance(installed, list) or not all(
+        isinstance(item, str) for item in installed
+    ):
         issues.append(
             issue(
                 "error",
@@ -196,9 +232,25 @@ def check_core_files(project_path: Path, issues: list[Issue]) -> None:
     for relative_path in ("AGENTS.md", "CLAUDE.md"):
         path = project_path / relative_path
         if not path.exists():
-            issues.append(issue("error", "core.missing", project_path, "required harness file is missing", path))
+            issues.append(
+                issue(
+                    "error",
+                    "core.missing",
+                    project_path,
+                    "required harness file is missing",
+                    path,
+                )
+            )
         elif path.is_file() and path.stat().st_size == 0:
-            issues.append(issue("error", "core.empty", project_path, "required harness file is empty", path))
+            issues.append(
+                issue(
+                    "error",
+                    "core.empty",
+                    project_path,
+                    "required harness file is empty",
+                    path,
+                )
+            )
 
 
 def check_claude_pointer(project_path: Path, issues: list[Issue]) -> None:
@@ -220,10 +272,20 @@ def check_claude_pointer(project_path: Path, issues: list[Issue]) -> None:
                     )
                 )
         except FileNotFoundError:
-            issues.append(issue("error", "claude.broken_symlink", project_path, "CLAUDE.md symlink target is missing", claude_path))
+            issues.append(
+                issue(
+                    "error",
+                    "claude.broken_symlink",
+                    project_path,
+                    "CLAUDE.md symlink target is missing",
+                    claude_path,
+                )
+            )
         return
 
-    if claude_path.is_file() and "AGENTS.md" not in claude_path.read_text(encoding="utf-8"):
+    if claude_path.is_file() and "AGENTS.md" not in claude_path.read_text(
+        encoding="utf-8"
+    ):
         issues.append(
             issue(
                 "warning",
@@ -235,7 +297,9 @@ def check_claude_pointer(project_path: Path, issues: list[Issue]) -> None:
         )
 
 
-def check_installed_integrations(project_path: Path, config: dict[str, object] | None, issues: list[Issue]) -> None:
+def check_installed_integrations(
+    project_path: Path, config: dict[str, object] | None, issues: list[Issue]
+) -> None:
     installed = config.get("installed_integrations", []) if config else []
     if not isinstance(installed, list):
         return
@@ -244,9 +308,25 @@ def check_installed_integrations(project_path: Path, config: dict[str, object] |
         for relative_path in CODEX_SKILLS:
             path = project_path / relative_path
             if not path.is_file():
-                issues.append(issue("error", "codex.skill.missing", project_path, "required Codex skill is missing", path))
+                issues.append(
+                    issue(
+                        "error",
+                        "codex.skill.missing",
+                        project_path,
+                        "required Codex skill is missing",
+                        path,
+                    )
+                )
             elif path.stat().st_size == 0:
-                issues.append(issue("error", "codex.skill.empty", project_path, "required Codex skill is empty", path))
+                issues.append(
+                    issue(
+                        "error",
+                        "codex.skill.empty",
+                        project_path,
+                        "required Codex skill is empty",
+                        path,
+                    )
+                )
 
 
 def check_skill_frontmatter(project_path: Path, issues: list[Issue]) -> None:
@@ -254,7 +334,15 @@ def check_skill_frontmatter(project_path: Path, issues: list[Issue]) -> None:
         text = skill_path.read_text(encoding="utf-8")
         frontmatter = parse_frontmatter(text)
         if frontmatter is None:
-            issues.append(issue("error", "skill.frontmatter.missing", project_path, "SKILL.md must start with frontmatter", skill_path))
+            issues.append(
+                issue(
+                    "error",
+                    "skill.frontmatter.missing",
+                    project_path,
+                    "SKILL.md must start with frontmatter",
+                    skill_path,
+                )
+            )
             continue
 
         for required_key in ("name", "description"):
@@ -316,7 +404,9 @@ def collect_harness_markdown(project_path: Path) -> list[Path]:
     return sorted(files_by_real_path.values())
 
 
-def check_markdown_links(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+def check_markdown_links(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
     for markdown_file in markdown_files:
         text = markdown_file.read_text(encoding="utf-8")
         for match in MARKDOWN_LINK_PATTERN.finditer(text):
@@ -341,7 +431,9 @@ def check_markdown_links(project_path: Path, markdown_files: Iterable[Path], iss
                 )
 
 
-def check_todo_checklist_markers(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+def check_todo_checklist_markers(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
     for markdown_file in markdown_files:
         open_count = 0
         for line in markdown_file.read_text(encoding="utf-8").splitlines():
@@ -373,7 +465,9 @@ def check_todo_checklist_markers(project_path: Path, markdown_files: Iterable[Pa
             )
 
 
-def check_tech_stack_blocks(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+def check_tech_stack_blocks(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
     facts = detect_tech_stack_facts(project_path)
     for markdown_file in markdown_files:
         text = markdown_file.read_text(encoding="utf-8")
@@ -402,7 +496,9 @@ def check_tech_stack_blocks(project_path: Path, markdown_files: Iterable[Path], 
                     )
 
 
-def check_verification_drift(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+def check_verification_drift(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
     facts = detect_tech_stack_facts(project_path)
     tests = facts.get("tests")
     if tests != "pytest":
@@ -413,7 +509,9 @@ def check_verification_drift(project_path: Path, markdown_files: Iterable[Path],
         r"\bunittest\s+discover\b",
         r"`unittest`",
     )
-    stale_references = [re.compile(pattern, re.IGNORECASE) for pattern in stale_patterns]
+    stale_references = [
+        re.compile(pattern, re.IGNORECASE) for pattern in stale_patterns
+    ]
     for markdown_file in markdown_files:
         text = markdown_file.read_text(encoding="utf-8")
         match = find_first_line_match(text, stale_references)
@@ -439,12 +537,16 @@ def check_verification_drift(project_path: Path, markdown_files: Iterable[Path],
             )
 
 
-def check_declared_tool_documentation(project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]) -> None:
+def check_declared_tool_documentation(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
     declared_tools = declared_python_tools(project_path)
     if "ruff" not in declared_tools:
         return
 
-    documentation_targets = verification_documentation_targets(project_path, markdown_files)
+    documentation_targets = verification_documentation_targets(
+        project_path, markdown_files
+    )
     for markdown_file in documentation_targets:
         text = markdown_file.read_text(encoding="utf-8")
         verification_blocks = extract_marked_blocks_with_lines(
@@ -462,7 +564,11 @@ def check_declared_tool_documentation(project_path: Path, markdown_files: Iterab
 
             line_match = find_verification_context_line(text)
             line_number = line_match[0] if line_match else None
-            found = line_match[1] if line_match else f"{relative_path(project_path, markdown_file)} has no verification block"
+            found = (
+                line_match[1]
+                if line_match
+                else f"{relative_path(project_path, markdown_file)} has no verification block"
+            )
             issues.append(
                 issue(
                     "error",
@@ -483,8 +589,12 @@ def check_declared_tool_documentation(project_path: Path, markdown_files: Iterab
             )
             continue
 
-        check_ruff_lint_documented(project_path, markdown_file, verification_blocks, issues)
-        check_ruff_format_documented(project_path, markdown_file, verification_blocks, issues)
+        check_ruff_lint_documented(
+            project_path, markdown_file, verification_blocks, issues
+        )
+        check_ruff_format_documented(
+            project_path, markdown_file, verification_blocks, issues
+        )
 
 
 def check_ruff_lint_documented(
@@ -576,8 +686,87 @@ def check_ruff_format_documented(
     )
 
 
-def verification_documentation_targets(project_path: Path, markdown_files: Iterable[Path]) -> list[Path]:
-    markdown_by_relative_path = {relative_path(project_path, path): path for path in markdown_files}
+def check_package_build_documentation(
+    project_path: Path, markdown_files: Iterable[Path], issues: list[Issue]
+) -> None:
+    if not package_build_configured(project_path):
+        return
+
+    documentation_targets = verification_documentation_targets(
+        project_path, markdown_files
+    )
+    for markdown_file in documentation_targets:
+        text = markdown_file.read_text(encoding="utf-8")
+        verification_blocks = extract_marked_blocks_with_lines(
+            project_path,
+            markdown_file,
+            text,
+            VERIFICATION_START,
+            VERIFICATION_END,
+            "markdown.verification.unpaired",
+            issues,
+        )
+        if not verification_blocks:
+            if VERIFICATION_START in text or VERIFICATION_END in text:
+                continue
+
+            line_match = find_verification_context_line(text)
+            line_number = line_match[0] if line_match else None
+            found = (
+                line_match[1]
+                if line_match
+                else f"{relative_path(project_path, markdown_file)} has no verification block"
+            )
+            issues.append(
+                issue(
+                    "error",
+                    "verification.block_missing",
+                    project_path,
+                    "verification documentation must use a harnesskit:verification block",
+                    markdown_file,
+                    line=line_number,
+                    found=found,
+                    expected=f"add {VERIFICATION_START} / {VERIFICATION_END} with package build verification",
+                    evidence=[
+                        "pyproject.toml configures [build-system]",
+                        f"{relative_path(project_path, markdown_file)} is a verification doc",
+                    ],
+                    suggested_fix=package_build_suggestion(),
+                    verify_command=PACKAGE_BUILD_COMMAND,
+                )
+            )
+            continue
+
+        if marked_blocks_document_package_build(verification_blocks):
+            continue
+
+        first_block = verification_blocks[0]
+        issues.append(
+            issue(
+                "error",
+                "verification.build_not_documented",
+                project_path,
+                "harnesskit:verification block omits configured package build",
+                markdown_file,
+                line=first_block.start_line,
+                found="harnesskit:verification block does not mention package build",
+                expected=f"add `{PACKAGE_BUILD_COMMAND}` as a package build gate or explicitly mark package build inactive",
+                evidence=[
+                    "pyproject.toml configures [build-system]",
+                    f"{relative_path(project_path, markdown_file)} verification block does not mention package build",
+                ],
+                suggested_fix=package_build_suggestion(),
+                verify_command=PACKAGE_BUILD_COMMAND,
+            )
+        )
+
+
+def verification_documentation_targets(
+    project_path: Path, markdown_files: Iterable[Path]
+) -> list[Path]:
+    markdown_by_relative_path = {
+        relative_path(project_path, path): path for path in markdown_files
+    }
     targets = [
         markdown_by_relative_path[relative]
         for relative in VERIFICATION_DOC_PATHS
@@ -589,12 +778,18 @@ def verification_documentation_targets(project_path: Path, markdown_files: Itera
 
 
 def find_verification_context_line(text: str) -> tuple[int, str] | None:
-    command_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in VERIFICATION_COMMAND_CONTEXT_PATTERNS]
+    command_patterns = [
+        re.compile(pattern, re.IGNORECASE)
+        for pattern in VERIFICATION_COMMAND_CONTEXT_PATTERNS
+    ]
     command_match = find_first_line_match(text, command_patterns)
     if command_match is not None:
         return command_match
 
-    text_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in VERIFICATION_TEXT_CONTEXT_PATTERNS]
+    text_patterns = [
+        re.compile(pattern, re.IGNORECASE)
+        for pattern in VERIFICATION_TEXT_CONTEXT_PATTERNS
+    ]
     return find_first_line_match(text, text_patterns)
 
 
@@ -612,7 +807,9 @@ def marked_blocks_document_ruff_format(blocks: Iterable[MarkedBlock]) -> bool:
     )
 
 
-def find_ruff_format_line(blocks: Iterable[MarkedBlock], *, require_check: bool) -> tuple[MarkedBlock, str] | None:
+def find_ruff_format_line(
+    blocks: Iterable[MarkedBlock], *, require_check: bool
+) -> tuple[MarkedBlock, str] | None:
     for block in blocks:
         for line in block.content.splitlines():
             if not re.search(r"\bruff\s+format\b", line, re.IGNORECASE):
@@ -625,6 +822,17 @@ def find_ruff_format_line(blocks: Iterable[MarkedBlock], *, require_check: bool)
     return None
 
 
+def marked_blocks_document_package_build(blocks: Iterable[MarkedBlock]) -> bool:
+    return any(
+        re.search(r"\buv\s+build\b", block.content, re.IGNORECASE)
+        or (
+            re.search(r"\bpackage\s+build\b", block.content, re.IGNORECASE)
+            and re.search(r"\binactive\b", block.content, re.IGNORECASE)
+        )
+        for block in blocks
+    )
+
+
 def ruff_formatter_configured(project_path: Path) -> bool:
     pyproject_path = project_path / "pyproject.toml"
     if not pyproject_path.is_file():
@@ -632,6 +840,17 @@ def ruff_formatter_configured(project_path: Path) -> bool:
 
     text = pyproject_path.read_text(encoding="utf-8")
     return bool(toml_section(text, "tool.ruff.format"))
+
+
+def package_build_configured(project_path: Path) -> bool:
+    pyproject_path = project_path / "pyproject.toml"
+    if not pyproject_path.is_file():
+        return False
+
+    text = pyproject_path.read_text(encoding="utf-8")
+    return bool(toml_section(text, "project")) and bool(
+        toml_section(text, "build-system")
+    )
 
 
 def verification_block_suggestion() -> str:
@@ -642,7 +861,16 @@ def verification_block_suggestion() -> str:
     )
 
 
-def find_first_line_match(text: str, patterns: Iterable[re.Pattern[str]]) -> tuple[int, str] | None:
+def package_build_suggestion() -> str:
+    return (
+        f"Add `- Package build: {PACKAGE_BUILD_COMMAND}` to the verification block, "
+        "or document `- Package build: inactive`."
+    )
+
+
+def find_first_line_match(
+    text: str, patterns: Iterable[re.Pattern[str]]
+) -> tuple[int, str] | None:
     for line_number, line in enumerate(text.splitlines(), start=1):
         for pattern in patterns:
             match = pattern.search(line)
@@ -681,7 +909,10 @@ def detect_tech_stack_facts(project_path: Path) -> dict[str, str]:
         text = pyproject_path.read_text(encoding="utf-8")
         project_section = toml_section(text, "project")
         build_section = toml_section(text, "build-system")
-        dependencies = {dependency_name(item) for item in toml_array_strings(project_section, "dependencies")}
+        dependencies = {
+            dependency_name(item)
+            for item in toml_array_strings(project_section, "dependencies")
+        }
 
         if project_section:
             facts["language"] = "Python"
@@ -691,7 +922,10 @@ def detect_tech_stack_facts(project_path: Path) -> dict[str, str]:
             facts["terminal output"] = "Rich"
         if "jinja2" in dependencies:
             facts["templates"] = "Jinja2"
-        if "hatchling" in {dependency_name(item) for item in toml_array_strings(build_section, "requires")}:
+        if "hatchling" in {
+            dependency_name(item)
+            for item in toml_array_strings(build_section, "requires")
+        }:
             facts["build backend"] = "Hatchling"
         elif "hatchling" in toml_string(build_section, "build-backend").lower():
             facts["build backend"] = "Hatchling"
@@ -732,7 +966,9 @@ def detect_python_test_framework(project_path: Path) -> str | None:
         if re.search(r"(?m)^\s*(import unittest|from unittest\b)", text):
             return "unittest"
 
-    if (project_path / "pytest.ini").is_file() or (project_path / "conftest.py").is_file():
+    if (project_path / "pytest.ini").is_file() or (
+        project_path / "conftest.py"
+    ).is_file():
         return "pytest"
     for test_file in test_files:
         text = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -780,16 +1016,37 @@ def extract_marked_blocks_with_lines(
     for line_number, line in enumerate(text.splitlines(), start=1):
         if start_marker in line:
             if current is not None:
-                issues.append(issue("error", issue_code, project_path, "nested marker block is not allowed", markdown_file))
+                issues.append(
+                    issue(
+                        "error",
+                        issue_code,
+                        project_path,
+                        "nested marker block is not allowed",
+                        markdown_file,
+                    )
+                )
                 return blocks
             current = []
             current_start_line = line_number
             continue
         if end_marker in line:
             if current is None:
-                issues.append(issue("error", issue_code, project_path, "end marker appears before a start marker", markdown_file))
+                issues.append(
+                    issue(
+                        "error",
+                        issue_code,
+                        project_path,
+                        "end marker appears before a start marker",
+                        markdown_file,
+                    )
+                )
                 return blocks
-            blocks.append(MarkedBlock(start_line=current_start_line or line_number, content="\n".join(current)))
+            blocks.append(
+                MarkedBlock(
+                    start_line=current_start_line or line_number,
+                    content="\n".join(current),
+                )
+            )
             current = None
             current_start_line = None
             continue
@@ -797,7 +1054,15 @@ def extract_marked_blocks_with_lines(
             current.append(line)
 
     if current is not None:
-        issues.append(issue("error", issue_code, project_path, "start marker is missing a matching end marker", markdown_file))
+        issues.append(
+            issue(
+                "error",
+                issue_code,
+                project_path,
+                "start marker is missing a matching end marker",
+                markdown_file,
+            )
+        )
 
     return blocks
 
@@ -863,7 +1128,9 @@ def normalize_markdown_link(raw_target: str) -> Path | None:
     return Path(unquote(target_without_fragment))
 
 
-def run_external_markdownlint(project_path: Path, markdown_files: list[Path], issues: list[Issue]) -> None:
+def run_external_markdownlint(
+    project_path: Path, markdown_files: list[Path], issues: list[Issue]
+) -> None:
     if not markdown_files:
         return
 
@@ -890,7 +1157,9 @@ def run_external_markdownlint(project_path: Path, markdown_files: list[Path], is
     )
     if result.returncode != 0:
         output = result.stdout.strip() or "markdownlint failed"
-        issues.append(issue("error", "external.markdownlint", project_path, output, project_path))
+        issues.append(
+            issue("error", "external.markdownlint", project_path, output, project_path)
+        )
 
 
 def find_markdownlint() -> list[str] | None:
@@ -974,9 +1243,15 @@ def print_json_report(report: Report) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Standalone Context Harness linter POC.")
-    parser.add_argument("project", nargs="?", default=".", help="Project directory to lint.")
-    parser.add_argument("--json", action="store_true", help="Print a machine-readable JSON report.")
+    parser = argparse.ArgumentParser(
+        description="Standalone Context Harness linter POC."
+    )
+    parser.add_argument(
+        "project", nargs="?", default=".", help="Project directory to lint."
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Print a machine-readable JSON report."
+    )
     parser.add_argument(
         "--external-markdownlint",
         action="store_true",
@@ -989,7 +1264,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    report = lint_project(Path(args.project), external_markdownlint=args.external_markdownlint)
+    report = lint_project(
+        Path(args.project), external_markdownlint=args.external_markdownlint
+    )
     if args.json:
         print_json_report(report)
     else:
