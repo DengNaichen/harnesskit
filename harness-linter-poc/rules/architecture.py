@@ -16,6 +16,7 @@ from core.models import Issue
 
 
 PLACEHOLDER_TOKEN = "placeholder"
+COVERAGE_HINT_TOKEN = "harnesskit:coverage"
 COVERAGE_HINT_PATTERN = re.compile(
     r"<!--\s*harnesskit:coverage=(?P<coverage>[a-z-]+)(?P<attrs>.*?)-->"
 )
@@ -37,6 +38,7 @@ def check_architecture_map(project_path: Path, issues: list[Issue]) -> None:
 
     text = architecture_path.read_text(encoding="utf-8")
     check_architecture_placeholders(project_path, architecture_path, text, issues)
+    check_coverage_hint_syntax(project_path, architecture_path, text, issues)
     architecture_links = collect_architecture_links(
         project_path, architecture_path, text
     )
@@ -151,6 +153,35 @@ def check_architecture_placeholders(
                 suggested_fix=(
                     "Replace the placeholder with a concise description of what this "
                     "path owns or why it exists."
+                ),
+            )
+        )
+
+
+def check_coverage_hint_syntax(
+    project_path: Path, architecture_path: Path, text: str, issues: list[Issue]
+) -> None:
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if COVERAGE_HINT_TOKEN not in line:
+            continue
+        if COVERAGE_HINT_PATTERN.search(line):
+            continue
+        issues.append(
+            issue(
+                "error",
+                "architecture.coverage_hint_invalid",
+                project_path,
+                "architecture coverage hint is malformed",
+                architecture_path,
+                line=line_number,
+                found=line.strip(),
+                expected=(
+                    "<!-- harnesskit:coverage=direct-children --> or "
+                    "<!-- harnesskit:coverage=direct-children ignore=path -->"
+                ),
+                suggested_fix=(
+                    "Use a complete HTML comment coverage hint on the same line "
+                    "as the Markdown link."
                 ),
             )
         )

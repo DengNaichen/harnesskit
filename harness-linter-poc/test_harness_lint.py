@@ -152,6 +152,33 @@ def test_architecture_map_paths_must_exist(tmp_path: Path) -> None:
     assert_issue(report, "architecture.path_missing")
 
 
+def test_architecture_coverage_hint_must_be_well_formed(tmp_path: Path) -> None:
+    project = make_project(tmp_path)
+    source_dir = project / "src/demo"
+    source_dir.mkdir(parents=True)
+    write_architecture_doc(
+        project,
+        """
+        - [`src/demo/`](src/demo/) !-- harnesskit:coverage=direct-children -->
+        """,
+    )
+
+    report = lint_project(project)
+
+    assert not report.passed
+    assert_issue(report, "architecture.coverage_hint_invalid")
+    issue = next(
+        item
+        for item in report.issues
+        if item.code == "architecture.coverage_hint_invalid"
+    )
+    assert issue.path == "ARCHITECTURE.md"
+    assert issue.found == (
+        "- [`src/demo/`](src/demo/) !-- harnesskit:coverage=direct-children -->"
+    )
+    assert issue.expected
+
+
 def test_architecture_placeholder_descriptions_warn(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     write_architecture_doc(
