@@ -12,23 +12,24 @@ Use this skill before editing code when the task changes runtime behavior or any
 ## Quick start
 
 1. Identify the surface you are changing: released public API, unreleased branch-local API, internal helper, persisted schema, wire protocol, CLI/config/env surface, or docs/examples only.
-2. Determine the latest release boundary:
+2. Determine the latest release boundary. If repository guidance names a release tag pattern, use that; otherwise use the latest reachable tag:
    ```bash
-   BASE_TAG="$(git tag -l 'v*' --sort=-v:refname | head -n1)"
+   BASE_TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
    echo "$BASE_TAG"
    ```
-3. Judge breaking-change risk against that latest release tag, not against unreleased branch churn or post-tag changes already on `main`.
-4. Prefer the simplest implementation that satisfies the current task. Update callers, tests, docs, and examples directly instead of preserving superseded unreleased interfaces.
-5. Add a compatibility layer only when there is a concrete released consumer, an otherwise supported durable external state boundary that requires it, or when the user explicitly asks for a migration path.
+3. If no release tag exists, say so and judge compatibility against documented public contracts and durable external state only.
+4. Judge breaking-change risk against the latest release tag or documented compatibility policy, not against unreleased branch churn or post-tag changes already on the default branch.
+5. Prefer the simplest implementation that satisfies the current task. Update callers, tests, docs, and examples directly instead of preserving superseded unreleased interfaces.
+6. Add a compatibility layer only when there is a concrete released consumer, an otherwise supported durable external state boundary that requires it, or when the user explicitly asks for a migration path.
 
 ## Compatibility boundary rules
 
 - Released public API or documented external behavior: preserve compatibility or provide an explicit migration path.
 - Persisted schema, serialized state, wire protocol, CLI flags, environment variables, and externally consumed config: treat as compatibility-sensitive when they are part of the latest release or when the repo explicitly intends to preserve them across commits, processes, or machines.
 - Interface changes introduced only on the current branch: not a compatibility target. Rewrite them directly.
-- Interface changes present on `main` but added after the latest release tag: not a semver breaking change by themselves. Rewrite them directly unless they already define a released or explicitly supported durable external state boundary.
+- Interface changes present on the default branch but added after the latest release tag: not a breaking change by themselves. Rewrite them directly unless they already define a released or explicitly supported durable external state boundary.
 - Internal helpers, private types, same-branch tests, fixtures, and examples: update them directly instead of adding adapters.
-- Unreleased persisted schema versions on `main` may be renumbered or squashed before release when intermediate snapshots are intentionally unsupported.
+- Unreleased persisted schema versions on the default branch may be renumbered or squashed before release when intermediate snapshots are intentionally unsupported.
 
 ## Default implementation stance
 
@@ -39,15 +40,11 @@ Use this skill before editing code when the task changes runtime behavior or any
 
 ## Project-specific compatibility rules
 
-<!--
-  【可选】在此补充项目特有的兼容性规则。
-  例如：
-  - 公开 dataclass 的字段顺序是兼容性契约，新字段只能追加到末尾
-  - 持久化状态（如 {{SCHEMA_FILE}} 中的 schema）变更时需更新版本号
-  - 配置文件格式变更需要提供迁移脚本
--->
+Fill this section in the target repository after inspecting real project contracts. Until it is filled, do not infer project policy from examples.
 
-{{PROJECT_SPECIFIC_COMPATIBILITY_RULES}}
+- TODO: Document released public APIs, CLI/config/env surfaces, persisted schemas, wire protocols, generated outputs, or package boundaries that must remain compatible.
+- TODO: Document the release tag pattern or release branch policy if it differs from `git describe --tags --abbrev=0`.
+- TODO: Document migration, deprecation, or schema-version rules required by this repository.
 
 ## When to stop and confirm
 

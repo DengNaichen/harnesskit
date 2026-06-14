@@ -7,7 +7,7 @@ description: Run the mandatory verification stack when changes affect runtime co
 
 ## Overview
 
-Ensure work is only marked complete after the repository's own verification checks have run. Use this skill when changes affect runtime code, tests, generated outputs, templates, or build/test configuration. You can skip it for docs-only or repository metadata unless a user asks for the full stack.
+Ensure work is only marked complete after the repository's own verification checks have run. Use this skill when changes affect runtime code, tests, user-facing generated outputs, templates, or build/test configuration. You can skip it for docs-only or repository metadata unless a user asks for the full stack.
 
 ## Repository verification stack
 

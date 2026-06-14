@@ -18,22 +18,28 @@ Produce the PR-ready summary required in this repository after substantive code 
 - Working tree: `git status -sb`.
 - Untracked files: `git ls-files --others --exclude-standard`.
 - Changed files: `git diff --name-only` (unstaged) and `git diff --name-only --cached` (staged); sizes via `git diff --stat` and `git diff --stat --cached`.
-- Latest release tag: `LATEST_RELEASE_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)`.
-- Base reference (use the branch's upstream, fallback to `origin/main`):
-  - `BASE_REF=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || echo origin/main)`.
-  - `BASE_COMMIT=$(git merge-base --fork-point "$BASE_REF" HEAD || git merge-base "$BASE_REF" HEAD || echo "$BASE_REF")`.
-- Commits ahead of the base fork point: `git log --oneline --no-merges ${BASE_COMMIT}..HEAD`.
-- Category signals for this repo:
-{{CATEGORY_SIGNALS}}
+- Latest release tag, when available: `LATEST_RELEASE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)`.
+- Base reference:
+  - Prefer the branch upstream: `BASE_REF=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || true)`.
+  - If there is no upstream, try the remote default branch: `BASE_REF=${BASE_REF:-$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)}`.
+  - If a base reference exists, compute the base commit: `BASE_COMMIT=$(git merge-base --fork-point "$BASE_REF" HEAD 2>/dev/null || git merge-base "$BASE_REF" HEAD 2>/dev/null || true)`.
+- Commits ahead of the base fork point, when available: `test -n "$BASE_COMMIT" && git log --oneline --no-merges ${BASE_COMMIT}..HEAD`.
+- Category signals for a typical repository; adjust from local evidence instead of assuming every path exists:
+  - Runtime or product behavior: `src/**`, `app/**`, `lib/**`, `packages/**`, `cmd/**`, `internal/**`, `server/**`, `client/**`.
+  - Tests: `test/**`, `tests/**`, `spec/**`, `__tests__/**`.
+  - User-facing examples, fixtures, templates, or generated assets: `examples/**`, `fixtures/**`, `templates/**`.
+  - Build, packaging, dependency, or CI configuration: package/build manifests, lockfiles, workflow files, Dockerfiles, Makefiles, and tool config files.
+  - Documentation with behavior impact: `README*`, `CHANGELOG*`, `docs/**`, migration guides, API docs.
+  - Agent or repository policy metadata: `AGENTS.md`, `.agents/**`, other local agent guidance files.
 
 ## Workflow
-1) Run the commands above without asking the user; compute `BASE_REF`/`BASE_COMMIT` first so later commands reuse them.
-2) If there are no staged/unstaged/untracked changes and no commits ahead of `${BASE_COMMIT}`, reply briefly that no code changes were detected and skip emitting the PR block.
-3) Infer change type from the touched paths listed under "Category signals"; classify as feature, fix, refactor, or docs-with-impact, and flag backward-compatibility risk only when the diff changes released public APIs, external config, persisted data, serialized state, or wire protocols. Judge that risk against `LATEST_RELEASE_TAG`, not unreleased branch-only churn.
+1) Run the commands above without asking the user. If `BASE_REF`, `BASE_COMMIT`, or `LATEST_RELEASE_TAG` cannot be discovered, keep going and state the uncertainty only when it affects the PR summary.
+2) If there are no staged/unstaged/untracked changes and either no `BASE_COMMIT` or no commits ahead of `${BASE_COMMIT}`, reply briefly that no code changes were detected and skip emitting the PR block.
+3) Infer change type from touched paths and diff content; classify as feature, fix, refactor, or docs-with-impact. Flag backward-compatibility risk only when the diff changes released public APIs, external config, persisted data, serialized state, or wire protocols. Judge that risk against `LATEST_RELEASE_TAG` when available, or against documented compatibility policy when no tag exists.
 4) Summarize changes in 1–3 short sentences using the key paths (top 5) and `git diff --stat` output; explicitly call out untracked files because `--stat` does not include them. If the working tree is clean but there are commits ahead of `${BASE_COMMIT}`, summarize using those commit messages.
 5) Choose the lead verb for the description: feature → `adds`, bug fix → `fixes`, refactor/perf → `improves` or `updates`, docs-only → `updates`.
-6) Suggest a branch name. If already off main, keep it; otherwise propose `feat/<slug>`, `fix/<slug>`, or `docs/<slug>` based on the primary area.
-7) If the current branch matches `issue-<number>` (digits only), keep that branch suggestion. When an issue number is present, reference `{{GITHUB_REPO_URL}}/issues/<number>` and include an auto-closing line such as `This pull request resolves #<number>.`
+6) Suggest a branch name. If already off the default branch, keep it; otherwise propose `feat/<slug>`, `fix/<slug>`, or `docs/<slug>` based on the primary area. If the default branch cannot be discovered, avoid pretending it is known.
+7) If the current branch matches `issue-<number>` (digits only), keep that branch suggestion. Include an auto-closing line such as `This pull request resolves #<number>.` only when the repository hosting platform is known to support that syntax; otherwise mention the issue reference without claiming auto-close behavior.
 8) Draft the PR title and description using the template below.
 9) Output only the block in "Output Format".
 
