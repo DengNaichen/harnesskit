@@ -22,7 +22,7 @@
 
 `RULES.md` 是本仓库已确认或待确认的工程规则清单和约束索引。`AGENTS.md` 只负责把 agent 路由到 `RULES.md`；不要在本文件里为每条 Rule 重复建立触发条件或决策树。
 
-开始任务前先查看 `RULES.md`；执行时遵守其中适用的约束；交付前按 `RULES.md` details 和相关 skill 运行已绑定 Guard。
+开始任务前先查看 `RULES.md`；执行时遵守其中适用的约束；交付前按 `RULES.md` details 和相关 skill 运行已绑定 validation。
 
 如果 `AGENTS.md`、skills、验证入口或项目命令与 `RULES.md` 不一致，不要静默选择一边；先用仓库事实核对，再同步修复漂移的 context 文件。
 
@@ -38,7 +38,7 @@ HarnessKit 是 Context Harness CLI 和 Codex-facing toolkit。以下面向外部
 
 ### 当前实现边界
 
-HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及保护 harness 资产不腐坏的 linter/Guard 原型。修改前先分清边界：
+HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及保护 harness 资产不腐坏的 linter/Validation 原型。修改前先分清边界：
 
 - `src/harnesskit/` 是打包发布的 CLI/runtime；这里的改动按产品行为处理，会影响 `harnesskit init`、integration 命令和 `.harnesskit/config.json` 写入。
 - `templates/` 是写入目标仓库的 harness 输出；这里的改动按用户可见模板行为处理，并同步 `tests/test_init.py`。
@@ -50,7 +50,7 @@ HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及
 HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端信息，Jinja2 渲染模板，Hatchling 构建包。使用 `uv` 管理和运行本仓库命令。
 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md)：完整仓库地图，查目录职责、关键文件和边界时先读它。
-- [`RULES.md`](RULES.md)：工程规则、Guard 绑定和项目命令事实来源。
+- [`RULES.md`](RULES.md)：工程规则、validation 绑定和项目命令事实来源。
 - [`.agents/skills/`](.agents/skills/)：本仓库的 Codex 本地技能；触发后再读对应 `SKILL.md`。
 - [`README.md`](README.md) 和 [`docs/`](docs/)：产品定位、设计背景、路线图和研究材料。
 - [`CLAUDE.md`](CLAUDE.md)：应保持为指向 [`AGENTS.md`](AGENTS.md) 的符号链接。
@@ -71,9 +71,9 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 
 ### 测试与自动化检查
 
-#### Guard 与 Runner 绑定
+#### Validation 与 Runner 绑定
 
-维护 `RULES.md` 或验证说明时，区分 **Rule**、**Guard** 和 **Runner**：Rule 是要遵守的规则，Guard 是可执行检查，Runner 是实际运行这个检查的位置。不要只因为写了一个 Guard 命令就声称它能拦住问题；必须写清楚它绑定到了哪个 runner，以及证据来自哪里。
+维护 `RULES.md` 或验证说明时，区分 **Rule**、**Validation** 和 **Runner**：Rule 是要遵守的规则，Validation 是可执行检查或验证方式，Runner 是实际运行这个检查的位置。不要只因为写了一个 validation 命令就声称它会自动执行或阻断变更；必须写清楚它绑定到了哪个 runner，以及证据来自哪里。
 
 当前本仓库的主要 runner 是 `Makefile`、`$code-change-verification` 和 `.pre-commit-config.yaml`。如果未来接入 CI、SVN server hook、内部平台 gate 或其他 runner，同步更新 `RULES.md`、本节和验证 skill。没有 runner 证据的检查只能标记为人工执行、agent 执行或未绑定，不能写成强制拦截。
 

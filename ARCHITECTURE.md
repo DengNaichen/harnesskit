@@ -51,7 +51,7 @@
 
 - [`pyproject.toml`](pyproject.toml)：Python 包元数据、运行时依赖、console script 入口、Hatchling 构建配置和 dev dependency group。
 - [`AGENTS.md`](AGENTS.md)：本仓库的顶层 agent 路由指南，指向规则、skills、架构地图和验证入口。
-- [`RULES.md`](RULES.md)：本仓库基于证据沉淀的工程规则、Guard 绑定和命令事实。
+- [`RULES.md`](RULES.md)：本仓库基于证据沉淀的工程规则、validation 绑定和命令事实。
 - [`README.md`](README.md)：产品定位、MVP 范围、CLI 使用方式和 Context Harness 总览。
 
 ## 生成到目标仓库的资产
@@ -78,7 +78,7 @@ HarnessKit 会在目标仓库中安装或维护这些文件：
 
 - [`README.md`](README.md)：产品概览、MVP 边界和 CLI 使用方式。
 - [`AGENTS.md`](AGENTS.md)：本仓库的 agent 操作指南。
-- [`docs/design/`](docs/design/)：AGENTS、RULES、Guard 和 Harness Builder 模型的设计笔记。
+- [`docs/design/`](docs/design/)：AGENTS、RULES、Validation 和 Harness Builder 模型的设计笔记。
 - [`docs/design/ARCHITECTURE.md`](docs/design/ARCHITECTURE.md)：`ARCHITECTURE.md` 的设计说明，解释架构地图如何保持粗粒度、可验证和不漂移。
-- [`docs/design/DESIGN.md`](docs/design/DESIGN.md)：Scan -> Rule -> Guard 产品设计模型。
+- [`docs/design/DESIGN.md`](docs/design/DESIGN.md)：Scan -> Rule -> Validation 产品设计模型。
 - [`docs/ROADMAP.md`](docs/ROADMAP.md)：面向未来的产品和实现路线图。

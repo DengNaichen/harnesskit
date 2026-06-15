@@ -26,9 +26,9 @@ HarnessKit 把 agent-facing context 拆成三类职责：
 
 - **Skills** 教 agent 怎么做一类任务，例如扫描事实、判断兼容性、验证改动或刷新模板。
 - **Rules** 告诉 agent 在这个仓库里永远或局部必须遵守什么约束。
-- **Guards** 负责把可检查的约束接到 runner 上，让违规变更过不了验证入口。
+- **Validations** 负责把可检查的约束转成验证反馈，并记录它们在哪些 runner 中执行。
 
-`AGENTS.md` 是入口路由器：它不复制所有规则和流程，而是告诉 agent 什么时候读哪些文件、触发哪些 skills、运行哪些 guards。`RULES.md` 是短规则索引；规则的长解释、证据和 Guard 绑定可以下沉到 `.harnesskit/rules/` 或对应设计文档中。
+`AGENTS.md` 是入口路由器：它不复制所有规则和流程，而是告诉 agent 什么时候读哪些文件、触发哪些 skills、运行哪些 validations。`RULES.md` 是短规则索引；规则的长解释、证据和 validation 绑定可以下沉到 `.harnesskit/rules/` 或对应设计文档中。
 
 ## 当前结构
 
@@ -38,7 +38,7 @@ HarnessKit 把 agent-facing context 拆成三类职责：
 - `templates/`：`harnesskit init` 会安装到目标仓库的模板文件
 - `harness-linter-poc/`：独立的 Context Harness linter POC
 - `.agents/skills/`：本仓库本地 Codex skills
-- `docs/design/`：AGENTS、ARCHITECTURE、RULES、Guard 和 Harness Builder 的设计说明
+- `docs/design/`：AGENTS、ARCHITECTURE、RULES、Validation 和 Harness Builder 的设计说明
 
 当前 CLI 暴露：
 
@@ -93,8 +93,8 @@ brew install lychee
 - 提供 `ARCHITECTURE.md` 作为目标仓库的粗粒度架构地图模板
 - 提供 `RULES.md` 作为短规则索引，而不是流程手册
 - 安装 Codex 本地 skills 到 `.agents/skills/`
-- 用 linter/Guard 原型保护 harness 文件不腐坏、不漂移
-- 通过 skills、rules、guards 和文档分别承载流程、约束、执行检查和设计说明
+- 用 linter/Validation 原型保护 harness 文件不腐坏、不漂移
+- 通过 skills、rules、validations 和文档分别承载流程、约束、执行检查和设计说明
 - 把项目说明和 agent 操作规则分开
 - 让生成资产在进一步自动化之前保持容易审查
 - 维护已安装 harness 的完整性，避免它在使用中腐坏或与仓库事实脱节

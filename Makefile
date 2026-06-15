@@ -1,7 +1,7 @@
 .PHONY: verify verify-core links lint format test build hooks
 
 verify:
-	uv run python .agents/skills/code-change-verification/scripts/run_guard.py
+	uv run python .agents/skills/code-change-verification/scripts/run_validation.py
 
 verify-core: links lint format test build
 
