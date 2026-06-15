@@ -86,6 +86,14 @@
 - **agent 契约**：不要把 type check 写成本仓库完成条件；如果未来新增 type checker，同步更新本文件、`AGENTS.md` 和 `$code-change-verification`。
 - **Guard**：当前无 type check guard。
 
+### `RULE-109` 测试覆盖率 gate
+
+- **状态**：未配置。
+- **Guard 类型**：未配置。
+- **事实来源**：`pyproject.toml` 未声明 coverage、pytest-cov 或同类覆盖率工具；`AGENTS.md` 和 `$code-change-verification` 当前完整验证栈没有 coverage 命令。
+- **agent 契约**：不要把 coverage 写成本仓库完成条件；新增 coverage 工具或覆盖率阈值后，同步更新本文件、`AGENTS.md` 和 `$code-change-verification`。即使未来启用 coverage，也不能用覆盖率阈值替代新增行为的自动化测试。
+- **Guard**：当前无 coverage guard。
+
 ### `RULE-104` Linter
 
 - **状态**：已确认。
@@ -137,5 +145,6 @@
 | Format check | `uv run ruff format --check .` | `pyproject.toml`、`.pre-commit-config.yaml` |
 | Test | `uv run pytest` | `pyproject.toml`、`tests/`、`harness-linter-poc/test_harness_lint.py` |
 | Type check | N/A，当前未配置 | `AGENTS.md`、`pyproject.toml` |
+| Coverage | N/A，当前未配置 | `pyproject.toml`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
 | Build | `uv build` | `pyproject.toml`、`.agents/skills/code-change-verification/SKILL.md` |
 | Hook suite | `uv run pre-commit run --all-files` | `.pre-commit-config.yaml` |

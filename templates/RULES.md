@@ -176,6 +176,24 @@
 - **Guard**：验证入口和 CI 运行 type check 命令。
 -->
 
+### [可选规则: 测试覆盖率 gate] [REMOVE IF UNUSED]
+
+<!-- 可选：仅当仓库配置了 coverage 工具或团队明确要求覆盖率阈值时启用。若不能确认，保留占位符；若确认未配置，不要虚构 coverage 命令或阈值。 -->
+
+- **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 未配置 / 不适用]
+- **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
+- **事实来源**：[NEEDS CLARIFICATION: coverage 配置、测试命令、CI 配置、团队阈值规则]
+- **agent 契约**：[NEEDS CLARIFICATION: 说明 agent 何时必须保持或提高覆盖率，以及 coverage 不能替代行为测试]
+- **Guard**：[NEEDS CLARIFICATION: coverage 命令、阈值 gate、CI coverage 任务]
+
+<!-- 完整示例，验证后替换：
+- **状态**：已确认。
+- **Guard 类型**：部分确定性。
+- **事实来源**：coverage 配置、测试命令、CI coverage 任务、团队阈值规则。
+- **agent 契约**：修改运行时代码或新增行为时保持覆盖率不下降；coverage 只能作为辅助信号，不能替代针对新增行为的自动化测试。
+- **Guard**：验证入口和 CI 运行 coverage 命令，并在覆盖率低于团队阈值时失败。
+-->
+
 ### [可选规则: Linter] [REMOVE IF UNUSED]
 
 <!-- 可选：仅当仓库声明了 linter 时启用。若不能确认，保留占位符；若确认未配置，标记为未配置，不要要求 lint 作为完成门槛。 -->
@@ -278,5 +296,6 @@
 | Lint | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
 | Format check | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
 | Type check | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
+| Coverage | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
 | Build | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
 | Hook suite | N/A 或 [NEEDS CLARIFICATION: 填写真实命令] | [NEEDS CLARIFICATION: 填写事实来源] |
