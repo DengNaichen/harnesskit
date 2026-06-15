@@ -8,7 +8,7 @@
 补全本文件前请确认：
 - 能从客户仓库事实确认的内容，替换对应 `[NEEDS CLARIFICATION: ...]` 占位符。
 - 暂时确认不了的内容，保留占位符，并在最终说明或本节附近记录待确认原因。
-- 确认不适用的 `[REMOVE IF UNUSED]` 小节，可以删除；不能确认是否适用时先保留。
+- 确认不适用的可选规则小节，可以删除；不能确认是否适用时先保留。
 - 只有启用为真实规则的条目，才写成明确的 agent 契约和 Guard。
 - 保持本文件、`AGENTS.md`、验证入口和 CI 配置一致；不能确认一致性时保留待确认标记。
 <!-- harnesskit:todo-checklist:end -->
@@ -24,7 +24,7 @@
 
 ## 基础候选规则
 
-### [RULE-001: 单一验证入口]
+### RULE-001 单一验证入口
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -40,7 +40,7 @@
 - **Guard**：CI 必须调用 `make verify`，文档中的验证命令也必须指向 `make verify`。
 -->
 
-### [RULE-002: 新增行为必须有测试]
+### RULE-002 新增行为必须有测试
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -56,7 +56,7 @@
 - **Guard**：完整验证入口和 CI 必须运行测试；PR 描述说明测试覆盖；review 检查代码变更和测试变更是否匹配。
 -->
 
-### [RULE-003: Test 入口以仓库事实为准]
+### RULE-003 Test 入口以仓库事实为准
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -72,7 +72,7 @@
 - **Guard**：统一验证入口和 CI 必须运行真实测试命令，并检查过期测试命令。
 -->
 
-### [RULE-004: 命名遵守本仓库现有风格]
+### RULE-004 命名遵守本仓库现有风格
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -88,7 +88,7 @@
 - **Guard**：linter 检查可自动覆盖的命名和风格问题；仓库惯例和例外由 review 确认。
 -->
 
-### [RULE-005: import 和依赖必须同步]
+### RULE-005 import 和依赖必须同步
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -104,7 +104,7 @@
 - **Guard**：locked install、测试和 build 必须通过；review 检查依赖清单和锁文件是否同步。
 -->
 
-### [RULE-006: 文档和 context harness 不漂移]
+### RULE-006 文档和 context harness 不漂移
 
 - **状态**：[NEEDS CLARIFICATION: 已确认 / 部分确认 / 待确认 / 不适用]
 - **Guard 类型**：[NEEDS CLARIFICATION: 确定性 / 部分确定性 / 人工/agent review / 未配置]
@@ -122,7 +122,7 @@
 
 ## 可选规则
 
-### [可选规则: Branch protection 和 required checks] [REMOVE IF UNUSED]
+### RULE-101 Branch protection 和 required checks
 
 <!-- 可选：仅当仓库使用代码托管平台、受保护主干和 PR 合并流程时启用。若不能确认，保留占位符；若确认未配置，标记为未配置，不要要求 agent 强制执行。 -->
 
@@ -140,7 +140,7 @@
 - **Guard**：代码托管平台强制 branch protection、required checks 和 review 要求。
 -->
 
-### [可选规则: 锁文件一致性] [REMOVE IF UNUSED]
+### RULE-102 锁文件一致性
 
 <!-- 可选：仅当仓库有依赖清单和锁文件时启用。若不能确认，保留占位符；若确认未配置锁文件，标记为未配置，不要虚构 locked install 命令。 -->
 
@@ -158,7 +158,7 @@
 - **Guard**：验证入口和 CI 运行 `uv sync --locked`，依赖清单和锁文件不一致时失败。
 -->
 
-### [可选规则: Type check] [REMOVE IF UNUSED]
+### RULE-103 Type check
 
 <!-- 可选：仅当仓库配置了 type checker 或团队明确要求类型检查时启用。若不能确认，保留占位符；若确认未配置，标记为未配置，不要添加示例 type check 命令。 -->
 
@@ -176,7 +176,7 @@
 - **Guard**：验证入口和 CI 运行 type check 命令。
 -->
 
-### [可选规则: 测试覆盖率 gate] [REMOVE IF UNUSED]
+### RULE-109 测试覆盖率 gate
 
 <!-- 可选：仅当仓库配置了 coverage 工具或团队明确要求覆盖率阈值时启用。若不能确认，保留占位符；若确认未配置，不要虚构 coverage 命令或阈值。 -->
 
@@ -194,7 +194,7 @@
 - **Guard**：验证入口和 CI 运行 coverage 命令，并在覆盖率低于团队阈值时失败。
 -->
 
-### [可选规则: Linter] [REMOVE IF UNUSED]
+### RULE-104 Linter
 
 <!-- 可选：仅当仓库声明了 linter 时启用。若不能确认，保留占位符；若确认未配置，标记为未配置，不要要求 lint 作为完成门槛。 -->
 
@@ -212,7 +212,7 @@
 - **Guard**：验证入口和 CI 运行 lint 命令。
 -->
 
-### [可选规则: Formatter check-only gate] [REMOVE IF UNUSED]
+### RULE-105 Formatter check-only gate
 
 <!-- 可选：仅当仓库配置了 formatter 时启用。若配置了 formatter，完成门槛必须使用 check-only 命令；若不能确认，保留占位符；若确认未配置，标记为未配置。 -->
 
@@ -230,7 +230,7 @@
 - **Guard**：验证入口和 CI 运行 format check 命令。
 -->
 
-### [可选规则: Build 进入验证入口] [REMOVE IF UNUSED]
+### RULE-106 Build 进入验证入口
 
 <!-- 可选：仅当仓库配置了 package build、应用构建或产物生成时启用。若不能确认，保留占位符；若确认未配置 build，标记为未配置，不要发明 build 命令。 -->
 
@@ -248,7 +248,7 @@
 - **Guard**：验证入口和 CI 运行 build 命令。
 -->
 
-### [可选规则: Pre-commit 或 hook suite] [REMOVE IF UNUSED]
+### RULE-107 Pre-commit 或 hook suite
 
 <!-- 可选：仅当仓库配置了 pre-commit 或同类 hook suite 时启用。若不能确认，保留占位符；若确认未配置，标记为未配置，不要把 hook suite 当成默认存在。 -->
 
@@ -266,7 +266,7 @@
 - **Guard**：运行仓库声明的 hook suite 命令。
 -->
 
-### [可选规则: Architecture Map] [REMOVE IF UNUSED]
+### RULE-108 Architecture Map
 
 <!-- 可选：仅当仓库维护 `ARCHITECTURE.md` 或同类架构地图时启用。若不能确认，保留占位符；若确认未配置，标记为未配置；需要时先创建架构地图，再启用本规则。 -->
 
@@ -286,7 +286,7 @@
 
 ## 项目命令绑定
 
-能从客户仓库事实确认的命令，就替换对应 `[NEEDS CLARIFICATION]`。暂时确认不了的命令保留占位符；确认未配置的可选规则保留为 `N/A`，并在事实来源中说明没有仓库证据。
+能从客户仓库事实确认的命令，就替换对应 `[NEEDS CLARIFICATION: ...]` 占位符。暂时确认不了的命令保留占位符；确认未配置的可选规则保留为 `N/A`，并在事实来源中说明没有仓库证据。
 
 | 检查项 | 当前命令 | 事实来源 |
 | --- | --- | --- |

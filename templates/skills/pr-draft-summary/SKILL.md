@@ -11,10 +11,10 @@ Produce the PR-ready summary required in this repository after substantive code 
 ## When to Trigger
 
 <!-- harnesskit:todo-checklist:start -->
-Before adjusting this section:
-- Match trigger rules to the repository's real review and release expectations.
-- Keep skip cases explicit for docs-only, metadata-only, or conversation-only work.
-- Do not require a PR block for workflows the repository does not use.
+补全本节前请确认：
+- 让触发规则匹配本仓库真实的 review 和发布预期。
+- 对 docs-only、metadata-only 或 conversation-only 工作保留明确跳过条件。
+- 不要为本仓库未使用的 PR 工作流强制要求 PR block。
 <!-- harnesskit:todo-checklist:end -->
 
 - The task for this repo is finished (or ready for review) and it touched runtime code, tests, examples, docs with behavior impact, or build/test configuration.
@@ -24,10 +24,10 @@ Before adjusting this section:
 ## Inputs to Collect Automatically (do not ask the user)
 
 <!-- harnesskit:todo-checklist:start -->
-Before adjusting this section:
-- Verify branch, release tag, base reference, and hosting assumptions from repository evidence.
-- Replace generic category signals with this repository's actual runtime, test, template, docs, and config paths.
-- Remove commands that cannot run in the repository's normal environment.
+补全本节前请确认：
+- 从仓库事实验证 branch、release tag、base reference 和代码托管平台假设。
+- 用本仓库真实 runtime、test、template、docs 和 config 路径替换通用 category signals。
+- 删除无法在本仓库正常环境中运行的命令。
 <!-- harnesskit:todo-checklist:end -->
 
 - Current branch: `git rev-parse --abbrev-ref HEAD`.

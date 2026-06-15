@@ -41,17 +41,17 @@ Use this skill before editing code when the task changes runtime behavior or any
 ## Project-specific compatibility rules
 
 <!-- harnesskit:todo-checklist:start -->
-Before filling this section:
-- Identify released public surfaces, generated outputs, persisted data, and CLI/config contracts from repository evidence.
-- Record the release tag or branch policy only if the repository already defines one.
-- After the real compatibility boundary is documented, remove this checklist block.
+补全本节前请确认：
+- 从仓库事实识别已发布公开面、生成输出、持久化数据和 CLI/config 契约。
+- 只有仓库已经定义发布标签或发布分支策略时，才把它写成本节事实。
+- 真实兼容性边界记录完成后，可以删除这个 checklist 块。
 <!-- harnesskit:todo-checklist:end -->
 
 Fill this section in the target repository after inspecting real project contracts. Until it is filled, do not infer project policy from examples.
 
-- TODO: Document released public APIs, CLI/config/env surfaces, persisted schemas, wire protocols, generated outputs, or package boundaries that must remain compatible.
-- TODO: Document the release tag pattern or release branch policy if it differs from `git describe --tags --abbrev=0`.
-- TODO: Document migration, deprecation, or schema-version rules required by this repository.
+- [NEEDS CLARIFICATION: 已发布公开 API、CLI/config/env surface、持久化 schema、wire protocol、生成输出或 package 边界]
+- [NEEDS CLARIFICATION: 发布标签模式或发布分支策略；如果不同于 `git describe --tags --abbrev=0`，在这里说明]
+- [NEEDS CLARIFICATION: 本仓库需要的迁移、deprecation 或 schema-version 规则]
 
 ## When to stop and confirm
 

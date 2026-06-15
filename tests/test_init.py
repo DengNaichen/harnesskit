@@ -110,7 +110,7 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "Guard 类型" in rules
     assert "测试覆盖率 gate" in rules
     assert "待确认" in rules
-    assert "[NEEDS CLARIFICATION]" in rules
+    assert "[NEEDS CLARIFICATION:" in rules
     assert "项目命令绑定" in rules
 
 

@@ -15,7 +15,7 @@ Read the smallest useful set of repository-owned evidence:
 - Clarification workflow evidence: `.specify/`, SpecKit commands/templates/checklists, planning docs, and existing clarification records.
 - Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
 - Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
-- Current state: template placeholders, TODO checklist blocks, missing files, stale paths, or guidance that conflicts with repository files.
+- Current state: `[NEEDS CLARIFICATION: ...]` placeholders, todo-checklist marker blocks, missing files, stale paths, or guidance that conflicts with repository files.
 
 Ignore local/generated/vendor noise such as virtual environments, dependency folders, caches, build output, downloaded dependencies, and editor metadata unless the user explicitly asks about them.
 
@@ -51,7 +51,7 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
    - leave unsupported or unverified rules as `NEEDS CLARIFICATION`, `N/A`, or not configured instead of enabling them from examples;
    - route to skills by trigger and path, not by copying skill bodies;
    - keep product background and long design discussion in README/docs;
-   - preserve unresolved uncertainty as short `TODO:` notes or `NEEDS CLARIFICATION` entries.
+   - preserve unresolved uncertainty as short `[NEEDS CLARIFICATION: ...]` entries.
 6. Keep companion guidance aligned:
    - prefer `CLAUDE.md -> AGENTS.md` as a symlink when the repository supports symlinks;
    - otherwise make `CLAUDE.md` a short pointer to `AGENTS.md`.
@@ -85,7 +85,7 @@ Produce only the artifacts the task calls for:
 - Primary interaction before durable writes: MCQ-style checkpoint questions; after the user answers, write the selected decisions back into the relevant guidance or leave unanswered items as `NEEDS CLARIFICATION`.
 - Optional output: updated `CLAUDE.md` pointer or symlink.
 - Optional output: updated `RULES.md` or related documentation for uncertain facts, reusable commands, or follow-up notes.
-- Optional output: short final summary listing changed sections, unresolved TODOs, and verification performed or intentionally skipped.
+- Optional output: short final summary listing changed sections, unresolved `[NEEDS CLARIFICATION: ...]` entries, and verification performed or intentionally skipped.
 
 Do not create a separate tech stack report by default. If the user asks for one, keep it temporary or place it where the repository already stores reports.
 

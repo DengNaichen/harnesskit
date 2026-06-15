@@ -18,7 +18,7 @@
 <!-- harnesskit:todo-checklist:end -->
 
 - **技能目录**：[NEEDS CLARIFICATION: 例如 `.agents/skills/`，或说明本仓库未配置本地技能]
-- **使用原则**：[NEEDS CLARIFICATION: 例如触发条件满足时先阅读对应 `SKILL.md`；未配置或仍含 TODO 的技能只能作为待配置项]
+- **使用原则**：[NEEDS CLARIFICATION: 例如触发条件满足时先阅读对应 `SKILL.md`；未配置或仍含 `[NEEDS CLARIFICATION: ...]` 的技能只能作为待配置项]
 - **`$implementation-strategy`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
 - **`$code-change-verification`**：[NEEDS CLARIFICATION: 是否启用；触发条件；已配置验证入口；事实来源]
 - **`$scan-stack`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
