@@ -47,7 +47,7 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
    - treat `AGENTS.md` as the top-level router, not the project knowledge base;
    - keep `AGENTS.md` focused on policy, context routing, skill triggers, validation entrypoints, and drift handling;
    - point directory responsibility and module boundaries to `ARCHITECTURE.md` instead of copying a full directory map;
-   - when `RULES.md` exists, fill rule status, evidence, agent contract, guard type, guard, and command bindings from the detection model;
+   - when `RULES.md` exists, fill rule status, evidence, agent contract, validation type, validation, and command bindings from the detection model;
    - leave unsupported or unverified rules as `NEEDS CLARIFICATION`, `N/A`, or not configured instead of enabling them from examples;
    - route to skills by trigger and path, not by copying skill bodies;
    - keep product background and long design discussion in README/docs;
@@ -81,7 +81,7 @@ Use this internal model while collecting facts. It does not need to be written t
 Produce only the artifacts the task calls for:
 
 - Primary output: updated `AGENTS.md` as a top-level router for context, rules, skills, and verification entrypoints.
-- Primary output when present or requested: updated `RULES.md` with evidence-backed rule status, guard type, guard, and project command bindings.
+- Primary output when present or requested: updated `RULES.md` with evidence-backed rule status, validation type, validation, and project command bindings.
 - Primary interaction before durable writes: MCQ-style checkpoint questions; after the user answers, write the selected decisions back into the relevant guidance or leave unanswered items as `NEEDS CLARIFICATION`.
 - Optional output: updated `CLAUDE.md` pointer or symlink.
 - Optional output: updated `RULES.md` or related documentation for uncertain facts, reusable commands, or follow-up notes.
@@ -99,6 +99,6 @@ Do not create a separate tech stack report by default. If the user asks for one,
 - Do not skip the MCQ checkpoint when writing durable guidance unless the user explicitly requested a non-interactive/defaults-only run.
 - Do not block useful guidance on low-risk uncertainty; record it as `NEEDS CLARIFICATION` or in related documentation.
 - Do not turn optional rules into required rules without repository evidence.
-- Do not mark a guard as deterministic unless a command, script, hook, CI task, or platform setting provides a clear pass/fail signal.
+- Do not mark a validation as deterministic unless a command, script, hook, CI task, or platform setting provides a clear pass/fail signal.
 - Do not record transient dependency versions unless they affect operations or compatibility.
 - Do not run runtime test suites for guidance-only edits unless the edit also changes runtime code, templates, build/test config, or generated behavior.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scan Facts"
+  short_description: "Scan repo evidence into the facts snapshot"
+  default_prompt: "Use $scan-facts to refresh .harnesskit/facts.md from verified repository evidence without updating other harness artifacts."

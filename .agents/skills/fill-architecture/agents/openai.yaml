@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fill Architecture"
+  short_description: "Fill ARCHITECTURE.md from facts"
+  default_prompt: "Use $fill-architecture to update ARCHITECTURE.md from .harnesskit/facts.md and verified repository paths."

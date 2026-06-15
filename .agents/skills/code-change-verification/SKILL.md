@@ -23,7 +23,7 @@ Ensure work is only marked complete after the repository's available verificatio
 ## Manual workflow
 
 - If dependencies are not installed or have changed, run `uv sync` first.
-- Run `make verify` from the repository root. This invokes the skill runner at `./.agents/skills/code-change-verification/scripts/run_guard.py`.
+- Run `make verify` from the repository root. This invokes the skill runner at `./.agents/skills/code-change-verification/scripts/run_validation.py`.
 - Confirm the runner wrote `.harnesskit/receipts/latest.json`; cite the receipt path in the final response when useful.
 - Use `make verify-core`, `make hooks`, or individual Make targets only when diagnosing a failure.
 - This repository currently has no type checker or docs build command. Do not invent those checks.

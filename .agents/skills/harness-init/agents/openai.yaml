@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Init"
+  short_description: "Run the fact-first harness fill flow"
+  default_prompt: "Use $harness-init to run scan-facts, fill the generated harness artifacts, and review their consistency."

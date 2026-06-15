@@ -1,4 +1,4 @@
-"""Run the repository guard suite and write a lightweight receipt."""
+"""Run the repository validation suite and write a lightweight receipt."""
 
 from __future__ import annotations
 
@@ -118,7 +118,7 @@ def main() -> int:
     finished_at = datetime.now().astimezone()
     receipt = {
         "schema_version": 1,
-        "type": "guard",
+        "type": "validation",
         "run_id": run_id,
         "started_at": started_at.isoformat(timespec="seconds"),
         "finished_at": finished_at.isoformat(timespec="seconds"),
@@ -133,8 +133,8 @@ def main() -> int:
     write_json(run_path, receipt)
     write_json(latest_path, receipt)
 
-    print(f"\nGuard receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
-    print(f"Guard status: {status}", flush=True)
+    print(f"\nValidation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+    print(f"Validation status: {status}", flush=True)
     return 0 if status == "passed" else 1
 
 
