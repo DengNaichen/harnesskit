@@ -8,10 +8,10 @@
 
 工具是否启用必须来自仓库事实。存在依赖并不等于存在完成门槛；必须找到脚本、Make target、CI、pre-commit、平台配置或人工确认。
 
-## Evidence
+证据：
 
 - [NEEDS CLARIFICATION: 工具配置、脚本、hook、CI 或未配置证据]
 
-## Guard
+验证：
 
 - [NEEDS CLARIFICATION: 对应命令、runner 或 review]

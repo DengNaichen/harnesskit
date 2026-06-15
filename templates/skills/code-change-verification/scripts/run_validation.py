@@ -1,4 +1,4 @@
-"""Run the repository guard suite and write a lightweight receipt.
+"""Run the repository validation suite and write a lightweight receipt.
 
 Configure CHECKS after verifying real commands from this repository's manifests,
 scripts, locks, CI config, or team documentation.
@@ -102,7 +102,7 @@ def write_receipt(
 ) -> Path:
     receipt: dict[str, Any] = {
         "schema_version": 1,
-        "type": "guard",
+        "type": "validation",
         "run_id": run_id,
         "started_at": started_at.isoformat(timespec="seconds"),
         "finished_at": finished_at.isoformat(timespec="seconds"),
@@ -133,12 +133,12 @@ def main() -> int:
             status="not_configured",
             checks=[],
             notes=[
-                "No guard checks are configured.",
-                "Edit CHECKS in .agents/skills/code-change-verification/scripts/run_guard.py after verifying repository commands.",
+                "No validation checks are configured.",
+                "Edit CHECKS in .agents/skills/code-change-verification/scripts/run_validation.py after verifying repository commands.",
             ],
         )
-        print("Guard status: not_configured", file=sys.stderr, flush=True)
-        print(f"Guard receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+        print("Validation status: not_configured", file=sys.stderr, flush=True)
+        print(f"Validation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
         return 1
 
     checks: list[dict[str, Any]] = []
@@ -159,8 +159,8 @@ def main() -> int:
         checks=checks,
     )
 
-    print(f"\nGuard receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
-    print(f"Guard status: {status}", flush=True)
+    print(f"\nValidation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+    print(f"Validation status: {status}", flush=True)
     return 0 if status == "passed" else 1
 
 

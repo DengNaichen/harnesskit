@@ -35,12 +35,12 @@ Capture:
 - Validation entrypoints: setup, full verify, test, lint, format check, typecheck, coverage, build, docs, link check, hook suite, and CI/platform gates.
 - Repository map candidates: important source, test, docs, config, generated-output, and tooling paths.
 - Agent-facing assets and installed local skills.
-- Rule and Guard candidates with runner evidence.
+- Rule and Validation candidates with runner evidence.
 - Open questions that repository facts cannot settle.
 
 ## Boundaries
 
 - Do not invent commands, tools, URLs, CI, release processes, PR templates, architecture, or compatibility policy.
 - Do not treat generic template examples as evidence that the target repository supports a tool.
-- Do not mark a Guard as deterministic unless a command, script, hook, CI task, or platform setting provides clear pass/fail evidence.
+- Do not mark a Validation as deterministic unless a command, script, hook, CI task, or platform setting provides clear pass/fail evidence.
 - Do not run runtime test suites for guidance-only refreshes unless the refresh also changes runtime code, templates, build/test config, or generated behavior.

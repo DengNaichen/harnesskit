@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scan Stack"
+  short_description: "Scan repo facts for agent routing"
+  default_prompt: "Use $scan-stack to scan repository facts and update AGENTS.md as the top-level router from verified evidence."

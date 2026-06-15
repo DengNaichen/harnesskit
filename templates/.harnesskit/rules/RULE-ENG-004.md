@@ -8,10 +8,10 @@
 
 agent 只能要求真实存在的检查。未配置的 lint、format、typecheck、coverage、docs build、CI、branch protection 或平台 gate 可以记录为待确认或未配置，但不能写成完成门槛。
 
-## Evidence
+证据：
 
 - [NEEDS CLARIFICATION: 工具配置、脚本、CI、facts 或未配置证据]
 
-## Guard
+验证：
 
 - [NEEDS CLARIFICATION: verification drift check、review 或 harness lint]

@@ -23,7 +23,7 @@ Ensure work is only marked complete after the repository's own verification chec
 - Lint command: [NEEDS CLARIFICATION: 真实 lint 命令或 N/A]
 - Typecheck command: [NEEDS CLARIFICATION: 真实 typecheck 命令或 N/A]
 - Test command: [NEEDS CLARIFICATION: 真实 test 命令或 N/A]
-- Full verification command: `make verify` after `scripts/run_guard.py` has been configured with repository-verified checks.
+- Full verification command: `make verify` after `scripts/run_validation.py` has been configured with repository-verified checks.
 - Notes: `make verify` writes `.harnesskit/receipts/latest.json` and `.harnesskit/receipts/runs/<run_id>.json`; until checks are configured, it records `not_configured` and exits non-zero.
 
 ## Quick start
@@ -33,12 +33,12 @@ Ensure work is only marked complete after the repository's own verification chec
 3. Run only commands that are filled with concrete repository commands. Treat `[NEEDS CLARIFICATION: ...]` entries as missing, not optional examples.
 4. Run commands from the repository root, preserving the order documented in this skill.
 5. If a command fails, fix the issue, rerun the relevant verification stack, and report the final status.
-6. If `make verify` reports `not_configured`, fill `CHECKS` in `./.agents/skills/code-change-verification/scripts/run_guard.py` from repository facts before treating it as verification.
+6. If `make verify` reports `not_configured`, fill `CHECKS` in `./.agents/skills/code-change-verification/scripts/run_validation.py` from repository facts before treating it as verification.
 
 ## Manual workflow
 
 - If dependency installation is required and the setup command has been filled above, run that setup command before verification.
-- Prefer `make verify` after `scripts/run_guard.py` has been configured.
+- Prefer `make verify` after `scripts/run_validation.py` has been configured.
 - If there is no full verification command, run the filled format, lint, typecheck, and test commands in that order, skipping only entries that remain `[NEEDS CLARIFICATION: ...]`.
 - Do not add new tools or create new verification commands as part of this skill unless the user explicitly asks for that change.
 - Do not treat `[NEEDS CLARIFICATION: ...]` entries or generic examples in templates as proof that the target repository supports those commands.

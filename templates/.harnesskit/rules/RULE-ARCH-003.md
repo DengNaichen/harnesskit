@@ -8,10 +8,10 @@
 
 不同区域的变更风险和验证方式不同。只有当仓库确实存在容易混淆的 POC、实验目录、生成目录、设计文档或 runtime 边界时，才启用这条规则。
 
-## Evidence
+证据：
 
 - [NEEDS CLARIFICATION: 架构地图、目录职责和设计文档]
 
-## Guard
+验证：
 
 - [NEEDS CLARIFICATION: architecture review、harness lint 或 code review]

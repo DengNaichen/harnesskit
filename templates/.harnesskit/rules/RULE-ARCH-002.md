@@ -8,10 +8,10 @@
 
 只有仓库实际存在模板、代码生成、schema 生成、文档生成、CLI 写文件或外部输出时，才启用这条规则。具体输出路径、覆盖策略和验证方式必须来自仓库事实。
 
-## Evidence
+证据：
 
 - [NEEDS CLARIFICATION: 模板目录、生成脚本、init/install 命令、写文件路径或测试]
 
-## Guard
+验证：
 
 - [NEEDS CLARIFICATION: init/generation tests、template lint 或 review]
