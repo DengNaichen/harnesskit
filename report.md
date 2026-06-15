@@ -144,7 +144,7 @@ flowchart LR
 #### 4. Experience Memory & Harness Evolution (经验记忆与上下文自演进)
 - [ ] **Experience Memory**
    - 从真实任务中记录可复用经验：有效命令、反复出现的问题、误导 agent 的旧规则、缺失的验证入口、需要补充的项目事实。
-   - 区分短期任务记录和长期稳定记忆：短期内容先进入 `candidate.md` 或任务记录，反复验证后再沉淀到 `AGENTS.md`、skills、架构文档或 guard。
+   - 区分短期任务记录和长期稳定记忆：短期内容先进入 `RULES.md` 的待确认项或任务记录，反复验证后再沉淀到 `AGENTS.md`、skills、架构文档或 guard。
    - 可参考 OpenClaw 的 memory 思路：把长期事实、偏好、决策和每日运行记录放进可读、可编辑的文件，而不是只留在对话上下文里。
 - [ ] **Improvement Evaluation**
    - 对候选改进建立评估门槛：它解决了什么失败模式、影响哪个 skill/rule/guard、是否有验证方式、是否值得进入默认模板。

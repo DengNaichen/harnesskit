@@ -8,9 +8,10 @@ import re
 CONFIG_SCHEMA_VERSION = 1
 SUPPORTED_INTEGRATIONS = {"codex"}
 CODEX_SKILLS = (
-    ".agents/skills/harnesskit-audit/SKILL.md",
-    ".agents/skills/harnesskit-refresh/SKILL.md",
-    ".agents/skills/harnesskit-explain/SKILL.md",
+    ".agents/skills/code-change-verification/SKILL.md",
+    ".agents/skills/implementation-strategy/SKILL.md",
+    ".agents/skills/pr-draft-summary/SKILL.md",
+    ".agents/skills/scan-stack/SKILL.md",
 )
 HARNESS_MARKDOWN_GLOBS = (
     "README.md",

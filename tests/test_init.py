@@ -18,9 +18,6 @@ from harnesskit.init import InitError, init_project, install_integration  # noqa
 SHARED_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
     ".agents/skills/implementation-strategy/SKILL.md",
-    ".agents/skills/harnesskit-audit/SKILL.md",
-    ".agents/skills/harnesskit-refresh/SKILL.md",
-    ".agents/skills/harnesskit-explain/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
     ".agents/skills/scan-stack/SKILL.md",
 )
@@ -32,7 +29,7 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     init_project(str(project), integration="codex")
 
     assert (project / "AGENTS.md").is_file()
-    assert (project / "candidate.md").is_file()
+    assert (project / "RULES.md").is_file()
     assert (project / "CLAUDE.md").is_file()
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
@@ -54,7 +51,7 @@ def test_default_integration_is_codex(tmp_path: Path) -> None:
 
     config = read_config(project)
     assert config["default_integration"] == "codex"
-    assert (project / ".agents/skills/harnesskit-audit/SKILL.md").is_file()
+    assert (project / ".agents/skills/scan-stack/SKILL.md").is_file()
 
 
 def test_agent_guidance_outputs_do_not_leak_template_placeholders(
@@ -69,14 +66,21 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "}}" not in agents
     assert "{{#" not in agents
     assert ".agents/skills/" in agents
-    assert "candidate.md" in agents
+    assert "RULES.md" in agents
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
 
-    candidate = (project / "candidate.md").read_text(encoding="utf-8")
-    assert "{{" not in candidate
-    assert "}}" not in candidate
-    assert "待沉淀" in candidate
+    rules = (project / "RULES.md").read_text(encoding="utf-8")
+    assert "{{" not in rules
+    assert "}}" not in rules
+    assert "Harness Rules" in rules
+    assert "基础候选规则" in rules
+    assert "可选规则" in rules
+    assert "Guard 类型" in rules
+    assert "测试覆盖率 gate" in rules
+    assert "待确认" in rules
+    assert "[NEEDS CLARIFICATION]" in rules
+    assert "项目命令绑定" in rules
 
 
 def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) -> None:
@@ -102,12 +106,9 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
 
     expected_checklist_counts = {
         "AGENTS.md": 9,
-        "candidate.md": 1,
+        "RULES.md": 1,
         ".agents/skills/code-change-verification/SKILL.md": 1,
         ".agents/skills/implementation-strategy/SKILL.md": 1,
-        ".agents/skills/harnesskit-audit/SKILL.md": 1,
-        ".agents/skills/harnesskit-explain/SKILL.md": 1,
-        ".agents/skills/harnesskit-refresh/SKILL.md": 1,
         ".agents/skills/pr-draft-summary/SKILL.md": 2,
     }
     for relative_path, expected_count in expected_checklist_counts.items():
@@ -159,7 +160,7 @@ def test_existing_files_are_skipped_without_force(tmp_path: Path) -> None:
 
 def test_existing_shared_skills_are_skipped_without_force(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "harnesskit-audit" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "scan-stack" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -183,7 +184,7 @@ def test_force_overwrites_existing_template_files(tmp_path: Path) -> None:
 
 def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "harnesskit-audit" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "scan-stack" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -196,12 +197,12 @@ def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
 def test_install_integration_repairs_missing_codex_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
     init_project(str(project), integration="codex")
-    shutil.rmtree(project / ".agents" / "skills" / "harnesskit-audit")
+    shutil.rmtree(project / ".agents" / "skills" / "scan-stack")
 
     result = install_integration(project, "codex")
 
-    assert (project / ".agents/skills/harnesskit-audit/SKILL.md").is_file()
-    assert project / ".agents/skills/harnesskit-audit/SKILL.md" in result.created
+    assert (project / ".agents/skills/scan-stack/SKILL.md").is_file()
+    assert project / ".agents/skills/scan-stack/SKILL.md" in result.created
     config = read_config(project)
     assert config["installed_integrations"] == ["codex"]
 

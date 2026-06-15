@@ -22,7 +22,7 @@ def test_valid_harness_passes(tmp_path: Path) -> None:
 
 def test_missing_codex_skill_fails(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/harnesskit-audit/SKILL.md").unlink()
+    (project / ".agents/skills/scan-stack/SKILL.md").unlink()
 
     report = lint_project(project)
 
@@ -42,7 +42,7 @@ def test_bad_config_json_fails(tmp_path: Path) -> None:
 
 def test_skill_frontmatter_is_required(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/harnesskit-audit/SKILL.md").write_text(
+    (project / ".agents/skills/scan-stack/SKILL.md").write_text(
         "# no frontmatter\n", encoding="utf-8"
     )
 
@@ -662,12 +662,25 @@ def make_project(root: Path) -> Path:
     )
 
     (project / "AGENTS.md").write_text(
-        "# AGENTS\n\nUse $harnesskit-audit, $harnesskit-refresh, and $harnesskit-explain as needed.\n",
+        "# AGENTS\n\nUse $scan-stack and $code-change-verification as needed.\n",
         encoding="utf-8",
     )
     (project / "CLAUDE.md").symlink_to("AGENTS.md")
 
-    for skill_name in ("harnesskit-audit", "harnesskit-refresh", "harnesskit-explain"):
+    write_skill(
+        project,
+        "code-change-verification",
+        "# code-change-verification\n\n"
+        + verification_block(
+            {
+                "Python lint": "Ruff inactive",
+                "Python format": "Ruff format inactive",
+                "Package build": "inactive",
+                "Pre-commit hooks": "inactive",
+            }
+        ),
+    )
+    for skill_name in ("implementation-strategy", "pr-draft-summary", "scan-stack"):
         write_skill(project, skill_name, f"# {skill_name}\n")
 
     return project
@@ -675,7 +688,7 @@ def make_project(root: Path) -> Path:
 
 def write_skill(project: Path, skill_name: str, body: str) -> None:
     skill_dir = project / ".agents" / "skills" / skill_name
-    skill_dir.mkdir(parents=True)
+    skill_dir.mkdir(parents=True, exist_ok=True)
     (skill_dir / "SKILL.md").write_text(
         f"---\nname: {skill_name}\ndescription: Test skill.\n---\n\n{body}",
         encoding="utf-8",

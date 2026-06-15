@@ -48,7 +48,6 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 - [`ARCHITECTURE.md`](ARCHITECTURE.md)：粗粒度仓库地图，说明主要目录和关键文件分别负责什么。
 - [`docs/DESIGN.md`](docs/DESIGN.md)：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
 - [`docs/references/harness-builder/`](docs/references/harness-builder/)：harness 研究笔记和参考资料。
-- [`candidate.md`](candidate.md)：日常发现的命令、约定、坑和待确认事项暂存区；不是权威规则，定期回看后再沉淀到指南、技能或文档。
 - [`pyproject.toml`](pyproject.toml)：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
 - [`.pre-commit-config.yaml`](.pre-commit-config.yaml)：Git pre-commit hook 配置，串联完整本地验证栈。
 - [`lychee.toml`](lychee.toml)：Markdown 链接检查配置，默认只检查本地链接。
@@ -71,12 +70,18 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 1. 先读相关模块、测试和本地技能说明，确认变更触及的边界。
 2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
 3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
-4. 日常发现可复用命令、仓库约定、坑或待确认事项时，先追加到 `candidate.md`；只有稳定且反复有用的内容才沉淀到 `AGENTS.md`、`.agents/skills/` 或文档。
+4. 日常发现可复用命令、仓库约定、坑或待确认事项时，优先记录到 `RULES.md` 的待确认条目、相关文档或本地技能说明中；只有稳定且反复有用的内容才沉淀为强规则。
 5. 需要验证时从仓库根目录运行完整验证栈：`lychee './**/*.md'`、`uv run ruff check .`、`uv run ruff format --check .`、`uv run pytest`、`uv build`，然后 `uv run pre-commit run --all-files`。
 6. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
 7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
 
 ### 测试与自动化检查
+
+#### Guard 与 Runner 绑定
+
+维护 `RULES.md` 或验证说明时，区分 **Rule**、**Guard** 和 **Runner**：Rule 是要遵守的规则，Guard 是可执行检查，Runner 是实际运行这个检查的位置。不要只因为写了一个 Guard 命令就声称它能拦住问题；必须写清楚它绑定到了哪个 runner，以及证据来自哪里。
+
+当前本仓库的主要 runner 是 `$code-change-verification` 和 `.pre-commit-config.yaml`。如果未来接入 CI、SVN server hook、内部平台 gate 或其他 runner，同步更新 `RULES.md`、本节和验证 skill。没有 runner 证据的检查只能标记为人工执行、agent 执行或未绑定，不能写成强制拦截。
 
 当前完整验证栈：
 

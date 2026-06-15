@@ -42,16 +42,16 @@ its direct children are also represented as links in this document.
 
 - [`pyproject.toml`](pyproject.toml): TODO: placeholder responsibility.
 - [`AGENTS.md`](AGENTS.md): TODO: placeholder responsibility.
+- [`RULES.md`](RULES.md): TODO: placeholder responsibility.
 - [`README.md`](README.md): TODO: placeholder responsibility.
-- [`candidate.md`](candidate.md): TODO: placeholder responsibility.
 
 ## Generated Target-Repository Assets
 
 HarnessKit installs or maintains these kinds of files in target repositories:
 
 - `AGENTS.md`: TODO: placeholder responsibility.
+- `RULES.md`: TODO: placeholder responsibility.
 - `CLAUDE.md`: TODO: placeholder responsibility.
-- `candidate.md`: TODO: placeholder responsibility.
 - `.harnesskit/config.json`: TODO: placeholder responsibility.
 - `.agents/skills/*/SKILL.md`: TODO: placeholder responsibility.
 

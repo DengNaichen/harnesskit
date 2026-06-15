@@ -19,7 +19,7 @@
 
 - `$implementation-strategy`：在修改运行时代码、导出 API、外部配置、持久化 schema、线协议、模板输出或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
 - `$code-change-verification`：当变更影响运行时代码、模板、测试、构建配置或测试行为时，在标记完成前使用。只运行该技能中已经明确配置的验证命令；未配置时报告缺失，不要临时虚构检查。
-- `$scan-stack`：扫描技术栈、目录、验证入口和本地 skill 路由，或把已验证事实沉淀到 `AGENTS.md`、`CLAUDE.md`、`candidate.md` 时使用。
+- `$scan-stack`：扫描技术栈、目录、验证入口和本地 skill 路由，或把已验证事实沉淀到 `AGENTS.md`、`CLAUDE.md`、`RULES.md` 时使用。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、示例、构建/测试配置、模板或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据、无行为影响的文档任务或用户明确跳过时可不使用。
 
 ### 可跳过完整验证的情况
@@ -83,7 +83,7 @@
 - 模板或生成物目录：说明哪些文件会影响用户可见输出。
 - 文档目录：说明产品说明、架构说明和长期设计讨论放在哪里。
 - 配置文件：记录包管理、构建、工具链和持久配置的来源。
-- `candidate.md`：临时记录日常发现的命令、约定、坑和待确认事项；它不是权威规则，定期回看后再沉淀到本指南、技能或文档。
+- `RULES.md`：记录跨栈工程规则和本仓库的具体命令绑定。
 - `.agents/skills/`：记录仓库本地技能及触发条件。
 - `CLAUDE.md`：优先保持为指向 `AGENTS.md` 的符号链接；如果目标环境不适合符号链接，则使用短指针文件，避免复制整份指南。
 
@@ -114,7 +114,7 @@
 1. 先读相关模块、测试、文档和本地技能说明，确认变更触及的边界。
 2. 如果会改变运行时、公开接口、配置、模板输出、测试行为或用户可见行为，先使用 `$implementation-strategy`。
 3. 实现变更时同步更新相关测试或文档；模板行为改变时，把它当作用户可见行为处理。
-4. 日常发现可复用命令、仓库约定、坑或待确认事项时，先追加到 `candidate.md`；只有稳定且反复有用的内容才沉淀到 `AGENTS.md`、`.agents/skills/` 或文档。
+4. 日常发现可复用命令、仓库约定、坑或待确认事项时，优先记录到 `RULES.md` 的待确认条目、相关文档或本地技能说明中；只有稳定且反复有用的内容才沉淀为强规则。
 5. 需要验证时，从仓库根目录运行 `$code-change-verification` 中已配置的命令。
 6. 修复失败后重新运行相关验证命令，最终交付只报告最终状态。
 7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
@@ -126,11 +126,18 @@
 - 只写已经从仓库配置、脚本、锁文件或 CI 中验证过的命令。
 - 没有对应工具时说明未配置，不要填入通用示例命令。
 - 同步更新 `.agents/skills/code-change-verification/SKILL.md` 中的验证栈。
+- 为每个 Guard 记录实际 runner，例如 pre-commit、CI、SVN server hook、agent verify、IDE task 或内部平台 gate。
 <!-- harnesskit:todo-checklist:end -->
 
 当前仓库的完整验证栈应记录在 `.agents/skills/code-change-verification/SKILL.md` 中。若该技能仍有 `TODO`，说明验证尚未配置；不要把 TODO 或通用示例当作真实命令。
 
 补全验证命令时，必须先从仓库配置中确认工具存在，例如构建清单、锁文件、CI 配置或脚本文件。
+
+#### Guard 与 Runner 绑定
+
+维护 `RULES.md` 或验证说明时，区分 **Rule**、**Guard** 和 **Runner**：Rule 是规则，Guard 是可执行检查，Runner 是实际运行检查的位置。只有能从仓库、CI、hook、平台配置或团队确认中找到 runner 证据时，才能说这个 Guard 会拦住问题。
+
+不要把 pre-commit 写成唯一 runner。Git 项目可以使用 Git pre-commit；SVN 项目可以使用 SVN server pre-commit hook；其他团队也可以绑定到 CI、agent 完成前验证、IDE task 或内部平台 gate。没有 runner 证据的 Guard 应标记为人工执行、agent 执行或未绑定。
 
 ### Pull Request 与提交规范
 
