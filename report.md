@@ -2,22 +2,34 @@
 
 ## 一、项目摘要 (Executive Summary)
 
-* **核心定位**：解决 Agent 进入新仓库时，由于项目上下文“过时、漂移”导致的开发失败，构建稳定、可维护的 Agent 运行护栏。
-* **当前进展**：已跑通 **“仓库扫描 -> 契约定义 -> 自动化 Guard -> pre-commit 拦截”** 的 MVP 全闭环。实测可自动拦截“开发配置变化但 Agent 文档未同步更新”的漂移风险。
+* **核心定位**：解决 Coding Agent 进入新仓库时，由于项目上下文“过时、漂移”导致的开发失败，构建稳定、可维护的 Agent 运行护栏。
+* **当前进展**：已跑通 **“仓库scanner/analyzer(收集分析, 中间物) -> rules定义 -> 自动化 Guard -> ~~pre-commit 拦截~~”** 的 MVP 全闭环。实测可自动拦截“开发配置变化但 Agent 文档未同步更新”的漂移风险。
+- [ ] 试着思考客户不用git的场景, 别的版本控制工具
+- [ ] 理想的agent.md & arch.md, 具体要包括什么
 * **下阶段重点**：完善 Repository Map 自动测绘，并实现 Linter Issue Code 的标准化映射，为后续的工作流组装（Workflow）打好底座。
 
 ---
 
 ## 二、核心交付物与业务价值 (Key Deliverables & Value)
 
-目前我们已沉淀了一套轻量、开箱即用的 Context Harness 原型，并在当前仓库完成自举验证：
+目前我们已沉淀了一套轻量、开箱即用的 Harness 原型，并在当前仓库完成自举验证：
 
 1. **统一的 Agent 入口契约 (`AGENTS.md` / `ARCHITECTURE.md`)**
    * **价值**：将仓库结构、验证入口、本地 Skills 固化为标准文档。新 Agent 进场无需全量扫描或人肉答疑，实现“首屏即用”。
+   - [ ] 这也是rules的一部分.
 2. **确定性反馈工具链 (Harness Linter POC)**
    * **价值**：实现对配置、Markdown 链接、Marker 结构、技术栈及验证命令漂移的静态检查。
+   - [ ] rules, 包括什么(不考虑别的skills, 也不考虑skills的触发, 行业的最佳实践, code style, naming style, 可以读到现状(驼峰 etc...))
+   - [ ] guard
+    - [ ] 包括测试, 但是我们可以探测出来什么测试缺失, 在什么方向补测试价值最高. coverage summary. 
+    - [ ] 优先考虑客户的开发场景.
+    - [ ] 文档 优先级 低于代码, 或者我们认为代码是事实来源.
+    - [ ] 不要擅自改对齐过的
+    - [ ] Claude code init. 
 3. **研发链路自动化防护 (pre-commit 集成)**
    * **价值**：**典型场景验证成功** —— 当技术栈/构建脚本发生实质变化，而 Agent 说明文档未更新时，pre-commit 自动触发 Linter 报错并阻止 Git 提交，实现物理层面的“防漂移闭环”。
+
+   
 
 ---
 
@@ -67,6 +79,9 @@ flowchart LR
 - [ ] **Risk Signals**
    - **初始风险点**：发现断链、缺失文件、过期验证命令、placeholder、未成对 marker 等确定性问题。
    - **当前状态**：暂不纳入 MVP，后续可作为 guard/audit 能力扩展。
+- [ ] 要有一个交互的过程. override的情况也要考虑, 还是要有一个mcp的交互
+- [ ] 不要做大而全, 就做rules需要的信息, rules是消费者. 
+- [ ] 具体的rules / guard 的内容, 最佳实践. 
 
 #### 2. Rules & Guards (规则与自动化防漂移)
 - [x] **Harness 资产完整性规则**
