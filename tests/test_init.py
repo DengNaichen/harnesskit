@@ -30,6 +30,7 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     init_project(str(project), integration="codex")
 
     assert (project / "AGENTS.md").is_file()
+    assert (project / "ARCHITECTURE.md").is_file()
     assert (project / "RULES.md").is_file()
     assert (project / "Makefile").is_file()
     assert (project / "CLAUDE.md").is_file()
@@ -92,6 +93,14 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
 
+    architecture = (project / "ARCHITECTURE.md").read_text(encoding="utf-8")
+    assert "{{" not in architecture
+    assert "}}" not in architecture
+    assert "# [PROJECT_NAME] 架构地图" in architecture
+    assert "AGENTS.md" in architecture
+    assert "RULES.md" in architecture
+    assert "[NEEDS CLARIFICATION:" in architecture
+
     rules = (project / "RULES.md").read_text(encoding="utf-8")
     assert "{{" not in rules
     assert "}}" not in rules
@@ -128,6 +137,7 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
 
     expected_checklist_counts = {
         "AGENTS.md": 9,
+        "ARCHITECTURE.md": 1,
         "RULES.md": 1,
         ".agents/skills/code-change-verification/SKILL.md": 1,
         ".agents/skills/implementation-strategy/SKILL.md": 1,
