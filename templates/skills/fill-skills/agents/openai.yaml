@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fill Skills"
+  short_description: "Fill generated skill placeholders"
+  default_prompt: "Use $fill-skills to update generated skills from .harnesskit/facts.md and verified repository evidence."

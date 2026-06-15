@@ -18,6 +18,7 @@
 - [`RULES.md`](RULES.md)：工程规则、Guard 绑定和项目命令事实来源。
 - `.agents/skills/`：本地 agent skills；具体触发条件应由 `AGENTS.md` 路由，执行细节放在各 skill 的 `SKILL.md`。
 - `.harnesskit/config.json`：HarnessKit 状态文件，记录 schema、项目名、默认 integration 和已安装 integration。
+- [`.harnesskit/facts.md`](.harnesskit/facts.md)：`$scan-facts` 生成的 scan/fill 事实快照；用于把仓库证据交给 `$fill-agents`、`$fill-architecture`、`$fill-rules` 和 `$fill-skills`，但不能替代真实仓库事实。
 - [`Makefile`](Makefile)：HarnessKit 安装的验证入口；具体 checks 必须在 `.agents/skills/code-change-verification/scripts/run_guard.py` 中基于仓库事实补全。
 - [`CLAUDE.md`](CLAUDE.md)：companion agent 指南，默认应指向 `AGENTS.md`。
 - [NEEDS CLARIFICATION: 主要源码目录，例如 `src/`、`app/`、`packages/` 或其他真实路径]

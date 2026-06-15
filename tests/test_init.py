@@ -17,10 +17,24 @@ from harnesskit.init import InitError, init_project, install_integration  # noqa
 
 SHARED_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
+    ".agents/skills/code-change-verification/agents/openai.yaml",
     ".agents/skills/code-change-verification/scripts/run_guard.py",
+    ".agents/skills/fill-agents/SKILL.md",
+    ".agents/skills/fill-agents/agents/openai.yaml",
+    ".agents/skills/fill-architecture/SKILL.md",
+    ".agents/skills/fill-architecture/agents/openai.yaml",
+    ".agents/skills/fill-rules/SKILL.md",
+    ".agents/skills/fill-rules/agents/openai.yaml",
+    ".agents/skills/fill-skills/SKILL.md",
+    ".agents/skills/fill-skills/agents/openai.yaml",
+    ".agents/skills/harness-init/SKILL.md",
+    ".agents/skills/harness-init/agents/openai.yaml",
     ".agents/skills/implementation-strategy/SKILL.md",
+    ".agents/skills/implementation-strategy/agents/openai.yaml",
     ".agents/skills/pr-draft-summary/SKILL.md",
-    ".agents/skills/scan-stack/SKILL.md",
+    ".agents/skills/pr-draft-summary/agents/openai.yaml",
+    ".agents/skills/scan-facts/SKILL.md",
+    ".agents/skills/scan-facts/agents/openai.yaml",
 )
 
 
@@ -33,10 +47,12 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert (project / "ARCHITECTURE.md").is_file()
     assert (project / "RULES.md").is_file()
     assert (project / "Makefile").is_file()
+    assert (project / ".harnesskit/facts.md").is_file()
     assert (project / "CLAUDE.md").is_file()
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
     assert not (project / "skills").exists()
+    assert not (project / ".agents/skills/scan-stack").exists()
     for skill in SHARED_SKILLS:
         assert (project / skill).is_file(), skill
 
@@ -74,7 +90,8 @@ def test_default_integration_is_codex(tmp_path: Path) -> None:
 
     config = read_config(project)
     assert config["default_integration"] == "codex"
-    assert (project / ".agents/skills/scan-stack/SKILL.md").is_file()
+    assert (project / ".agents/skills/scan-facts/SKILL.md").is_file()
+    assert (project / ".agents/skills/harness-init/SKILL.md").is_file()
 
 
 def test_agent_guidance_outputs_do_not_leak_template_placeholders(
@@ -90,8 +107,18 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "{{#" not in agents
     assert ".agents/skills/" in agents
     assert "RULES.md" in agents
+    assert "$harness-init" in agents
+    assert "$scan-facts" in agents
+    assert "$scan-stack" not in agents
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
+
+    facts = (project / ".harnesskit/facts.md").read_text(encoding="utf-8")
+    assert "{{" not in facts
+    assert "}}" not in facts
+    assert "Harness Facts" in facts
+    assert ".harnesskit/facts.md" in facts
+    assert "[NEEDS CLARIFICATION:" in facts
 
     architecture = (project / "ARCHITECTURE.md").read_text(encoding="utf-8")
     assert "{{" not in architecture
@@ -99,6 +126,7 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "# [PROJECT_NAME] 架构地图" in architecture
     assert "AGENTS.md" in architecture
     assert "RULES.md" in architecture
+    assert ".harnesskit/facts.md" in architecture
     assert "[NEEDS CLARIFICATION:" in architecture
 
     rules = (project / "RULES.md").read_text(encoding="utf-8")
@@ -111,6 +139,7 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "测试覆盖率 gate" in rules
     assert "待确认" in rules
     assert "[NEEDS CLARIFICATION:" in rules
+    assert ".harnesskit/facts.md" in rules
     assert "项目命令绑定" in rules
 
 
@@ -136,6 +165,7 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
     init_project(str(project))
 
     expected_checklist_counts = {
+        ".harnesskit/facts.md": 1,
         "AGENTS.md": 9,
         "ARCHITECTURE.md": 1,
         "RULES.md": 1,
@@ -192,7 +222,7 @@ def test_existing_files_are_skipped_without_force(tmp_path: Path) -> None:
 
 def test_existing_shared_skills_are_skipped_without_force(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "scan-stack" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "scan-facts" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -216,7 +246,7 @@ def test_force_overwrites_existing_template_files(tmp_path: Path) -> None:
 
 def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
-    skill = project / ".agents" / "skills" / "scan-stack" / "SKILL.md"
+    skill = project / ".agents" / "skills" / "scan-facts" / "SKILL.md"
     skill.parent.mkdir(parents=True)
     skill.write_text("custom skill\n", encoding="utf-8")
 
@@ -229,12 +259,12 @@ def test_force_overwrites_existing_shared_skills(tmp_path: Path) -> None:
 def test_install_integration_repairs_missing_codex_skills(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
     init_project(str(project), integration="codex")
-    shutil.rmtree(project / ".agents" / "skills" / "scan-stack")
+    shutil.rmtree(project / ".agents" / "skills" / "scan-facts")
 
     result = install_integration(project, "codex")
 
-    assert (project / ".agents/skills/scan-stack/SKILL.md").is_file()
-    assert project / ".agents/skills/scan-stack/SKILL.md" in result.created
+    assert (project / ".agents/skills/scan-facts/SKILL.md").is_file()
+    assert project / ".agents/skills/scan-facts/SKILL.md" in result.created
     config = read_config(project)
     assert config["installed_integrations"] == ["codex"]
 

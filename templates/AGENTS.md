@@ -19,9 +19,14 @@
 
 - **技能目录**：[NEEDS CLARIFICATION: 例如 `.agents/skills/`，或说明本仓库未配置本地技能]
 - **使用原则**：[NEEDS CLARIFICATION: 例如触发条件满足时先阅读对应 `SKILL.md`；未配置或仍含 `[NEEDS CLARIFICATION: ...]` 的技能只能作为待配置项]
+- **`$harness-init`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
+- **`$scan-facts`**：[NEEDS CLARIFICATION: 是否启用；触发条件；`.harnesskit/facts.md` 状态；事实来源]
+- **`$fill-agents`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
+- **`$fill-architecture`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
+- **`$fill-rules`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
+- **`$fill-skills`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
 - **`$implementation-strategy`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
 - **`$code-change-verification`**：[NEEDS CLARIFICATION: 是否启用；触发条件；已配置验证入口；事实来源]
-- **`$scan-stack`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
 - **`$pr-draft-summary`**：[NEEDS CLARIFICATION: 是否启用；触发条件；事实来源]
 
 ### `RULES.md` 作为规则源
@@ -71,6 +76,7 @@
 开始修改前，先从仓库事实建立上下文：
 
 - [NEEDS CLARIFICATION: 构建/包管理清单路径，例如 `pyproject.toml`、`package.json`、`go.mod` 或同类文件]
+- [NEEDS CLARIFICATION: scan/fill 事实快照路径，例如 `.harnesskit/facts.md`；未配置时说明待补全]
 - [NEEDS CLARIFICATION: 架构地图路径，例如 `ARCHITECTURE.md`；未配置时说明待补全]
 - [NEEDS CLARIFICATION: 产品说明、设计文档或 `docs/` 路径]
 - [NEEDS CLARIFICATION: agent 指南、规则文件、技能目录和 companion 指南路径]
@@ -91,6 +97,7 @@
 | --- | --- | --- |
 | 架构地图 | [NEEDS CLARIFICATION: 路径或未配置] | [NEEDS CLARIFICATION: 说明目录职责和模块边界在哪里维护] |
 | 工程规则 | [NEEDS CLARIFICATION: 路径或未配置] | [NEEDS CLARIFICATION: 说明 Rule、Guard 和命令绑定在哪里维护] |
+| scan/fill facts | [NEEDS CLARIFICATION: `.harnesskit/facts.md` 或未配置] | [NEEDS CLARIFICATION: 说明 facts 如何由 `$scan-facts` 刷新，并由 fill skills 消费] |
 | 本地技能 | [NEEDS CLARIFICATION: 路径或未配置] | [NEEDS CLARIFICATION: 说明技能触发条件在哪里维护] |
 | 构建/包管理清单 | [NEEDS CLARIFICATION: 路径或未配置] | [NEEDS CLARIFICATION: 说明包管理、构建和工具链事实来源] |
 | companion agent 指南 | [NEEDS CLARIFICATION: 例如 `CLAUDE.md` 指向 `AGENTS.md`，或未配置] | [NEEDS CLARIFICATION: 说明如何保持一致] |
@@ -122,7 +129,7 @@
 - 删除不适用于本仓库的通用步骤。
 <!-- harnesskit:todo-checklist:end -->
 
-1. [NEEDS CLARIFICATION: 开始任务前应阅读的模块、测试、文档、规则或技能]
+1. [NEEDS CLARIFICATION: 初次补全 harness 时是否先运行 `$harness-init`；日常任务前应阅读的模块、测试、文档、规则或技能]
 2. [NEEDS CLARIFICATION: 哪些改动必须先做兼容性判断]
 3. [NEEDS CLARIFICATION: 哪些改动必须同步测试、文档、示例或模板输出]
 4. [NEEDS CLARIFICATION: 发现仓库约定、命令或待确认事项时应记录到哪里]
