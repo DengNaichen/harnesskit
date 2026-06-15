@@ -133,14 +133,24 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "{{" not in rules
     assert "}}" not in rules
     assert "Harness Rules" in rules
-    assert "基础候选规则" in rules
-    assert "可选规则" in rules
-    assert "Guard 类型" in rules
-    assert "测试覆盖率 gate" in rules
-    assert "待确认" in rules
+    assert "通用工程实践" in rules
+    assert "AI Coding 规则" in rules
+    assert "技术栈规则" in rules
+    assert "架构规则" in rules
+    assert "RULE-ENG-001" in rules
+    assert ".harnesskit/rules/RULE-ENG-001.md" in rules
     assert "[NEEDS CLARIFICATION:" in rules
     assert ".harnesskit/facts.md" in rules
-    assert "项目命令绑定" in rules
+
+    rule_detail = (project / ".harnesskit/rules/RULE-ENG-001.md").read_text(
+        encoding="utf-8"
+    )
+    assert "{{" not in rule_detail
+    assert "}}" not in rule_detail
+    assert "# RULE-ENG-001" in rule_detail
+    assert "## Rule" in rule_detail
+    assert "## Details" in rule_detail
+    assert "[NEEDS CLARIFICATION:" in rule_detail
 
 
 def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) -> None:
@@ -166,7 +176,7 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
 
     expected_checklist_counts = {
         ".harnesskit/facts.md": 1,
-        "AGENTS.md": 9,
+        "AGENTS.md": 8,
         "ARCHITECTURE.md": 1,
         "RULES.md": 1,
         ".agents/skills/code-change-verification/SKILL.md": 1,

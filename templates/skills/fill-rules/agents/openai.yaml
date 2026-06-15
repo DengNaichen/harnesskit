@@ -1,4 +1,4 @@
 interface:
   display_name: "Fill Rules"
-  short_description: "Fill RULES.md from facts"
-  default_prompt: "Use $fill-rules to update RULES.md from .harnesskit/facts.md and verified Guard runner evidence."
+  short_description: "Fill short rules and details"
+  default_prompt: "Use $fill-rules to update RULES.md and .harnesskit/rules/RULE-*.md from facts and verified Guard runner evidence."

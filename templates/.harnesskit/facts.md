@@ -64,6 +64,7 @@
 - [NEEDS CLARIFICATION: 依赖和锁文件同步规则状态]
 - [NEEDS CLARIFICATION: 文档/context harness 不漂移规则状态]
 - [NEEDS CLARIFICATION: lint、format、typecheck、coverage、build、hook、branch protection 等可选规则状态]
+- [NEEDS CLARIFICATION: 需要写入 `RULES.md` 的短规则和对应 `.harnesskit/rules/RULE-*.md` details 文件]
 
 ## Open Questions
 
