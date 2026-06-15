@@ -36,6 +36,15 @@ HarnessKit 是 Context Harness CLI 和 Codex-facing toolkit。以下面向外部
 - 支持的 integration：当前仅支持 `codex`，并且它是默认值。
 - Jinja 模板使用 `StrictUndefined`；新增模板变量必须同步提供渲染上下文，或明确保留为目标仓库中的 TODO。
 
+### 当前实现边界
+
+HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及保护 harness 资产不腐坏的 linter/Guard 原型。修改前先分清边界：
+
+- `src/harnesskit/` 是打包发布的 CLI/runtime；这里的改动按产品行为处理，会影响 `harnesskit init`、integration 命令和 `.harnesskit/config.json` 写入。
+- `templates/` 是写入目标仓库的 harness 输出；这里的改动按用户可见模板行为处理，并同步 `tests/test_init.py`。
+- `harness-linter-poc/` 是独立的 Context Harness linter POC，用于本仓库自举验证；它当前不属于 `src/harnesskit` 包运行时，也不是对外 CLI API，但会影响 `make verify`、pre-commit 和 harness 质量检查。
+- `docs/design/` 记录设计理念；不要把设计文档里的“应该如何设计”误写成当前项目已经实现的状态。
+
 ## 上下文入口
 
 HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端信息，Jinja2 渲染模板，Hatchling 构建包。使用 `uv` 管理和运行本仓库命令。
