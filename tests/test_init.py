@@ -22,6 +22,7 @@ SHARED_SKILLS = (
     ".agents/skills/harnesskit-refresh/SKILL.md",
     ".agents/skills/harnesskit-explain/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
+    ".agents/skills/scan-stack/SKILL.md",
 )
 
 

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Fill Agent Guidance"
-  short_description: "Generate or update AGENTS.md from repo facts"
-  default_prompt: "Use $fill-agent-guidance to generate or update AGENTS.md from repository facts and local skill routing."

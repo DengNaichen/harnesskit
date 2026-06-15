@@ -249,6 +249,19 @@ OpenAI Harness Engineering 文章明确提到：
 - 扫到 test 框架 → Guard 加 `npm test`
 - 挂到 git pre-commit hook
 
+### 非当前目标：动态上下文渲染
+
+可以探索用结构化事实源（如轻量 SQLite、SQL seed 或 YAML）作为 Context Harness 的事实来源，再通过 Codex `UserPromptSubmit` hook 在每次用户消息提交时刷新一个 agent 可读的 Markdown snapshot。这个方向可以降低手写 Markdown 被误改的风险，让 agent 读取的是由结构化事实渲染出的上下文。
+
+但这不是当前 MVP 目标，原因是：
+
+- Codex hook 是宿主相关能力，不适合作为所有 agent 的唯一入口。
+- 动态渲染不应替代 Git hook / pre-commit 这类确定性 Guard。
+- 每次消息都重写主文档会污染工作区；更合理的是写入 `.harnesskit/generated/` 之类的快照目录。
+- agent 是否会读取动态快照仍然需要稳定的 bootstrap 文档说明。
+
+更稳的后续形态是：结构化事实源负责保存机器可校验的数据，Markdown snapshot 负责给人和 agent 阅读，pre-commit 负责检查两者是否同步。当前阶段只记录这个方向，不实现。
+
 ---
 
 ## 7. 风险与待决事项

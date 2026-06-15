@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scan Stack"
+  short_description: "Scan repo stack facts for agent guidance"
+  default_prompt: "Use $scan-stack to scan repository stack facts and update AGENTS.md from verified evidence."
