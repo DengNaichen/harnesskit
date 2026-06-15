@@ -24,7 +24,7 @@
 
 - **状态**：已确认。
 - **Guard 类型**：部分确定性。pytest 能证明测试通过，但“新增行为是否被充分覆盖”仍需要 review 判断。
-- **事实来源**：`tests/test_init.py`、`harness-linter-poc/test_harness_lint.py`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`。
+- **事实来源**：`tests/test_init.py`、`harness-linter-poc/test_*.py`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`。
 - **agent 契约**：修改 CLI 行为、初始化逻辑、配置写入、模板输出、harness lint 行为或其他用户可见行为时，同步更新或新增自动化测试。
 - **Guard**：`uv run pytest` 必须通过；`uv run pre-commit run --all-files` 中的 pytest hook 必须通过；review 时检查代码变更和测试变更是否匹配。
 
@@ -32,7 +32,7 @@
 
 - **状态**：已确认。
 - **Guard 类型**：确定性。
-- **事实来源**：`pyproject.toml` 中的 dev dependency、`tests/`、`harness-linter-poc/test_harness_lint.py`、`.pre-commit-config.yaml`。
+- **事实来源**：`pyproject.toml` 中的 dev dependency、`tests/`、`harness-linter-poc/test_*.py`、`.pre-commit-config.yaml`。
 - **agent 契约**：使用 pytest 作为测试入口；不要把 unittest 或其他未配置测试框架写进验证计划。
 - **Guard**：运行 `uv run pytest`；pre-commit 的 `pytest` hook 也运行同一测试入口。
 
@@ -143,7 +143,7 @@
 | Markdown links | `lychee './**/*.md'` | `AGENTS.md`、`lychee.toml` |
 | Lint | `uv run ruff check .` | `pyproject.toml`、`.pre-commit-config.yaml` |
 | Format check | `uv run ruff format --check .` | `pyproject.toml`、`.pre-commit-config.yaml` |
-| Test | `uv run pytest` | `pyproject.toml`、`tests/`、`harness-linter-poc/test_harness_lint.py` |
+| Test | `uv run pytest` | `pyproject.toml`、`tests/`、`harness-linter-poc/test_*.py` |
 | Type check | N/A，当前未配置 | `AGENTS.md`、`pyproject.toml` |
 | Coverage | N/A，当前未配置 | `pyproject.toml`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
 | Build | `uv build` | `pyproject.toml`、`.agents/skills/code-change-verification/SKILL.md` |

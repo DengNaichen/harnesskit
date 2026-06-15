@@ -34,7 +34,15 @@ its direct children are also represented as links in this document.
     - [`skills.py`](harness-linter-poc/rules/skills.py): TODO: placeholder responsibility.
     - [`tech_stack.py`](harness-linter-poc/rules/tech_stack.py): TODO: placeholder responsibility.
     - [`verification.py`](harness-linter-poc/rules/verification.py): TODO: placeholder responsibility.
-  - [`test_harness_lint.py`](harness-linter-poc/test_harness_lint.py): TODO: placeholder responsibility.
+  - [`testing_helpers.py`](harness-linter-poc/testing_helpers.py): TODO: placeholder responsibility.
+  - [`test_architecture_rules.py`](harness-linter-poc/test_architecture_rules.py): TODO: placeholder responsibility.
+  - [`test_cli.py`](harness-linter-poc/test_cli.py): TODO: placeholder responsibility.
+  - [`test_config_rules.py`](harness-linter-poc/test_config_rules.py): TODO: placeholder responsibility.
+  - [`test_markdown_rules.py`](harness-linter-poc/test_markdown_rules.py): TODO: placeholder responsibility.
+  - [`test_project_rules.py`](harness-linter-poc/test_project_rules.py): TODO: placeholder responsibility.
+  - [`test_skill_rules.py`](harness-linter-poc/test_skill_rules.py): TODO: placeholder responsibility.
+  - [`test_tech_stack_rules.py`](harness-linter-poc/test_tech_stack_rules.py): TODO: placeholder responsibility.
+  - [`test_verification_rules.py`](harness-linter-poc/test_verification_rules.py): TODO: placeholder responsibility.
 - [`.agents/skills/`](.agents/skills/): TODO: placeholder responsibility.
 - [`docs/`](docs/): TODO: placeholder responsibility.
 
