@@ -28,6 +28,7 @@
       - [`core.py`](harness-linter-poc/app/rules/core.py)：检查必需 harness 文件、`CLAUDE.md` 指针行为和已安装的 Codex integration 资产。
       - [`harness_markdown.py`](harness-linter-poc/app/rules/harness_markdown.py)：收集 harness Markdown 文件，并检查本地链接、TODO checklist marker 配对和可选外部 Markdown lint。
       - [`project.py`](harness-linter-poc/app/rules/project.py)：检查请求 lint 的目标是否为目录。
+      - [`rule_details.py`](harness-linter-poc/app/rules/rule_details.py)：检查 `RULES.md` 中的短规则是否有对应 `.harnesskit/rules/RULE-*.md` details 文件，并暴露 orphan/过长规则摘要。
       - [`skills.py`](harness-linter-poc/app/rules/skills.py)：检查 skill frontmatter，以及 `AGENTS.md` 中的 `$skill-name` 引用是否存在对应 skill。
       - [`tech_stack.py`](harness-linter-poc/app/rules/tech_stack.py)：从 manifest 检测仓库技术栈事实，并检查已声明的 tech-stack block 是否漂移。
       - [`verification.py`](harness-linter-poc/app/rules/verification.py)：检查验证文档中的过期测试框架引用，以及 lint、format、build、pre-commit 命令是否被正确记录。
@@ -39,6 +40,7 @@
     - [`test_config_rules.py`](harness-linter-poc/tests/test_config_rules.py)：测试 `.harnesskit/config.json` 校验。
     - [`test_markdown_rules.py`](harness-linter-poc/tests/test_markdown_rules.py)：测试 harness Markdown 链接和 marker 检查。
     - [`test_project_rules.py`](harness-linter-poc/tests/test_project_rules.py)：测试项目路径校验。
+    - [`test_rule_detail_rules.py`](harness-linter-poc/tests/test_rule_detail_rules.py)：测试短规则和 details 文件的联动、必需章节、orphan details 和过长规则摘要检查。
     - [`test_skill_rules.py`](harness-linter-poc/tests/test_skill_rules.py)：测试 skill frontmatter 和 `$skill` 引用检查。
     - [`test_tech_stack_rules.py`](harness-linter-poc/tests/test_tech_stack_rules.py)：测试技术栈事实检测和漂移检查。
     - [`test_verification_rules.py`](harness-linter-poc/tests/test_verification_rules.py)：测试验证漂移和命令文档检查。

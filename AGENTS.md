@@ -2,29 +2,29 @@
 
 本指南是 HarnessKit 仓库的 agent 操作入口。它应保持简洁、面向规则和导航；项目定位、产品背景和长期设计讨论放在 `README.md`、`docs/design/DESIGN.md` 或 `docs/` 中。
 
-## 策略与强制skill
+## 目录
 
-### 必须按需使用仓库本地技能
+- [策略与强制Skill](#策略与强制skill)
+- [上下文入口](#上下文入口)
+- [操作指南](#操作指南)
+- [测试与自动化检查](#测试与自动化检查)
+    - [修改模板时的注意事项](#修改模板时的注意事项)
+    - [Pull Request 与提交规范](#pull-request-与提交规范)
+    - [审查关注点](#审查关注点)
+
+## 策略与强制Skill
+
+### 必须按需使用仓库本地Skills
 
 仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
 
-- `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.harnesskit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
-- `$code-change-verification`：当变更影响 `src/harnesskit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前运行。当前完整验证入口是 `make verify`。
-- `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
-
 ### `RULES.md` 作为规则源
 
-`RULES.md` 是本仓库已确认或待确认的工程规则清单。开始任务前，根据变更范围查看相关 Rule；执行时遵守对应 agent 契约；交付前运行已绑定 Guard。
+`RULES.md` 是本仓库已确认或待确认的工程规则清单和约束索引。`AGENTS.md` 只负责把 agent 路由到 `RULES.md`；不要在本文件里为每条 Rule 重复建立触发条件或决策树。
+
+开始任务前先查看 `RULES.md`；执行时遵守其中适用的约束；交付前按 `RULES.md` details 和相关 skill 运行已绑定 Guard。
 
 如果 `AGENTS.md`、skills、验证入口或项目命令与 `RULES.md` 不一致，不要静默选择一边；先用仓库事实核对，再同步修复漂移的 context 文件。
-
-### 可跳过完整验证的情况
-
-以下变更默认不需要运行 `$code-change-verification`，除非用户明确要求：
-
-- 仅修改 `AGENTS.md`、`.agents/` 或其他 agent 元数据。
-- 仅修改 `README.md`、`design.md`、`docs/` 等无行为影响的说明文档。
-- 仅进行对话、审查或规划，没有改动文件。
 
 ### 兼容性边界
 
@@ -59,22 +59,15 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 
 ## 操作指南
 
-### 环境与命令
-
-- 首次配置或依赖变更后运行 `uv sync`。
-- 运行 Python 命令时优先使用 `uv run python ...`，确保使用仓库环境。
-- 本地 CLI 入口是 `uv run harnesskit ...`；也可以用 `uv run python -m harnesskit.cli` 只在确有需要时调试入口模块。
-- Markdown 链接检查需要本机安装 `lychee`；本地可用 Homebrew 安装：`brew install lychee`。
-
 ### 开发工作流
 
-1. 先读相关模块、测试和本地技能说明，确认变更触及的边界。
-2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
+1. 先读 `RULES.md`、相关模块、测试和本地技能说明，确认变更触及的边界。
+2. 修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.harnesskit/config.json`、模板输出、测试或其他面向用户的行为前，先使用 `$implementation-strategy`；兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
 3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
 4. 日常发现可复用命令、仓库约定、坑或待确认事项时，优先记录到 `RULES.md` 的待确认条目、相关文档或本地技能说明中；只有稳定且反复有用的内容才沉淀为强规则。
-5. 需要验证时从仓库根目录运行 `make verify`；需要定位失败时，可运行 `make verify-core` 或具体子目标。
+5. 当变更影响 `src/harnesskit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前使用 `$code-change-verification`；当前完整验证入口是 `make verify`。
 6. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
-7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
+7. 中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更完成后，按 `$pr-draft-summary` 输出 PR 草稿块；纯仓库元数据或无行为影响的文档任务可跳过。
 
 ### 测试与自动化检查
 
