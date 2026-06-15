@@ -82,5 +82,6 @@ moves.
 
 - [`README.md`](README.md): TODO: placeholder responsibility.
 - [`AGENTS.md`](AGENTS.md): TODO: placeholder responsibility.
-- [`docs/DESIGN.md`](docs/DESIGN.md): TODO: placeholder responsibility.
+- [`docs/design/`](docs/design/): TODO: placeholder responsibility.
+- [`docs/design/DESIGN.md`](docs/design/DESIGN.md): TODO: placeholder responsibility.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): TODO: placeholder responsibility.

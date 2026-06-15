@@ -1,6 +1,6 @@
 # 贡献者指南
 
-本指南是 HarnessKit 仓库的 agent 操作入口。它应保持简洁、面向规则和导航；项目定位、产品背景和长期设计讨论放在 `README.md`、`docs/DESIGN.md` 或 `docs/` 中。
+本指南是 HarnessKit 仓库的 agent 操作入口。它应保持简洁、面向规则和导航；项目定位、产品背景和长期设计讨论放在 `README.md`、`docs/design/DESIGN.md` 或 `docs/` 中。
 
 ## 策略与强制skill
 
@@ -11,6 +11,12 @@
 - `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.harnesskit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
 - `$code-change-verification`：当变更影响 `src/harnesskit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前运行。当前完整验证入口是 `make verify`。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
+
+### `RULES.md` 作为规则源
+
+`RULES.md` 是本仓库已确认或待确认的工程规则清单。开始任务前，根据变更范围查看相关 Rule；执行时遵守对应 agent 契约；交付前运行已绑定 Guard。
+
+如果 `AGENTS.md`、skills、验证入口或项目命令与 `RULES.md` 不一致，不要静默选择一边；先用仓库事实核对，再同步修复漂移的 context 文件。
 
 ### 可跳过完整验证的情况
 
@@ -30,28 +36,14 @@ HarnessKit 是 Context Harness CLI 和 Codex-facing toolkit。以下面向外部
 - 支持的 integration：当前仅支持 `codex`，并且它是默认值。
 - Jinja 模板使用 `StrictUndefined`；新增模板变量必须同步提供渲染上下文，或明确保留为目标仓库中的 TODO。
 
-## 项目结构
-
-### 概述
+## 上下文入口
 
 HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端信息，Jinja2 渲染模板，Hatchling 构建包。使用 `uv` 管理和运行本仓库命令。
 
-### 重要目录与文件
-
-- [`src/harnesskit/`](src/harnesskit/)：核心库和 CLI 实现。
-- [`src/harnesskit/cli.py`](src/harnesskit/cli.py)：Typer 入口，定义 `harnesskit init` 和 `harnesskit integration ...` 命令。
-- [`src/harnesskit/init.py`](src/harnesskit/init.py)：项目初始化、模板复制、integration 安装和 `.harnesskit/config.json` 写入逻辑。
-- [`templates/`](templates/)：`harnesskit init` 安装到目标仓库的 Context Harness 模板；其中 [`templates/integrations/codex/`](templates/integrations/codex/) 存放 Codex integration 资产。
-- [`tests/`](tests/)：`pytest` 测试套件，当前重点覆盖初始化、integration 安装、跳过/覆盖文件和配置写入。
-- [`.agents/skills/`](.agents/skills/)：本仓库的 Codex 本地技能，定义验证、实现策略、PR 草稿和 agent 指南刷新流程。
-- [`README.md`](README.md)：产品定位、MVP 边界、CLI 使用方式和 Context Harness 说明。
-- [`ARCHITECTURE.md`](ARCHITECTURE.md)：粗粒度仓库地图，说明主要目录和关键文件分别负责什么。
-- [`docs/DESIGN.md`](docs/DESIGN.md)：Harness Builder MVP 设计讨论，包含 Scan -> Rule -> Guard 模型。
-- [`docs/references/harness-builder/`](docs/references/harness-builder/)：harness 研究笔记和参考资料。
-- [`pyproject.toml`](pyproject.toml)：项目元数据、依赖、脚本入口和 Hatchling 构建配置。
-- [`.pre-commit-config.yaml`](.pre-commit-config.yaml)：Git pre-commit hook 配置，串联完整本地验证栈。
-- [`lychee.toml`](lychee.toml)：Markdown 链接检查配置，默认只检查本地链接。
-- [`uv.lock`](uv.lock)：锁定依赖版本。
+- [`ARCHITECTURE.md`](ARCHITECTURE.md)：完整仓库地图，查目录职责、关键文件和边界时先读它。
+- [`RULES.md`](RULES.md)：工程规则、Guard 绑定和项目命令事实来源。
+- [`.agents/skills/`](.agents/skills/)：本仓库的 Codex 本地技能；触发后再读对应 `SKILL.md`。
+- [`README.md`](README.md) 和 [`docs/`](docs/)：产品定位、设计背景、路线图和研究材料。
 - [`CLAUDE.md`](CLAUDE.md)：应保持为指向 [`AGENTS.md`](AGENTS.md) 的符号链接。
 
 当前仓库有 `Makefile`，完整验证入口是 `make verify`；没有 type checker 配置、docs build 命令或 GitHub PR 模板，不要在指南、总结或验证计划里虚构这些检查。Markdown 链接 lint 使用 `lychee`，并由 [`lychee.toml`](lychee.toml) 限定为 offline 本地链接检查。

@@ -63,6 +63,7 @@ Rule 是开发时的行为约束，比如“新增行为必须有测试”或“
 
 ## 文件关系
 
-- [`../RULES.md`](../RULES.md)：HarnessKit 当前仓库已经确认或待确认的规则。
-- [`../templates/RULES.md`](../templates/RULES.md)：安装到目标仓库时使用的通用模板。
+- [`../../RULES.md`](../../RULES.md)：HarnessKit 当前仓库已经确认或待确认的规则。
+- [`../../templates/RULES.md`](../../templates/RULES.md)：安装到目标仓库时使用的通用模板。
+- [`AGENTS.md`](AGENTS.md)：`AGENTS.md` 的设计说明，解释 agent 操作入口如何消费规则和技能。
 - [`DESIGN.md`](DESIGN.md)：Rule / Guard 模型背后的产品设计说明。

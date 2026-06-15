@@ -1,11 +1,11 @@
 ---
 name: scan-stack
-description: Scan repository stack and context facts from verified evidence. Use when detecting tech stack, validation entrypoints, key directories, local agent skills, when turning those findings into AGENTS.md/RULES.md guidance, or when clarifying rule/tech-stack decisions without inventing unsupported commands or workflows.
+description: Scan repository stack and context facts from verified evidence. Use when detecting tech stack, validation entrypoints, architecture maps, local agent skills, when turning those findings into AGENTS.md/RULES.md guidance, or when clarifying rule/tech-stack decisions without inventing unsupported commands or workflows.
 ---
 
 # Scan Stack
 
-Use this skill to scan repository facts and turn stable findings into practical agent guidance. The default durable output is an updated `AGENTS.md`; when `RULES.md` exists or the task asks for rules, also complete `RULES.md` from the same evidence. Before writing durable guidance, ask a small MCQ-style checkpoint so the user can choose how rules and tech-stack findings should be applied. A separate scan report is optional and only created when the user asks for one.
+Use this skill to scan repository facts and turn stable findings into practical agent guidance. The default durable output is an updated `AGENTS.md` as the top-level router for agent-facing context; when `RULES.md` exists or the task asks for rules, also complete `RULES.md` from the same evidence. Before writing durable guidance, ask a small MCQ-style checkpoint so the user can choose how rules and tech-stack findings should be applied. A separate scan report is optional and only created when the user asks for one.
 
 ## Inputs
 
@@ -24,7 +24,7 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
 1. Build an evidence-backed picture of the repository:
    - what the project is;
    - main languages, runtimes, package managers, frameworks, and important tools;
-   - important source, test, template, docs, and config paths;
+  - architecture map location and a few high-value entry paths;
    - available validation commands and where they are configured;
    - local skills and when agents should use them.
 2. Record facts in a lightweight detection model before writing:
@@ -44,7 +44,9 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
    - keep the checkpoint small, usually 1-5 questions, with a recommended option and the consequence of each choice;
    - do not ask the user to confirm facts already proven by manifests, lockfiles, scripts, CI, hooks, or source layout.
 5. Write concise guidance:
-   - keep `AGENTS.md` focused on policy, routing, commands, and navigation;
+   - treat `AGENTS.md` as the top-level router, not the project knowledge base;
+   - keep `AGENTS.md` focused on policy, context routing, skill triggers, validation entrypoints, and drift handling;
+   - point directory responsibility and module boundaries to `ARCHITECTURE.md` instead of copying a full directory map;
    - when `RULES.md` exists, fill rule status, evidence, agent contract, guard type, guard, and command bindings from the detection model;
    - leave unsupported or unverified rules as `NEEDS CLARIFICATION`, `N/A`, or not configured instead of enabling them from examples;
    - route to skills by trigger and path, not by copying skill bodies;
@@ -58,7 +60,7 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
 
 Use this internal model while collecting facts. It does not need to be written to disk unless the user asks for a scanner artifact.
 
-- Detection categories: languages, runtimes, package managers, frameworks, build tools, test frameworks, linters, formatters, type checkers, key directories, local skills.
+- Detection categories: languages, runtimes, package managers, frameworks, build tools, test frameworks, linters, formatters, type checkers, architecture maps, key entry paths, local skills.
 - Detection statuses:
   - `detected`: direct repository evidence exists.
   - `inferred`: evidence is nearby and plausible, but the exact command or behavior was not verified.
@@ -72,12 +74,13 @@ Use this internal model while collecting facts. It does not need to be written t
 - Rule candidates: map validation and repository facts to `RULES.md` entries, including single verification entrypoint, tests for new behavior, real test entrypoint, naming style, dependency sync, context drift, lockfiles, typecheck, coverage, lint, format check, build, hook suite, branch protection, and architecture map.
 - Clarification candidates: record the checkpoint question, undecidable decision or update posture, evidence gap if any, affected output fields, MCQ options, recommended option, and how each answer changes `AGENTS.md`, `RULES.md`, or related documentation.
 - Needs verification: record missing commands, multiple competing lockfiles, README commands without matching scripts, CI commands that differ from local commands, or tools present without a runnable entrypoint.
+- AGENTS guidance shape: record only the routing facts that help an agent choose where to look or what to run. Put full directory maps in `ARCHITECTURE.md`, rule details in `RULES.md`, and procedural details in skills.
 
 ## Outputs
 
 Produce only the artifacts the task calls for:
 
-- Primary output: updated `AGENTS.md`.
+- Primary output: updated `AGENTS.md` as a top-level router for context, rules, skills, and verification entrypoints.
 - Primary output when present or requested: updated `RULES.md` with evidence-backed rule status, guard type, guard, and project command bindings.
 - Primary interaction before durable writes: MCQ-style checkpoint questions; after the user answers, write the selected decisions back into the relevant guidance or leave unanswered items as `NEEDS CLARIFICATION`.
 - Optional output: updated `CLAUDE.md` pointer or symlink.
@@ -89,6 +92,7 @@ Do not create a separate tech stack report by default. If the user asks for one,
 ## Boundaries
 
 - Do not invent commands, tools, URLs, CI, release processes, PR templates, architecture, or compatibility policy.
+- Do not turn `AGENTS.md` into a duplicated architecture map, rules catalog, or skill body.
 - Do not treat generic template examples as evidence that the target repository supports a tool.
 - Do not treat generic SpecKit behavior as evidence; when SpecKit is present, follow the repository's local SpecKit assets.
 - Do not ask clarification questions for facts that direct repository evidence already answers.
