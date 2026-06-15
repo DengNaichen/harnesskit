@@ -1,58 +1,45 @@
 # Rules 说明
 
-`RULES.md` 是给团队和 agent 共用的工程规则清单。它把仓库里的事实、约定和完成门槛写成明确指令，让 agent 开发时知道哪些事情必须遵守、哪些检查必须通过、哪些规则目前还只是待确认。
+`RULES.md` 是给团队和 agent 共用的短规则索引。它不教 agent 怎么完成一类任务，也不承载完整项目地图；它只记录这个仓库里永远或局部必须遵守的约束。
+
+Context Harness 中三类资产的边界是：
+
+- **Skills** 教 agent 怎么做一类任务，例如扫描事实、判断兼容性、验证改动或刷新 context。
+- **Rules** 告诉 agent 在这个仓库里必须遵守什么约束。
+- **Validations** 负责把可检查的约束转成验证反馈，并记录它们在哪些 runner 中执行。
+
+`AGENTS.md` 负责路由：告诉 agent 什么时候读 `RULES.md`、什么时候触发 skill、什么时候运行 validation。`RULES.md` 不应该替代 `AGENTS.md` 或 skill。
 
 ## 怎么使用
 
 - 先以仓库事实为准，不要把模板里的示例当成已经启用的规则。
-- 能确认的规则写清楚状态、事实来源、agent 契约、Guard 类型和 Guard。
-- 暂时确认不了的规则保留待确认；确认未配置的规则标记为未配置。
-- 修改验证入口、工具链、模板输出、架构边界或团队约定时，同步更新 `RULES.md`。
+- 在 `RULES.md` 中保留短规则句，让 agent 能快速扫描。
+- 把规则的解释、证据、例外和 validation 绑定放到 `.harnesskit/rules/RULE-*.md` 或对应设计文档。
+- 暂时确认不了的规则使用 `[NEEDS CLARIFICATION: ...]`，不要写成强制完成门槛。
+- 修改验证入口、工具链、模板输出、架构边界或团队约定时，同步更新对应 rule、detail 文件和相关 skill。
 
 ## 当前结构
 
-`RULES.md` 现在分成三块：
+推荐把 `RULES.md` 分成面向工程实践的规则类别：
 
-- **基础候选规则**：多数仓库都应该优先确认的规则，例如单一验证入口、新增行为必须有测试、测试入口以仓库事实为准、命名风格、依赖同步、context harness 不漂移。
-- **可选规则**：只有仓库已经配置对应工具或流程时才启用，例如 branch protection、锁文件一致性、type check、coverage、linter、formatter、build、pre-commit、Architecture Map。
-- **项目命令绑定**：把规则落到当前仓库真实命令上，例如 test、lint、format check、build、hook suite；没有配置的命令写 `N/A`。
+- **通用工程实践**：大多数代码库都适用的约束，例如新增行为必须有测试、依赖声明必须同步。
+- **AI Coding 规则**：约束 agent 如何读取 context、处理漂移、避免凭空补全事实。
+- **技术栈规则**：和当前仓库工具链强相关的约束，例如包管理器、lint、format、test、build。
+- **架构规则**：和目录边界、模块职责、生成资产、运行时代码边界相关的约束。
+- **产品 / 领域规则**：和当前项目定位、业务语义或不可破坏的领域约束相关的规则。
 
-每条规则都使用同一组字段：
+每条规则在索引里应尽量是一句话。详情文件再使用稳定字段：
 
-- **状态**：规则在当前仓库里是已确认、部分确认、待确认、未配置还是不适用。
-- **事实来源**：支撑这条规则的文件、配置、脚本、CI、平台设置或人工确认来源。
-- **agent 契约**：用祈使句写 agent 开发时必须怎么做。
-- **Guard 类型**：说明这条规则当前能被工具验证到什么程度。
-- **Guard**：写具体命令、hook、CI gate、review gate 或待补配置。
+- **Rule**：重复短规则句，方便详情文件独立阅读。
+- **Details**：解释适用范围、例外和容易误判的地方。
+- **Evidence**：列出支撑规则的仓库事实、配置、脚本、文档或人工确认来源。
+- **Validation**：说明可执行检查、runner 绑定和当前执行/阻断强度。
 
-## 规则速览
+## Rule、Skill 和 Validation
 
-基础候选规则：
+Rule 是开发时的行为约束，比如“新增行为必须有测试”或“模板输出是用户可见行为”。Skill 是完成任务的流程，比如“修改模板前先判断兼容性，再更新测试”。Validation 是可执行或可检查的验证方式，比如 lint、test、build、pre-commit、CI required checks 或 review。
 
-- **RULE-001 单一验证入口**：把本地开发、agent 交付和 CI 的完整验证收敛到同一入口，避免不同角色运行不同检查。
-- **RULE-002 新增行为必须有测试**：要求功能、bug fix、CLI、配置或模板输出变化配套自动化测试，避免只改代码、不证明行为。
-- **RULE-003 Test 入口以仓库事实为准**：让测试命令跟随仓库真实测试框架，避免文档或 agent 继续使用过期入口。
-- **RULE-004 命名遵守本仓库现有风格**：让新增代码融入本地代码风格；工具能拦一部分，仓库惯例主要靠 review。
-- **RULE-005 import 和依赖必须同步**：新增第三方引用时同步依赖清单和锁文件，避免在干净环境里缺依赖。
-- **RULE-006 文档和 context harness 不漂移**：保持 `AGENTS.md`、`RULES.md`、`ARCHITECTURE.md`、skills 和验证说明与仓库事实一致。
-
-可选规则：
-
-- **RULE-101 Branch protection 和 required checks**：用代码托管平台保护主干，确保合并前检查和 review 已满足。
-- **RULE-102 锁文件一致性**：用 locked install 或等价检查保证依赖安装可复现。
-- **RULE-103 Type check**：在仓库配置类型检查时，用它提前发现接口、类型和数据形状问题。
-- **RULE-104 Linter**：用静态 lint 拦住确定性的代码质量、错误模式和风格问题。
-- **RULE-105 Formatter check-only gate**：把格式检查作为完成门槛，但完成检查只使用 check-only 命令。
-- **RULE-106 Build 进入验证入口**：仓库有 package、应用或产物构建时，把 build 纳入交付验证。
-- **RULE-107 Pre-commit 或 hook suite**：把 pre-commit 或同类 hook 当作验证套件，但不要把它误认为唯一 Guard。
-- **RULE-108 Architecture Map**：让 agent 修改模块前理解目录职责和边界，重要职责变化时同步架构地图。
-- **RULE-109 测试覆盖率 gate**：在仓库配置 coverage 时，把覆盖率作为辅助质量信号；它不能替代新增行为测试。
-
-## Rule 和 Guard
-
-Rule 是开发时的行为约束，比如“新增行为必须有测试”或“命名遵守本仓库现有风格”。Guard 是可执行或可检查的验证方式，比如 lint、test、build、pre-commit、CI required checks 或 review gate。
-
-能确定性验证的规则应尽量绑定 Guard；不能完全自动验证的规则，也要写清楚由哪些工具和 review 共同兜底。
+能确定性验证的规则应尽量绑定 Validation；不能完全自动验证的规则，也要写清楚由哪些工具和 review 共同兜底。
 
 ## 可验证程度
 
@@ -67,4 +54,4 @@ Rule 是开发时的行为约束，比如“新增行为必须有测试”或“
 - [`../../templates/RULES.md`](../../templates/RULES.md)：安装到目标仓库时使用的通用模板。
 - [`AGENTS.md`](AGENTS.md)：`AGENTS.md` 的设计说明，解释 agent 操作入口如何消费规则和技能。
 - [`ARCHITECTURE.md`](ARCHITECTURE.md)：`ARCHITECTURE.md` 的设计说明，解释架构地图如何承载目录职责和边界。
-- [`DESIGN.md`](DESIGN.md)：Rule / Guard 模型背后的产品设计说明。
+- [`DESIGN.md`](DESIGN.md)：Rule / Validation 模型背后的产品设计说明。

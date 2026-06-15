@@ -17,7 +17,7 @@
 - 新增、删除或移动重要模块时，哪些地图条目需要同步。
 - 哪些边界不应该混淆，例如运行时代码和 POC、模板输出和项目自身文档、设计说明和当前实现状态。
 
-它不负责说明 agent 应该按什么流程工作，那是 `AGENTS.md` 的职责；也不负责定义工程规则和 Guard，那是 `RULES.md` 的职责；更不负责承载长篇产品背景和设计讨论，那些应放在 `README.md` 或 `docs/` 中。
+它不负责说明 agent 应该按什么流程工作，那是 `AGENTS.md` 的职责；也不负责定义工程规则和 Validation，那是 `RULES.md` 的职责；更不负责承载长篇产品背景和设计讨论，那些应放在 `README.md` 或 `docs/` 中。
 
 ## 设计原则
 
@@ -35,7 +35,7 @@
 
 - 产品定位放在 `README.md`。
 - agent 工作流程放在 `AGENTS.md`。
-- 工程规则和 Guard 放在 `RULES.md`。
+- 工程规则和 Validation 放在 `RULES.md`。
 - 具体技能流程放在 `.agents/skills/*/SKILL.md`。
 - 长期设计讨论放在 `docs/`。
 

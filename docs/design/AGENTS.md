@@ -35,7 +35,7 @@
 ## 和其他文件的分工
 
 - `AGENTS.md`：agent 操作入口，写执行路径、触发条件和完成要求。
-- `RULES.md`：工程规则清单，写 Rule 状态、事实来源、agent 契约、Guard 类型和 Guard。
+- `RULES.md`：工程规则清单，写 Rule 状态、事实来源、agent 契约、Validation 类型和 Validation。
 - `ARCHITECTURE.md`：仓库地图，写主要目录、关键文件和职责边界。
 - `.agents/skills/*/SKILL.md`：具体流程说明，写技能触发后的步骤和命令。
 - `Makefile`、脚本或 CI 配置：承载可执行入口，不把命令细节长期复制在多个文档里。
@@ -59,7 +59,7 @@
 
 - 开始任务前，根据变更范围查看相关 Rule。
 - 执行时遵守对应 agent 契约。
-- 交付前运行已绑定 Guard。
+- 交付前运行已绑定 Validation。
 - `RULES.md` 中待确认或未配置的规则不能当作完成门槛。
 
 这样可以避免 `AGENTS.md` 和 `RULES.md` 各写一套规则后互相漂移。
@@ -98,12 +98,12 @@
 
 1. 文件定位：说明这是 agent 操作入口，不是产品说明。
 2. 强制 skill：列出触发条件和对应 skill 路径。
-3. `RULES.md` 使用方式：说明 Rule 和 Guard 是规则源。
+3. `RULES.md` 使用方式：说明 Rule 和 Validation 是规则源。
 4. 可跳过验证的低风险情况。
 5. 兼容性边界：列出 CLI、配置、模板、schema 等敏感面。
 6. 关键入口索引：只列少量入口路径，并指向 `ARCHITECTURE.md` 获取完整仓库地图。
 7. 操作指南：写开发流程、验证入口和失败处理。
-8. Guard 与 Runner 绑定：说明命令、hook、CI 或平台 gate 的证据。
+8. Validation 与 Runner 绑定：说明命令、hook、CI 或平台 gate 的证据。
 9. 审查关注点：列出最容易出错的行为边界。
 
 模板版 `AGENTS.md` 可以保留 TODO checklist 和 `[NEEDS CLARIFICATION: ...]` 占位符；项目版 `AGENTS.md` 应尽量删掉已经完成的 checklist，留下已确认事实。
@@ -134,7 +134,7 @@
 - 变更 CLI、配置、模板输出或持久 schema。
 - 变更测试、lint、format、build、pre-commit、CI 或验证入口。
 - 新增、删除或重命名本地 skill。
-- `RULES.md` 中的规则状态、Guard 或命令绑定发生变化。
+- `RULES.md` 中的规则状态、Validation 或命令绑定发生变化。
 - `ARCHITECTURE.md` 的目录职责发生变化。
 
 如果只改 `AGENTS.md` 而不改对应的 `RULES.md`、skill 或验证入口，应该确认这是有意的；否则很可能是在制造新的 context drift。
