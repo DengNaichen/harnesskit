@@ -17,32 +17,35 @@ its direct children are also represented as links in this document.
 - [`templates/`](templates/): TODO: placeholder responsibility.
 - [`tests/`](tests/): TODO: placeholder responsibility.
 - [`harness-linter-poc/`](harness-linter-poc/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
-  - [`harness_lint.py`](harness-linter-poc/harness_lint.py): TODO: placeholder responsibility.
-  - [`core/`](harness-linter-poc/core/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
-    - [`__init__.py`](harness-linter-poc/core/__init__.py): TODO: placeholder responsibility.
-    - [`constants.py`](harness-linter-poc/core/constants.py): TODO: placeholder responsibility.
-    - [`issues.py`](harness-linter-poc/core/issues.py): TODO: placeholder responsibility.
-    - [`markdown.py`](harness-linter-poc/core/markdown.py): TODO: placeholder responsibility.
-    - [`models.py`](harness-linter-poc/core/models.py): TODO: placeholder responsibility.
-  - [`rules/`](harness-linter-poc/rules/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
-    - [`__init__.py`](harness-linter-poc/rules/__init__.py): TODO: placeholder responsibility.
-    - [`architecture.py`](harness-linter-poc/rules/architecture.py): TODO: placeholder responsibility.
-    - [`config.py`](harness-linter-poc/rules/config.py): TODO: placeholder responsibility.
-    - [`core.py`](harness-linter-poc/rules/core.py): TODO: placeholder responsibility.
-    - [`harness_markdown.py`](harness-linter-poc/rules/harness_markdown.py): TODO: placeholder responsibility.
-    - [`project.py`](harness-linter-poc/rules/project.py): TODO: placeholder responsibility.
-    - [`skills.py`](harness-linter-poc/rules/skills.py): TODO: placeholder responsibility.
-    - [`tech_stack.py`](harness-linter-poc/rules/tech_stack.py): TODO: placeholder responsibility.
-    - [`verification.py`](harness-linter-poc/rules/verification.py): TODO: placeholder responsibility.
-  - [`testing_helpers.py`](harness-linter-poc/testing_helpers.py): TODO: placeholder responsibility.
-  - [`test_architecture_rules.py`](harness-linter-poc/test_architecture_rules.py): TODO: placeholder responsibility.
-  - [`test_cli.py`](harness-linter-poc/test_cli.py): TODO: placeholder responsibility.
-  - [`test_config_rules.py`](harness-linter-poc/test_config_rules.py): TODO: placeholder responsibility.
-  - [`test_markdown_rules.py`](harness-linter-poc/test_markdown_rules.py): TODO: placeholder responsibility.
-  - [`test_project_rules.py`](harness-linter-poc/test_project_rules.py): TODO: placeholder responsibility.
-  - [`test_skill_rules.py`](harness-linter-poc/test_skill_rules.py): TODO: placeholder responsibility.
-  - [`test_tech_stack_rules.py`](harness-linter-poc/test_tech_stack_rules.py): TODO: placeholder responsibility.
-  - [`test_verification_rules.py`](harness-linter-poc/test_verification_rules.py): TODO: placeholder responsibility.
+  - [`app/`](harness-linter-poc/app/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
+    - [`harness_lint.py`](harness-linter-poc/app/harness_lint.py): TODO: placeholder responsibility.
+    - [`core/`](harness-linter-poc/app/core/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
+      - [`__init__.py`](harness-linter-poc/app/core/__init__.py): TODO: placeholder responsibility.
+      - [`constants.py`](harness-linter-poc/app/core/constants.py): TODO: placeholder responsibility.
+      - [`issues.py`](harness-linter-poc/app/core/issues.py): TODO: placeholder responsibility.
+      - [`markdown.py`](harness-linter-poc/app/core/markdown.py): TODO: placeholder responsibility.
+      - [`models.py`](harness-linter-poc/app/core/models.py): TODO: placeholder responsibility.
+    - [`rules/`](harness-linter-poc/app/rules/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
+      - [`__init__.py`](harness-linter-poc/app/rules/__init__.py): TODO: placeholder responsibility.
+      - [`architecture.py`](harness-linter-poc/app/rules/architecture.py): TODO: placeholder responsibility.
+      - [`config.py`](harness-linter-poc/app/rules/config.py): TODO: placeholder responsibility.
+      - [`core.py`](harness-linter-poc/app/rules/core.py): TODO: placeholder responsibility.
+      - [`harness_markdown.py`](harness-linter-poc/app/rules/harness_markdown.py): TODO: placeholder responsibility.
+      - [`project.py`](harness-linter-poc/app/rules/project.py): TODO: placeholder responsibility.
+      - [`skills.py`](harness-linter-poc/app/rules/skills.py): TODO: placeholder responsibility.
+      - [`tech_stack.py`](harness-linter-poc/app/rules/tech_stack.py): TODO: placeholder responsibility.
+      - [`verification.py`](harness-linter-poc/app/rules/verification.py): TODO: placeholder responsibility.
+  - [`tests/`](harness-linter-poc/tests/) <!-- harnesskit:coverage=direct-children -->: TODO: placeholder responsibility.
+    - [`conftest.py`](harness-linter-poc/tests/conftest.py): TODO: placeholder responsibility.
+    - [`testing_helpers.py`](harness-linter-poc/tests/testing_helpers.py): TODO: placeholder responsibility.
+    - [`test_architecture_rules.py`](harness-linter-poc/tests/test_architecture_rules.py): TODO: placeholder responsibility.
+    - [`test_cli.py`](harness-linter-poc/tests/test_cli.py): TODO: placeholder responsibility.
+    - [`test_config_rules.py`](harness-linter-poc/tests/test_config_rules.py): TODO: placeholder responsibility.
+    - [`test_markdown_rules.py`](harness-linter-poc/tests/test_markdown_rules.py): TODO: placeholder responsibility.
+    - [`test_project_rules.py`](harness-linter-poc/tests/test_project_rules.py): TODO: placeholder responsibility.
+    - [`test_skill_rules.py`](harness-linter-poc/tests/test_skill_rules.py): TODO: placeholder responsibility.
+    - [`test_tech_stack_rules.py`](harness-linter-poc/tests/test_tech_stack_rules.py): TODO: placeholder responsibility.
+    - [`test_verification_rules.py`](harness-linter-poc/tests/test_verification_rules.py): TODO: placeholder responsibility.
 - [`.agents/skills/`](.agents/skills/): TODO: placeholder responsibility.
 - [`docs/`](docs/): TODO: placeholder responsibility.
 

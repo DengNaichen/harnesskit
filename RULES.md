@@ -24,7 +24,7 @@
 
 - **状态**：已确认。
 - **Guard 类型**：部分确定性。pytest 能证明测试通过，但“新增行为是否被充分覆盖”仍需要 review 判断。
-- **事实来源**：`tests/test_init.py`、`harness-linter-poc/test_*.py`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`。
+- **事实来源**：`tests/test_init.py`、`harness-linter-poc/tests/test_*.py`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`。
 - **agent 契约**：修改 CLI 行为、初始化逻辑、配置写入、模板输出、harness lint 行为或其他用户可见行为时，同步更新或新增自动化测试。
 - **Guard**：`uv run pytest` 必须通过；`uv run pre-commit run --all-files` 中的 pytest hook 必须通过；review 时检查代码变更和测试变更是否匹配。
 
@@ -32,7 +32,7 @@
 
 - **状态**：已确认。
 - **Guard 类型**：确定性。
-- **事实来源**：`pyproject.toml` 中的 dev dependency、`tests/`、`harness-linter-poc/test_*.py`、`.pre-commit-config.yaml`。
+- **事实来源**：`pyproject.toml` 中的 dev dependency、`tests/`、`harness-linter-poc/tests/test_*.py`、`.pre-commit-config.yaml`。
 - **agent 契约**：使用 pytest 作为测试入口；不要把 unittest 或其他未配置测试框架写进验证计划。
 - **Guard**：运行 `uv run pytest`；pre-commit 的 `pytest` hook 也运行同一测试入口。
 
@@ -130,7 +130,7 @@
 
 - **状态**：已确认，但当前 `ARCHITECTURE.md` 仍有 placeholder 职责描述。
 - **Guard 类型**：部分确定性。harness lint 可检查路径、coverage hint 和 placeholder；职责描述是否准确仍需要 review。
-- **事实来源**：`ARCHITECTURE.md`、`harness-linter-poc/rules/architecture.py`、`.pre-commit-config.yaml`。
+- **事实来源**：`ARCHITECTURE.md`、`harness-linter-poc/app/rules/architecture.py`、`.pre-commit-config.yaml`。
 - **agent 契约**：修改重要模块、目录职责或生成资产时，先参考 `ARCHITECTURE.md`；新增重要模块或职责变化时同步更新架构地图。
 - **Guard**：harness lint 检查路径存在性、coverage hint 和 placeholder；当前 placeholder 会作为 warning 暴露。
 
@@ -143,7 +143,7 @@
 | Markdown links | `lychee './**/*.md'` | `AGENTS.md`、`lychee.toml` |
 | Lint | `uv run ruff check .` | `pyproject.toml`、`.pre-commit-config.yaml` |
 | Format check | `uv run ruff format --check .` | `pyproject.toml`、`.pre-commit-config.yaml` |
-| Test | `uv run pytest` | `pyproject.toml`、`tests/`、`harness-linter-poc/test_*.py` |
+| Test | `uv run pytest` | `pyproject.toml`、`tests/`、`harness-linter-poc/tests/test_*.py` |
 | Type check | N/A，当前未配置 | `AGENTS.md`、`pyproject.toml` |
 | Coverage | N/A，当前未配置 | `pyproject.toml`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
 | Build | `uv build` | `pyproject.toml`、`.agents/skills/code-change-verification/SKILL.md` |
