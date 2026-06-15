@@ -12,7 +12,7 @@ Use this skill to update `AGENTS.md` as the top-level agent router. Consume `.ha
 1. Read `.harnesskit/facts.md`, current `AGENTS.md`, `RULES.md`, `ARCHITECTURE.md`, and `.agents/skills/*/SKILL.md`.
 2. Keep `AGENTS.md` focused on policy, context routing, skill triggers, validation entrypoints, and drift handling.
 3. Route detailed directory responsibilities to `ARCHITECTURE.md`, the whole rule index to `RULES.md`, and procedures to skills; do not create per-Rule routing logic in `AGENTS.md`.
-4. Reference `$harness-init`, `$scan-facts`, `$fill-agents`, `$fill-architecture`, `$fill-rules`, `$fill-skills`, `$implementation-strategy`, `$code-change-verification`, and `$pr-draft-summary` only when the corresponding skill exists.
+4. Reference `$harness-init`, `$scan-facts`, `$scan-stack`, `$fill-agents`, `$fill-architecture`, `$fill-rules`, `$fill-skills`, `$implementation-strategy`, `$code-change-verification`, and `$pr-draft-summary` only when the corresponding skill exists.
 5. Preserve unresolved items as `[NEEDS CLARIFICATION: ...]`.
 
 ## Output
