@@ -1,17 +1,17 @@
 ---
 name: scan-stack
-description: Scan repository stack and context facts from verified evidence. Use when detecting tech stack, validation entrypoints, key directories, local agent skills, or when turning those findings into AGENTS.md guidance without inventing unsupported commands or workflows.
+description: Scan repository stack and context facts from verified evidence. Use when detecting tech stack, validation entrypoints, key directories, local agent skills, or when turning those findings into AGENTS.md/RULES.md guidance without inventing unsupported commands or workflows.
 ---
 
 # Scan Stack
 
-Use this skill to scan repository facts and turn stable findings into practical agent guidance. The default durable output is an updated `AGENTS.md`; a separate scan report is optional and only created when the user asks for one.
+Use this skill to scan repository facts and turn stable findings into practical agent guidance. The default durable output is an updated `AGENTS.md`; when `RULES.md` exists or the task asks for rules, also complete `RULES.md` from the same evidence. A separate scan report is optional and only created when the user asks for one.
 
 ## Inputs
 
 Read the smallest useful set of repository-owned evidence:
 
-- Existing guidance: `AGENTS.md`, `CLAUDE.md`, `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
+- Existing guidance: `AGENTS.md`, `CLAUDE.md`, `RULES.md`, `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
 - Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
 - Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
 - Current state: template placeholders, TODO checklist blocks, missing files, stale paths, or guidance that conflicts with repository files.
@@ -37,6 +37,8 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
    - reject: evidence comes only from ignored, generated, local, vendored, or downloaded content.
 4. Write concise guidance:
    - keep `AGENTS.md` focused on policy, routing, commands, and navigation;
+   - when `RULES.md` exists, fill rule status, evidence, agent contract, guard type, guard, and command bindings from the detection model;
+   - leave unsupported or unverified rules as `NEEDS CLARIFICATION`, `N/A`, or not configured instead of enabling them from examples;
    - route to skills by trigger and path, not by copying skill bodies;
    - keep product background and long design discussion in README/docs;
    - preserve unresolved uncertainty as short `TODO:` notes or `candidate.md` entries.
@@ -59,6 +61,7 @@ Use this internal model while collecting facts. It does not need to be written t
   - `low`: README mention, docs snippet, example file, or extension-only signal.
 - Evidence format: record the path and the reason, for example `pyproject.toml: [tool.ruff] present` or `.pre-commit-config.yaml: hook entry runs pytest`.
 - Validation entrypoints: record `kind` such as setup, lint, format, typecheck, test, build, docs, link-check, or full verification; include the exact command only when supported by repository evidence.
+- Rule candidates: map validation and repository facts to `RULES.md` entries, including single verification entrypoint, tests for new behavior, real test entrypoint, naming style, dependency sync, context drift, lockfiles, typecheck, coverage, lint, format check, build, hook suite, branch protection, and architecture map.
 - Needs verification: record missing commands, multiple competing lockfiles, README commands without matching scripts, CI commands that differ from local commands, or tools present without a runnable entrypoint.
 
 ## Outputs
@@ -66,6 +69,7 @@ Use this internal model while collecting facts. It does not need to be written t
 Produce only the artifacts the task calls for:
 
 - Primary output: updated `AGENTS.md`.
+- Primary output when present or requested: updated `RULES.md` with evidence-backed rule status, guard type, guard, and project command bindings.
 - Optional output: updated `CLAUDE.md` pointer or symlink.
 - Optional output: updated `candidate.md` for uncertain facts, reusable commands, or follow-up notes.
 - Optional output: short final summary listing changed sections, unresolved TODOs, and verification performed or intentionally skipped.
@@ -76,5 +80,7 @@ Do not create a separate tech stack report by default. If the user asks for one,
 
 - Do not invent commands, tools, URLs, CI, release processes, PR templates, architecture, or compatibility policy.
 - Do not treat generic template examples as evidence that the target repository supports a tool.
+- Do not turn optional rules into required rules without repository evidence.
+- Do not mark a guard as deterministic unless a command, script, hook, CI task, or platform setting provides a clear pass/fail signal.
 - Do not record transient dependency versions unless they affect operations or compatibility.
 - Do not run runtime test suites for guidance-only edits unless the edit also changes runtime code, templates, build/test config, or generated behavior.
