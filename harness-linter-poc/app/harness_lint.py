@@ -28,6 +28,7 @@ from rules.harness_markdown import (
     run_external_markdownlint,
 )
 from rules.project import check_project_path
+from rules.rule_details import check_rule_details
 from rules.skills import check_skill_frontmatter, check_skill_references
 from rules.tech_stack import check_tech_stack_blocks
 from rules.verification import (
@@ -60,6 +61,7 @@ def lint_project(project_path: Path, *, external_markdownlint: bool = False) -> 
     markdown_files = collect_harness_markdown(project_path)
     check_markdown_links(project_path, markdown_files, issues)
     check_todo_checklist_markers(project_path, markdown_files, issues)
+    check_rule_details(project_path, issues)
     check_architecture_map(project_path, issues)
     check_tech_stack_blocks(project_path, markdown_files, issues)
     check_verification_drift(project_path, markdown_files, issues)

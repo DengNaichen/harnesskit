@@ -35,6 +35,8 @@ SHARED_SKILLS = (
     ".agents/skills/pr-draft-summary/agents/openai.yaml",
     ".agents/skills/scan-facts/SKILL.md",
     ".agents/skills/scan-facts/agents/openai.yaml",
+    ".agents/skills/scan-stack/SKILL.md",
+    ".agents/skills/scan-stack/agents/openai.yaml",
 )
 
 
@@ -52,7 +54,6 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
     assert not (project / "skills").exists()
-    assert not (project / ".agents/skills/scan-stack").exists()
     for skill in SHARED_SKILLS:
         assert (project / skill).is_file(), skill
 
@@ -109,7 +110,6 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "RULES.md" in agents
     assert "$harness-init" in agents
     assert "$scan-facts" in agents
-    assert "$scan-stack" not in agents
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
 

@@ -9,8 +9,14 @@ CONFIG_SCHEMA_VERSION = 1
 SUPPORTED_INTEGRATIONS = {"codex"}
 CODEX_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
+    ".agents/skills/fill-agents/SKILL.md",
+    ".agents/skills/fill-architecture/SKILL.md",
+    ".agents/skills/fill-rules/SKILL.md",
+    ".agents/skills/fill-skills/SKILL.md",
+    ".agents/skills/harness-init/SKILL.md",
     ".agents/skills/implementation-strategy/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
+    ".agents/skills/scan-facts/SKILL.md",
     ".agents/skills/scan-stack/SKILL.md",
 )
 HARNESS_MARKDOWN_GLOBS = (
@@ -18,6 +24,9 @@ HARNESS_MARKDOWN_GLOBS = (
     "AGENTS.md",
     "CLAUDE.md",
     "ARCHITECTURE.md",
+    "RULES.md",
+    ".harnesskit/facts.md",
+    ".harnesskit/rules/*.md",
     ".agents/skills/*/SKILL.md",
 )
 VERIFICATION_DOC_PATHS = (
@@ -36,6 +45,9 @@ VERIFICATION_TEXT_CONTEXT_PATTERNS = (
 )
 MARKDOWN_LINK_PATTERN = re.compile(r'!?\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)')
 SKILL_REFERENCE_PATTERN = re.compile(r"(?<![\w`])\$([A-Za-z][A-Za-z0-9_-]*)")
+RULE_ID_PATTERN = re.compile(r"\bRULE-[A-Z]+-\d+\b")
+RULE_DETAIL_GLOB = ".harnesskit/rules/RULE-*.md"
+RULE_SUMMARY_MAX_LENGTH = 180
 TODO_CHECKLIST_START = "<!-- harnesskit:todo-checklist:start -->"
 TODO_CHECKLIST_END = "<!-- harnesskit:todo-checklist:end -->"
 TECH_STACK_START = "<!-- harnesskit:tech-stack:start -->"
