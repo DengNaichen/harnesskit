@@ -30,7 +30,7 @@ def make_project(root: Path) -> Path:
     )
 
     (project / "AGENTS.md").write_text(
-        "# AGENTS\n\nUse $scan-stack and $code-change-verification as needed.\n",
+        "# AGENTS\n\nUse $scan-facts and $code-change-verification as needed.\n",
         encoding="utf-8",
     )
     (project / "CLAUDE.md").symlink_to("AGENTS.md")
@@ -48,7 +48,16 @@ def make_project(root: Path) -> Path:
             }
         ),
     )
-    for skill_name in ("implementation-strategy", "pr-draft-summary", "scan-stack"):
+    for skill_name in (
+        "fill-agents",
+        "fill-architecture",
+        "fill-rules",
+        "fill-skills",
+        "harness-init",
+        "implementation-strategy",
+        "pr-draft-summary",
+        "scan-facts",
+    ):
         write_skill(project, skill_name, f"# {skill_name}\n")
 
     return project

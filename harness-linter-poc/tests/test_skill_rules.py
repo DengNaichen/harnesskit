@@ -8,7 +8,7 @@ from testing_helpers import assert_issue, make_project
 
 def test_missing_codex_skill_fails(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/scan-stack/SKILL.md").unlink()
+    (project / ".agents/skills/scan-facts/SKILL.md").unlink()
 
     report = lint_project(project)
 
@@ -18,7 +18,7 @@ def test_missing_codex_skill_fails(tmp_path: Path) -> None:
 
 def test_skill_frontmatter_is_required(tmp_path: Path) -> None:
     project = make_project(tmp_path)
-    (project / ".agents/skills/scan-stack/SKILL.md").write_text(
+    (project / ".agents/skills/scan-facts/SKILL.md").write_text(
         "# no frontmatter\n", encoding="utf-8"
     )
 

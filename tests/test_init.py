@@ -18,7 +18,7 @@ from harnesskit.init import InitError, init_project, install_integration  # noqa
 SHARED_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
     ".agents/skills/code-change-verification/agents/openai.yaml",
-    ".agents/skills/code-change-verification/scripts/run_guard.py",
+    ".agents/skills/code-change-verification/scripts/run_validation.py",
     ".agents/skills/fill-agents/SKILL.md",
     ".agents/skills/fill-agents/agents/openai.yaml",
     ".agents/skills/fill-architecture/SKILL.md",
@@ -63,16 +63,16 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert config["installed_integrations"] == ["codex"]
 
 
-def test_init_outputs_guard_runner_and_receipt_ignore(tmp_path: Path) -> None:
+def test_init_outputs_validation_runner_and_receipt_ignore(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
 
     init_project(str(project), integration="codex")
 
     makefile = (project / "Makefile").read_text(encoding="utf-8")
-    assert "scripts/run_guard.py" in makefile
+    assert "scripts/run_validation.py" in makefile
 
     runner = (
-        project / ".agents/skills/code-change-verification/scripts/run_guard.py"
+        project / ".agents/skills/code-change-verification/scripts/run_validation.py"
     ).read_text(encoding="utf-8")
     assert "CHECKS: tuple[Check, ...] = ()" in runner
     assert "not_configured" in runner
@@ -176,7 +176,7 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
 
     expected_checklist_counts = {
         ".harnesskit/facts.md": 1,
-        "AGENTS.md": 8,
+        "AGENTS.md": 7,
         "ARCHITECTURE.md": 1,
         "RULES.md": 1,
         ".agents/skills/code-change-verification/SKILL.md": 1,
