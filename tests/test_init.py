@@ -17,6 +17,7 @@ from harnesskit.init import InitError, init_project, install_integration  # noqa
 
 SHARED_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
+    ".agents/skills/code-change-verification/scripts/run_guard.py",
     ".agents/skills/implementation-strategy/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
     ".agents/skills/scan-stack/SKILL.md",
@@ -30,6 +31,7 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
 
     assert (project / "AGENTS.md").is_file()
     assert (project / "RULES.md").is_file()
+    assert (project / "Makefile").is_file()
     assert (project / "CLAUDE.md").is_file()
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
@@ -42,6 +44,26 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert config["project_name"] == "demo"
     assert config["default_integration"] == "codex"
     assert config["installed_integrations"] == ["codex"]
+
+
+def test_init_outputs_guard_runner_and_receipt_ignore(tmp_path: Path) -> None:
+    project = (tmp_path / "demo").resolve()
+
+    init_project(str(project), integration="codex")
+
+    makefile = (project / "Makefile").read_text(encoding="utf-8")
+    assert "scripts/run_guard.py" in makefile
+
+    runner = (
+        project / ".agents/skills/code-change-verification/scripts/run_guard.py"
+    ).read_text(encoding="utf-8")
+    assert "CHECKS: tuple[Check, ...] = ()" in runner
+    assert "not_configured" in runner
+    assert ".harnesskit" in runner
+    assert "receipts" in runner
+
+    gitignore = (project / ".gitignore").read_text(encoding="utf-8")
+    assert ".harnesskit/receipts/" in gitignore
 
 
 def test_default_integration_is_codex(tmp_path: Path) -> None:

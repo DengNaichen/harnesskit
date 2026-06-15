@@ -65,7 +65,7 @@
 - 查看主要源码、测试、模板、文档和配置目录。
 - 阅读现有 `README.md`、设计文档、`docs/`、`AGENTS.md`、`CLAUDE.md` 以及 `.agents/skills/*/SKILL.md`。
 
-不要在指南、总结或验证计划里虚构仓库不存在的 Makefile、formatter、linter、type checker、docs build、CI、发布流程或 PR 模板。
+不要在指南、总结或验证计划里虚构仓库未配置的 formatter、linter、type checker、docs build、CI、发布流程或 PR 模板。`Makefile` 由 HarnessKit 模板提供时，只能把 `make verify` 当作待配置验证入口；必须先在 `$code-change-verification` 的 runner 中填入真实 checks。
 
 ### 重要目录与文件
 
@@ -129,7 +129,7 @@
 - 为每个 Guard 记录实际 runner，例如 pre-commit、CI、SVN server hook、agent verify、IDE task 或内部平台 gate。
 <!-- harnesskit:todo-checklist:end -->
 
-当前仓库的完整验证栈应记录在 `.agents/skills/code-change-verification/SKILL.md` 中。若该技能仍有 `TODO`，说明验证尚未配置；不要把 TODO 或通用示例当作真实命令。
+当前仓库的完整验证栈应记录在 `.agents/skills/code-change-verification/SKILL.md` 和对应 runner 中。若该技能或 runner 仍有 `TODO` / 空 checks，说明验证尚未配置；不要把 TODO 或通用示例当作真实命令。
 
 补全验证命令时，必须先从仓库配置中确认工具存在，例如构建清单、锁文件、CI 配置或脚本文件。
 

@@ -11,6 +11,7 @@ Guard 是把 Rule 变成可验证约束的机制。`RULES.md` 说明团队和 ag
 - **Runner**：实际运行 Guard 的位置，例如本地验证入口、hook suite、CI、代码托管平台、IDE task、内部平台 gate 或人工 review。
 - **Runner 证据**：证明 Guard 已经绑定到 Runner 的文件、配置、平台设置或人工确认记录。
 - **拦截强度**：Guard 对违规变更的阻断能力。
+- **Receipt**：Guard 运行后留下的轻量记录，说明什么时候运行、由哪个入口运行、结果是什么。
 
 不要把 Guard 等同于某一种工具。pre-commit、CI、Makefile、justfile、package scripts、server hook 或内部平台都只是 Runner；Guard 是被这些 Runner 执行或承载的检查。
 
@@ -23,9 +24,67 @@ Guard 的设计应先从 Rule 出发，再选择检查方式和 Runner：
 3. 为可检测部分设计 Guard。
 4. 把 Guard 绑定到合适 Runner。
 5. 记录 Runner 证据和拦截强度。
-6. 对无法完全自动化的部分，明确需要 review 或人工判断。
+6. 设计 Guard receipt，让运行结果能被 agent、人和 CI 消费。
+7. 对无法完全自动化的部分，明确需要 review 或人工判断。
 
 不要把没有 Runner 证据的检查写成强制阻断。没有绑定到 runner 的命令只是建议或人工操作；只有能证明会被运行的位置，才构成真正的 Guard 链路。
+
+## 统一入口
+
+Guard suite 应优先收敛到一个稳定入口，例如 `make verify`、`just verify`、`npm run verify` 或 `harnesskit guard run`。agent、人工本地验证和 CI 应尽量调用同一个入口，避免不同 runner 维护不同命令列表。
+
+入口可以拆成不会递归的子任务：
+
+- 核心检查：lint、format check、test、build、link check 等确定性 Guard。
+- Hook suite：运行 pre-commit 或类似本地 hook。
+- 平台 gate：在 CI 或代码托管平台中调用同一入口。
+
+不要让 hook suite 调用完整入口，同时完整入口又调用 hook suite。需要复用时，把核心检查拆成独立子入口，再由完整入口和 hook 分别调用。
+
+## Guard Receipt
+
+Guard 只运行而不留记录时，只能证明“当下命令结束了”，很难向 agent 或 reviewer 展示。轻量 receipt 可以把一次运行变成可追溯结果，但不必一开始做成完整审计系统。
+
+推荐默认位置：
+
+```text
+.harnesskit/
+  receipts/
+    latest.json
+    runs/
+      <run_id>.json
+```
+
+`latest.json` 方便 agent 找到最近一次运行；`runs/<run_id>.json` 保存历史记录。receipt 是运行产物，默认不提交进版本库；CI 可以把它上传为 artifact。
+
+最小 receipt 字段：
+
+```json
+{
+  "schema_version": 1,
+  "type": "guard",
+  "run_id": "2026-06-15T10-32-11+08-00",
+  "started_at": "2026-06-15T10:32:11+08:00",
+  "finished_at": "2026-06-15T10:33:42+08:00",
+  "entrypoint": "make verify",
+  "status": "passed",
+  "git": {
+    "commit": "6cba0f6",
+    "dirty": false
+  },
+  "checks": [
+    {
+      "name": "test",
+      "command": "uv run pytest",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 4.8
+    }
+  ]
+}
+```
+
+失败也要写 receipt。失败记录至少应包含失败 check、exit code、时间戳和入口；完整日志可以作为后续增强，而不是 MVP 的必要条件。
 
 ## 拦截强度
 
@@ -52,7 +111,9 @@ Guard 的设计应先从 Rule 出发，再选择检查方式和 Runner：
 
 - `RULES.md`：描述 Rule、适用范围、Guard 类型、Runner 证据和当前状态。
 - Agent 指南：告诉 agent 在什么情况下必须运行哪些验证入口。
-- 统一验证入口：把确定性 Guard 收敛为一个稳定命令。
+- Skill runner：封装确定性 Guard 的执行逻辑，并写入 receipt。
+- 统一验证入口：把确定性 Guard 收敛为一个稳定命令，通常调用 skill runner 或项目脚本。
+- Receipt 目录：保存最近一次和历史 Guard 运行摘要。
 - Hook suite：在本地提交或变更流转前运行一组检查。
 - CI 或平台 gate：作为最终阻断层。
 - Review 流程：覆盖无法完全自动化的判断。

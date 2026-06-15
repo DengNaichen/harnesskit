@@ -14,11 +14,11 @@
 
 ### `RULE-001` 单一验证入口
 
-- **状态**：部分确认。本仓库已有明确完整验证栈，但尚未配置 `make verify`、`just verify` 或同类单一 wrapper 命令。
-- **Guard 类型**：部分确定性。完整验证栈可确定性执行，但“单一 wrapper 入口”尚未配置。
-- **事实来源**：`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`、`.pre-commit-config.yaml`。
-- **agent 契约**：完成运行时代码、模板、测试、构建配置或测试行为变更时，按 `$code-change-verification` 运行完整验证栈；不要虚构本仓库不存在的 `make verify`、type check 或 docs build 命令。
-- **Guard**：当前完整栈是 `lychee './**/*.md'`、`uv run ruff check .`、`uv run ruff format --check .`、`uv run pytest`、`uv build` 和 `uv run pre-commit run --all-files`。
+- **状态**：已确认。本仓库使用 `make verify` 作为单一完整验证入口。
+- **Guard 类型**：确定性。
+- **事实来源**：`Makefile`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md`、`.pre-commit-config.yaml`。
+- **agent 契约**：完成运行时代码、模板、测试、构建配置或测试行为变更时，按 `$code-change-verification` 运行 `make verify`；不要虚构本仓库不存在的 type check、coverage 或 docs build 命令。
+- **Guard**：`make verify` 运行 Markdown links、Ruff lint、Ruff format check、pytest、package build 和 pre-commit hooks。
 
 ### `RULE-002` 新增行为必须有测试
 
@@ -123,7 +123,7 @@
 - **状态**：已确认。
 - **Guard 类型**：确定性。
 - **事实来源**：`.pre-commit-config.yaml`。
-- **agent 契约**：把 pre-commit 视为验证 suite，而不是唯一 Guard；完成实质性代码或模板变更时仍按 `$code-change-verification` 的完整栈收敛。
+- **agent 契约**：把 pre-commit 视为验证 suite，而不是唯一 Guard；完成实质性代码或模板变更时仍按 `make verify` 收敛。
 - **Guard**：运行 `uv run pre-commit run --all-files`，触发 Ruff、harness lint、pytest、Markdown links 和 package build。
 
 ### `RULE-108` Architecture Map
@@ -138,7 +138,7 @@
 
 | 检查项 | 当前命令 | 事实来源 |
 | --- | --- | --- |
-| 完整验证入口 | N/A，当前没有单一 wrapper；按 `RULE-001` 运行完整验证栈 | `AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
+| 完整验证入口 | `make verify` | `Makefile`、`AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
 | 依赖安装 | `uv sync` | `AGENTS.md`、`.agents/skills/code-change-verification/SKILL.md` |
 | Markdown links | `lychee './**/*.md'` | `AGENTS.md`、`lychee.toml` |
 | Lint | `uv run ruff check .` | `pyproject.toml`、`.pre-commit-config.yaml` |

@@ -9,7 +9,7 @@
 仓库本地技能位于 `.agents/skills/`。触发条件满足时，先阅读对应 `SKILL.md`，再执行任务；不要把技能正文复制进本文件。
 
 - `$implementation-strategy`：在修改运行时代码、导出 API、CLI 命令/参数、外部配置、`.harnesskit/config.json`、模板输出、测试或其他面向用户的行为之前使用。兼容性判断以最新发布标签为基准，而不是未发布的本地分支改动。
-- `$code-change-verification`：当变更影响 `src/harnesskit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前运行。当前完整验证栈是 `lychee './**/*.md'`、`uv run ruff check .`、`uv run ruff format --check .`、`uv run pytest`、`uv build` 和 `uv run pre-commit run --all-files`。
+- `$code-change-verification`：当变更影响 `src/harnesskit/`、`templates/`、`tests/`、`pyproject.toml`、`uv.lock`、Markdown 链接或构建/测试行为时，在标记完成前运行。当前完整验证入口是 `make verify`。
 - `$pr-draft-summary`：完成中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更后，在最终交付中生成 PR 草稿块。纯仓库元数据或无行为影响的文档任务可跳过。
 
 ### 可跳过完整验证的情况
@@ -54,7 +54,7 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 - [`uv.lock`](uv.lock)：锁定依赖版本。
 - [`CLAUDE.md`](CLAUDE.md)：应保持为指向 [`AGENTS.md`](AGENTS.md) 的符号链接。
 
-当前仓库没有 Makefile、type checker 配置、docs build 命令或 GitHub PR 模板；不要在指南、总结或验证计划里虚构这些检查。Markdown 链接 lint 使用 `lychee`，并由 [`lychee.toml`](lychee.toml) 限定为 offline 本地链接检查。
+当前仓库有 `Makefile`，完整验证入口是 `make verify`；没有 type checker 配置、docs build 命令或 GitHub PR 模板，不要在指南、总结或验证计划里虚构这些检查。Markdown 链接 lint 使用 `lychee`，并由 [`lychee.toml`](lychee.toml) 限定为 offline 本地链接检查。
 
 ## 操作指南
 
@@ -71,7 +71,7 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 2. 如果会改变运行时、CLI、配置、模板输出或测试行为，先使用 `$implementation-strategy`。
 3. 实现变更时同步更新测试；模板行为改变时，把它当作用户可见行为处理。
 4. 日常发现可复用命令、仓库约定、坑或待确认事项时，优先记录到 `RULES.md` 的待确认条目、相关文档或本地技能说明中；只有稳定且反复有用的内容才沉淀为强规则。
-5. 需要验证时从仓库根目录运行完整验证栈：`lychee './**/*.md'`、`uv run ruff check .`、`uv run ruff format --check .`、`uv run pytest`、`uv build`，然后 `uv run pre-commit run --all-files`。
+5. 需要验证时从仓库根目录运行 `make verify`；需要定位失败时，可运行 `make verify-core` 或具体子目标。
 6. 修复失败后重新运行同一验证命令，最终交付只报告最终状态。
 7. 中等及以上规模的实质性代码工作完成后，按 `$pr-draft-summary` 输出 PR 草稿块。
 
@@ -81,11 +81,12 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 
 维护 `RULES.md` 或验证说明时，区分 **Rule**、**Guard** 和 **Runner**：Rule 是要遵守的规则，Guard 是可执行检查，Runner 是实际运行这个检查的位置。不要只因为写了一个 Guard 命令就声称它能拦住问题；必须写清楚它绑定到了哪个 runner，以及证据来自哪里。
 
-当前本仓库的主要 runner 是 `$code-change-verification` 和 `.pre-commit-config.yaml`。如果未来接入 CI、SVN server hook、内部平台 gate 或其他 runner，同步更新 `RULES.md`、本节和验证 skill。没有 runner 证据的检查只能标记为人工执行、agent 执行或未绑定，不能写成强制拦截。
+当前本仓库的主要 runner 是 `Makefile`、`$code-change-verification` 和 `.pre-commit-config.yaml`。如果未来接入 CI、SVN server hook、内部平台 gate 或其他 runner，同步更新 `RULES.md`、本节和验证 skill。没有 runner 证据的检查只能标记为人工执行、agent 执行或未绑定，不能写成强制拦截。
 
 当前完整验证栈：
 
 <!-- harnesskit:verification:start -->
+- Full verification: make verify
 - Markdown links: lychee './**/*.md'
 - Python lint: uv run ruff check .
 - Python format: uv run ruff format --check .
@@ -94,7 +95,7 @@ HarnessKit 是 Python 3.11+ 项目，使用 Typer 构建 CLI，Rich 输出终端
 - Pre-commit hooks: uv run pre-commit run --all-files
 <!-- harnesskit:verification:end -->
 
-仓库目前没有可证实的 `make format`、`make typecheck` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
+仓库目前没有可证实的 `make typecheck` 或文档构建命令。除非相关配置被加入仓库，否则不要要求这些命令作为完成条件。
 
 ### 修改模板时的注意事项
 

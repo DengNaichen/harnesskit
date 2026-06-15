@@ -23,8 +23,8 @@ Before filling this section:
 - Lint command: TODO
 - Typecheck command: TODO
 - Test command: TODO
-- Full verification command: TODO
-- Notes: TODO
+- Full verification command: `make verify` after `scripts/run_guard.py` has been configured with repository-verified checks.
+- Notes: `make verify` writes `.harnesskit/receipts/latest.json` and `.harnesskit/receipts/runs/<run_id>.json`; until checks are configured, it records `not_configured` and exits non-zero.
 
 ## Quick start
 
@@ -33,13 +33,14 @@ Before filling this section:
 3. Run only commands that are filled with concrete repository commands. Treat `TODO` entries as missing, not optional examples.
 4. Run commands from the repository root, preserving the order documented in this skill.
 5. If a command fails, fix the issue, rerun the relevant verification stack, and report the final status.
-6. If this skill still contains only `TODO` verification entries, report that verification is not configured.
+6. If `make verify` reports `not_configured`, fill `CHECKS` in `./.agents/skills/code-change-verification/scripts/run_guard.py` from repository facts before treating it as verification.
 
 ## Manual workflow
 
 - If dependency installation is required and the setup command has been filled above, run that setup command before verification.
-- Prefer the full verification command when it has been filled above.
+- Prefer `make verify` after `scripts/run_guard.py` has been configured.
 - If there is no full verification command, run the filled format, lint, typecheck, and test commands in that order, skipping only entries that remain `TODO`.
 - Do not add new tools or create new verification commands as part of this skill unless the user explicitly asks for that change.
 - Do not treat `TODO` entries or generic examples in templates as proof that the target repository supports those commands.
+- Confirm `.harnesskit/receipts/latest.json` was written and cite the receipt path in the final response when useful.
 - Re-run failed checks after applying fixes so the reported verification matches the final working tree.

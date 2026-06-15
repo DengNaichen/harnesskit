@@ -15,12 +15,7 @@ Ensure work is only marked complete after the repository's available verificatio
 2. If dependencies are not installed or have changed, run `uv sync`.
 3. Run from the repository root:
    ```bash
-   lychee './**/*.md'
-   uv run ruff check .
-   uv run ruff format --check .
-   uv run pytest
-   uv build
-   uv run pre-commit run --all-files
+   make verify
    ```
 4. If the command fails, fix the issue, rerun it, and report the failing output.
 5. Confirm completion only when the command succeeds with no remaining issues.
@@ -28,16 +23,14 @@ Ensure work is only marked complete after the repository's available verificatio
 ## Manual workflow
 
 - If dependencies are not installed or have changed, run `uv sync` first.
-- Run `lychee './**/*.md'` from the repository root to validate local Markdown links.
-- Run `uv run ruff check .` from the repository root.
-- Run `uv run ruff format --check .` from the repository root.
-- Run `uv run pytest` from the repository root.
-- Run `uv build` from the repository root.
-- Run `uv run pre-commit run --all-files` from the repository root.
-- This repository currently has no Makefile, type checker, or docs build command. Do not invent those checks.
+- Run `make verify` from the repository root. This invokes the skill runner at `./.agents/skills/code-change-verification/scripts/run_guard.py`.
+- Confirm the runner wrote `.harnesskit/receipts/latest.json`; cite the receipt path in the final response when useful.
+- Use `make verify-core`, `make hooks`, or individual Make targets only when diagnosing a failure.
+- This repository currently has no type checker or docs build command. Do not invent those checks.
 - Re-run the test command after applying fixes so the reported verification matches the final working tree.
 
 <!-- harnesskit:verification:start -->
+- Full verification: make verify
 - Markdown links: lychee './**/*.md'
 - Python lint: uv run ruff check .
 - Python format: uv run ruff format --check .
