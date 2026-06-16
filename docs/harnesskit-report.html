@@ -231,12 +231,12 @@
       margin-bottom: 0;
     }
 
-    .hero-directory {
+    .hero-positioning {
       margin-top: 40px;
       width: 100%;
     }
 
-    .directory-title {
+    .positioning-title {
       padding: 0 0 12px 0;
       font-size: 10px;
       font-weight: 700;
@@ -246,13 +246,13 @@
       color: var(--text-dim);
     }
 
-    .directory-list {
+    .positioning-list {
       display: flex;
       flex-direction: column;
       margin-top: 8px;
     }
 
-    .directory-item {
+    .positioning-item {
       display: flex;
       align-items: baseline;
       justify-content: flex-start;
@@ -260,15 +260,14 @@
       padding: 8px 0;
     }
 
-    .item-name {
-      font-family: monospace;
+    .positioning-label {
       font-weight: 700;
       color: var(--text-main);
       min-width: 180px;
       font-size: 13px;
     }
 
-    .item-desc {
+    .positioning-text {
       color: var(--text-muted);
       font-size: 13px;
     }
@@ -373,6 +372,45 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
+    }
+
+    .cards-two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .definition-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: var(--border-thin);
+    }
+
+    .definition-row {
+      display: grid;
+      gap: 4px;
+    }
+
+    .definition-term {
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .definition-copy {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    .definition-copy ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .definition-copy li+li {
+      margin-top: 5px;
     }
 
     .card {
@@ -535,14 +573,8 @@
       line-height: 1.5;
     }
 
-    /* Roadmap Grid */
-    .matrix {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .matrix-item {
+    /* Architecture Figure */
+    .figure-panel {
       padding: 20px;
       border: var(--border-thin);
       border-radius: 8px;
@@ -550,93 +582,198 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .matrix-item:hover {
-      border-color: var(--panel-border-hover);
-      box-shadow: var(--shadow-md);
-    }
-
-    .matrix-item strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: var(--text-main);
-    }
-
-    .matrix-item p {
+    .figure-caption {
+      margin: 14px 0 0;
       color: var(--text-muted);
-      font-size: 13px;
-      margin: 0;
+      font-size: 12px;
       line-height: 1.5;
     }
 
-    /* Ask & Decision Panel (Elegant Light-box) */
-    .ask {
-      padding: 36px;
+    .builder-diagram {
+      display: grid;
+      gap: 18px;
+    }
+
+    .diagram-flow {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .flow-arrow {
+      color: var(--text-dim);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .diagram-node {
+      min-height: 150px;
+      padding: 18px;
+      border: var(--border-thin);
       border-radius: 8px;
       background: var(--panel);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .diagram-node.current {
+      border-color: #0f766e;
+      background: #f0fdfa;
+    }
+
+    .diagram-node.future {
+      border-style: dashed;
+      background: #fafafa;
+    }
+
+    .diagram-node.host {
+      border-color: #64748b;
+      background: #f8fafc;
+    }
+
+    .node-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .node-badge {
+      padding: 3px 7px;
+      border-radius: 999px;
       border: var(--border-thin);
-      box-shadow: var(--shadow-md);
+      background: #fff;
+      color: var(--text-muted);
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .diagram-node.current .node-badge {
+      border-color: #99f6e4;
+      color: #0f766e;
+    }
+
+    .diagram-node h4 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.25;
+      color: var(--text-main);
+    }
+
+    .diagram-node p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .cycle-diagram {
       position: relative;
+      min-height: 660px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--bg);
       overflow: hidden;
     }
 
-    .ask::after {
+    .cycle-ring {
+      position: absolute;
+      inset: 100px 150px;
+      border-radius: 50%;
+    }
+
+    .cycle-ring::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--accent);
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from -90deg,
+          #0f766e 0deg 55deg,
+          #cbd5e1 55deg 60deg,
+          #0f766e 60deg 115deg,
+          #cbd5e1 115deg 120deg,
+          #0f766e 120deg 175deg,
+          #cbd5e1 175deg 180deg,
+          #94a3b8 180deg 235deg,
+          #cbd5e1 235deg 240deg,
+          #94a3b8 240deg 295deg,
+          #cbd5e1 295deg 300deg,
+          #94a3b8 300deg 355deg,
+          #cbd5e1 355deg 360deg);
+      mask: radial-gradient(circle, transparent calc(50% - 2px), #000 calc(50% - 2px), #000 calc(50% + 2px), transparent calc(50% + 2px));
+      -webkit-mask: radial-gradient(circle, transparent calc(50% - 2px), #000 calc(50% - 2px), #000 calc(50% + 2px), transparent calc(50% + 2px));
     }
 
-    .ask .lead {
-      color: var(--text-main);
-      margin-bottom: 24px;
-      font-weight: 600;
-    }
-
-    .ask-grid {
+    .cycle-ring::after {
+      content: '→';
+      position: absolute;
+      left: 50%;
+      top: -14px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .ask-item {
-      padding: 20px;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 50%;
       border: var(--border-thin);
-      border-radius: 6px;
-      background: var(--bg);
+      background: #fff;
+      color: #0f766e;
+      font-weight: 800;
+      transform: translateX(-50%);
     }
 
-    .ask-item:hover {
-      background: var(--panel);
-      border-color: var(--panel-border-hover);
-      box-shadow: var(--shadow-sm);
+    .cycle-node {
+      position: absolute;
+      width: min(230px, 31%);
+      min-height: 126px;
     }
 
-    .ask-item strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: var(--text-main);
+    .cycle-node.pos-1 {
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%);
     }
 
-    .ask-item p {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin: 0;
-      line-height: 1.5;
+    .cycle-node.pos-2 {
+      right: 28px;
+      top: 156px;
     }
 
-    /* Footer */
-    footer {
-      padding: 40px 0;
-      color: var(--text-muted);
-      font-size: 12px;
-      text-align: center;
-      border-top: var(--border-thin);
-      margin-top: 40px;
+    .cycle-node.pos-3 {
+      right: 28px;
+      bottom: 156px;
+    }
+
+    .cycle-node.pos-4 {
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+    }
+
+    .cycle-node.pos-5 {
+      left: 28px;
+      bottom: 156px;
+    }
+
+    .cycle-node.pos-6 {
+      left: 28px;
+      top: 156px;
     }
 
     /* Responsive Design */
@@ -710,32 +847,55 @@
       .metrics,
       .cards,
       .pipeline,
-      .matrix,
       .status-list,
-      .ask-grid {
-        grid-template-columns: 1fr;
-      }
-
       .problem-definition {
         flex-direction: column;
         gap: 8px;
         padding: 16px 0;
       }
 
-      .directory-item {
+      .positioning-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
       }
 
-      .item-name {
+      .positioning-label {
         min-width: auto;
       }
 
-      .matrix-item,
       .timeline-item {
         grid-template-columns: 1fr;
         gap: 10px;
+      }
+
+      .diagram-flow,
+      .cycle-diagram {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
+
+      .cycle-diagram {
+        display: grid;
+        min-height: 0;
+        gap: 12px;
+        padding: 14px;
+        overflow: visible;
+      }
+
+      .cycle-ring {
+        display: none;
+      }
+
+      .cycle-node,
+      .cycle-node {
+        position: static;
+        width: auto;
+        min-height: 0;
+        transform: none;
       }
 
       .timeline-item {
@@ -748,9 +908,6 @@
         padding-bottom: 0;
       }
 
-      .ask {
-        padding: 24px;
-      }
     }
 
     @media print {
@@ -785,11 +942,13 @@
         <div class="sidebar-title">报告大纲</div>
         <nav class="sidebar-nav" aria-label="侧边栏导航">
           <a href="#top" class="active-link">概览</a>
+          <a href="#harness">什么是 Harness</a>
+          <a href="#components">Harness 组成</a>
           <a href="#problem">核心痛点</a>
+          <a href="#builder-loop">长期闭环</a>
+          <a href="#solution">解决方案</a>
           <a href="#delivery">本期交付</a>
           <a href="#loop">工作流闭环</a>
-          <a href="#roadmap">未来路线</a>
-          <a href="#ask">决策共识</a>
         </nav>
       </aside>
 
@@ -801,34 +960,135 @@
             <p class="eyebrow">Context Harness MVP</p>
             <h1>把现有仓库升级为<br>Agent 可稳定协作的研发环境。</h1>
             <p class="lead">
-              HarnessKit 面向正在引入 AI Agent 的研发团队，帮助他们把项目背景、仓库结构、工程规则和验证入口沉淀为可版本化的 Context Harness。
-              通过 CLI 注入 AGENTS、RULES、Skills 与 Validations，并配合静态分析和防漂移检查，
-              团队可以用更低成本完成 Agent 接入，让每一次协作都从清晰上下文、明确边界和确定性反馈开始。
+              HarnessKit 面向正在引入 AI Agent 的研发团队，帮助他们把隐性的项目知识转化为稳定、可复用、可维护的协作上下文。
+              团队可以用更低成本完成 Agent 接入，减少反复解释项目背景和纠正文档漂移的负担，
+              让每一次协作都从清晰上下文、明确边界和可信反馈开始。
             </p>
           </div>
 
-          <div class="hero-directory">
-            <div class="directory-title">Harness 核心资产目录</div>
-            <div class="directory-list">
-              <div class="directory-item">
-                <span class="item-name">AGENTS.md</span>
-                <span class="item-desc">顶层指南路由器，引导 Agent 进场并明确收敛步骤。</span>
+          <div class="hero-positioning">
+            <div class="positioning-title">Product Positioning</div>
+            <div class="positioning-list">
+              <div class="positioning-item">
+                <span class="positioning-label">服务对象</span>
+                <span class="positioning-text">正在把 AI Agent 引入日常研发、需要降低接入门槛的工程团队。</span>
               </div>
-              <div class="directory-item">
-                <span class="item-name">ARCHITECTURE.md</span>
-                <span class="item-desc">粗粒度仓库地图，帮助 Agent 快速定位核心代码与边界职责。</span>
+              <div class="positioning-item">
+                <span class="positioning-label">核心价值</span>
+                <span class="positioning-text">把项目上下文、工程规则和验证反馈沉淀为随代码一起演进的协作资产。</span>
               </div>
-              <div class="directory-item">
-                <span class="item-name">RULES.md</span>
-                <span class="item-desc">规则事实索引，记录跨开发任务、不可被破坏的短规则约束。</span>
+              <div class="positioning-item">
+                <span class="positioning-label">MVP 边界</span>
+                <span class="positioning-text">聚焦 Context Harness 的初始化、维护和防漂移检查，优先保证上下文可信。</span>
               </div>
-              <div class="directory-item">
-                <span class="item-name">.agents/skills/</span>
-                <span class="item-desc">按需加载的任务指令集（如 scan-stack, fill-rules 等），承载特定流程。</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Harness Definition Section -->
+        <section id="harness">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Harness Definition</p>
+              <h2>Harness 是让模型成为 Agent 的<br>外部协作契约。</h2>
+            </div>
+            <p class="section-note">
+              参考 OpenAI 与 Anthropic 对 agent harness 的用法，Harness 可以理解为围绕模型建立的系统契约：组织输入、上下文、工具、规则、状态、反馈和验证，使模型能够在真实任务中以 Agent 的形式行动。
+            </p>
+          </div>
+
+          <div class="cards cards-two">
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Concept</div>
+              <h3>广义 Harness</h3>
+              <p>覆盖 agent loop、工具调用、上下文管理、权限边界、执行环境、评估反馈、长期运行和多轮改进等完整能力。其中 agent loop、工具执行、权限和上下文窗口管理主要由 Codex、Claude Code 等宿主产品提供。</p>
+            </div>
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Subset</div>
+              <h3>Context Harness</h3>
+              <p>HarnessKit 聚焦宿主产品进入仓库之后要读取和遵守的本地上下文：项目事实、工程规则、验证入口和操作指引。</p>
+            </div>
+          </div>
+
+          <div class="problem-definition">
+            <span class="def-label">Boundary / 边界</span>
+            <div class="def-content">
+              Codex 和 Claude Code 负责让模型能行动：接收任务、运行 agent loop、调用工具、执行命令、管理权限和上下文窗口。
+              HarnessKit 负责让仓库可被这些 Agent 稳定理解：沉淀项目事实、工程规则、验证入口和操作约定，并检查这些上下文资产是否随代码演进保持可信。
+              团队接入 Coding Agent 时，最先遇到的问题通常发生在这一层：Agent 不知道项目事实、规则和验证入口，已有说明又会随代码演进发生漂移。
+            </div>
+          </div>
+        </section>
+
+        <!-- Context Harness Components Section -->
+        <section id="components">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Context Harness Components</p>
+              <h2>一套 Context Harness<br>由入口、地图、流程、规则和反馈组成。</h2>
+            </div>
+            <p class="section-note">
+              这套分工避免把所有内容塞进一份超长说明：AGENTS.md 负责路由和完成门槛，ARCHITECTURE.md 负责仓库地图和边界，
+              Skills 负责多步骤流程，Rules 负责必须遵守的约束，Validations 负责能检查的反馈机制。
+            </p>
+          </div>
+
+          <div class="definition-list">
+            <div class="definition-row">
+              <div class="definition-term">AGENTS.md</div>
+              <div class="definition-copy">
+                <ul>
+                  <li>路由和完成门槛，告诉 Agent 进仓库后先读什么、触发哪些 Skills、遵守哪些 Rules。</li>
+                  <li>写入口、触发条件、兼容性边界和交付要求。</li>
+                  <li>发现上下文漂移时，要求 Agent 回到事实来源核对。</li>
+                  <li>不吞掉完整项目知识、目录地图或流程细节。</li>
+                </ul>
               </div>
-              <div class="directory-item">
-                <span class="item-name">Validations</span>
-                <span class="item-desc">定义能被自动化执行的各类 Probes，反馈执行状态并绑定 Runner。</span>
+            </div>
+            <div class="definition-row">
+              <div class="definition-term">ARCHITECTURE.md</div>
+              <div class="definition-copy">
+                <ul>
+                  <li>仓库地图和边界，回答代码、测试、模板、文档和配置在哪里。</li>
+                  <li>说明关键目录和文件各自负责什么，修改某类行为应该先看哪里。</li>
+                  <li>显式标出容易混淆的边界，例如运行时代码、POC、模板输出和设计文档。</li>
+                  <li>保持粗粒度，不演变成 API 参考、历史说明或机械文件清单。</li>
+                </ul>
+              </div>
+            </div>
+            <div class="definition-row">
+              <div class="definition-term">Skills</div>
+              <div class="definition-copy">
+                <ul>
+                  <li>多步骤流程，描述触发条件、需要读取的上下文、执行步骤、输入输出和收敛方式。</li>
+                  <li>适合承载扫描事实、判断兼容性、修改模板、运行验证、刷新 context、生成 PR 草稿等任务。</li>
+                  <li>流程容易变化时放进 Skill，而不是写成长篇 Rule 或塞进 AGENTS.md。</li>
+                </ul>
+              </div>
+            </div>
+            <div class="definition-row">
+              <div class="definition-term">Rules</div>
+              <div class="definition-copy">
+                <ul>
+                  <li>必须遵守的约束，记录仓库中需要长期成立的工程规则。</li>
+                  <li>可承载组织级 AI Coding 底线，例如不编造事实、不做无关修改、不提交敏感信息。</li>
+                  <li>也可承载仓库级边界，例如架构边界、技术取舍、生成资产、配置格式和业务约束。</li>
+                  <li>HarnessKit 当前分为通用工程实践、AI Coding 规则、技术栈规则、架构规则、产品 / 领域规则五类。</li>
+                  <li>分类只负责整理规则；启用仍需要仓库事实或团队确认。</li>
+                  <li>好的 Rule 应短、明确、可引用，并在 details 中说明来源、适用范围、例外和验证方式。</li>
+                  <li>能被机器检查的部分应绑定 Validation，无法完全检查的部分进入 review 或 Agent 判断。</li>
+                </ul>
+              </div>
+            </div>
+            <div class="definition-row">
+              <div class="definition-term">Validations</div>
+              <div class="definition-copy">
+                <ul>
+                  <li>能检查的反馈机制，把可检查的 Rules 转成测试、lint、format check、构建、链接检查、schema 校验、harness lint 或 review 等检查项。</li>
+                  <li>当前阶段重点是定义检查项、记录验证日志和 receipt，让 Agent 与 reviewer 能复查检查意图与结果说明。</li>
+                  <li>每条 Validation 都要说明检查什么、预期如何执行、日志记录在哪里，以及结果如何被解读。</li>
+                  <li>还没有实际接入自动执行或阻断的位置时，只能描述为记录和建议，不能写成强制 gate。</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -839,39 +1099,134 @@
           <div class="section-head">
             <div>
               <p class="eyebrow">Problem Statement</p>
-              <h2>两大痛点：不懂如何编写，<br>以及无力进行长期维护。</h2>
+              <h2>客户想用 Agent 提效，<br>却卡在接入和维护成本上。</h2>
             </div>
             <p class="section-note">
-              第一，传统团队没有为 Coding Agent 编写结构化规则与运行地图的经验与直觉；
-              第二，即使人肉编写了一套上下文说明，随着项目代码的日常迭代，上下文资产也会因人工维护的巨大成本而迅速发生漂移、分叉与腐烂。
+              对传统研发团队来说，购买或启用 Coding Agent 只是第一步。真正困难的是把现有仓库整理成 Agent 能理解、能遵守、能自我验证的工作环境，
+              同时避免这套说明在日常迭代中迅速过期，最后又回到反复人工解释和纠偏。
             </p>
-          </div>
-
-          <div class="problem-definition">
-            <span class="def-label">Definition / 什么是 Harness</span>
-            <div class="def-content">
-              在一切皆漂移的概率开发系统中，Harness（安全带/脚手架）的本质不是具体的开发路径（Workflow），而是约束、护栏与纠偏机制。
-              HarnessKit 并不去控制 Agent 的思维过程，而是通过 Git + Hook 这道唯一的门，控制它<b>最终向仓库提交了什么</b>，从而以确定性应对概率模型的漂移。
-              <em>“Scan 负责测绘地形（回答物理世界是什么），Harness 负责安装约束（提供不偏离轨道的护栏），而 Workflow 负责画出路径。”</em>
-            </div>
           </div>
 
           <div class="metrics">
             <div class="metric">
-              <span class="number">1</span>
-              <span class="label">个面向 Agent 的主入口路由器 (AGENTS.md)，实现全景路由。</span>
+              <span class="number">01</span>
+              <span class="label">不会接入：团队不知道应该给 Agent 准备哪些仓库上下文和协作规则。</span>
             </div>
             <div class="metric">
-              <span class="number">17</span>
-              <span class="label">条已启用的本仓库 Rule Details 规则文件，确保约束有据可查。</span>
+              <span class="number">02</span>
+              <span class="label">解释成本高：每次任务都要重复说明项目结构、历史取舍和不能破坏的边界。</span>
             </div>
             <div class="metric">
-              <span class="number">50</span>
-              <span class="label">项 Pytest 自动化测试，实现 CLI 初始化、Linter 机制的 100% 覆盖。</span>
+              <span class="number">03</span>
+              <span class="label">信任成本高：团队难以确认 Agent 是否理解约束、是否完成了必要验证。</span>
             </div>
             <div class="metric">
-              <span class="number">1</span>
-              <span class="label">个一致的本地完整验证入口：执行 <code>make verify</code> 触发自检。</span>
+              <span class="number">04</span>
+              <span class="label">维护成本高：即使整理过说明，也会随着代码和配置变化迅速变旧。</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Builder Loop Section -->
+        <section id="builder-loop">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Builder Loop</p>
+              <h2>长期看，Harness Builder 是一套<br>可持续演进的 AI Coding 体系。</h2>
+            </div>
+            <p class="section-note">
+              这张图描述的是完整 Harness Builder 愿景：把隐性的工程约束转成可执行的 Rules、Validations 和 Workflow 规范，
+              再通过真实任务反馈持续演进。当前 HarnessKit MVP 先落在 Context Harness 和 Preservation 子集。
+            </p>
+          </div>
+
+          <div class="figure-panel">
+            <div class="builder-diagram" role="img" aria-label="Harness Builder 长期闭环图，标明 Codex 和 Claude Code 提供宿主 agent 能力，HarnessKit 当前聚焦 Context Harness。">
+              <div class="diagram-flow">
+                <span>隐性工程约束</span>
+                <span class="flow-arrow">→</span>
+                <span>可执行 Rules / Validations / Workflow</span>
+                <span class="flow-arrow">→</span>
+                <span>可验证、可审计、可演进的 AI Coding 体系</span>
+              </div>
+
+              <div class="cycle-diagram">
+                <div class="cycle-ring" aria-hidden="true"></div>
+
+                <div class="diagram-node cycle-node current pos-1">
+                  <div class="node-kicker"><span>01 Scanner</span><span class="node-badge">Current MVP</span></div>
+                  <h4>Scanner & Analyzer</h4>
+                  <p>识别仓库现状、技术栈、验证入口和已有上下文资产，生成 Context Harness 的事实素材。</p>
+                </div>
+
+                <div class="diagram-node cycle-node current pos-2">
+                  <div class="node-kicker"><span>02 Rules</span><span class="node-badge">Current MVP</span></div>
+                  <h4>Rules</h4>
+                  <p>把项目知识、团队规则和操作约定转成 Agent 进场前可读取的前置约束。</p>
+                </div>
+
+                <div class="diagram-node cycle-node current pos-3">
+                  <div class="node-kicker"><span>03 Validations</span><span class="node-badge">Current MVP</span></div>
+                  <h4>Validations</h4>
+                  <p>把测试、lint、构建、链接检查和 harness 检查定义成可复查的反馈，并记录验证日志。</p>
+                </div>
+
+                <div class="diagram-node cycle-node host pos-4">
+                  <div class="node-kicker"><span>04 Workflow</span><span class="node-badge">Host / Later</span></div>
+                  <h4>Workflow Contract</h4>
+                  <p>定义任务拆解、完成标准、repair loop 和升级规则；运行时执行由宿主 Agent 产品承担。</p>
+                </div>
+
+                <div class="diagram-node cycle-node future pos-5">
+                  <div class="node-kicker"><span>05 Experience</span><span class="node-badge">Later</span></div>
+                  <h4>Experience & Self-Improve</h4>
+                  <p>从真实任务中沉淀经验，生成可审查的改进候选，再反馈到 Rules 和 Validations。</p>
+                </div>
+
+                <div class="diagram-node cycle-node future pos-6">
+                  <div class="node-kicker"><span>06 Evolution</span><span class="node-badge">Later</span></div>
+                  <h4>Maturity & Evolution</h4>
+                  <p>评估 harness 成熟度，规划下一阶段能力补齐路径。</p>
+                </div>
+
+              </div>
+            </div>
+            <p class="figure-caption">
+              图中 Codex / Claude Code 等宿主产品承担 agent loop、工具执行、权限、安全和上下文窗口管理；
+              HarnessKit 当前承担仓库侧 Context Harness：扫描项目事实、沉淀 Rules、连接 Validations，并检查上下文资产是否持续可信。
+              Workflow Runtime、Experience Self-Improve 和 Maturity Evolution 属于后续扩展方向。
+            </p>
+          </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section id="solution">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Solution Approach</p>
+              <h2>HarnessKit 把现有仓库<br>整理成 Agent-Ready Repository。</h2>
+            </div>
+            <p class="section-note">
+              HarnessKit 的解法是在客户现有仓库之上沉淀一层可版本化的 Context Harness：
+              让 Agent 有入口可读、有规则可循、有验证可跑，并让这些上下文资产在项目演进中保持可信。
+            </p>
+          </div>
+
+          <div class="cards">
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Step 1</div>
+              <h3>沉淀上下文</h3>
+              <p>把项目结构、关键入口、工程规则和团队约定整理成 Agent 能稳定读取的仓库资产。</p>
+            </div>
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Step 2</div>
+              <h3>连接验证反馈</h3>
+              <p>把测试、构建、lint、链接检查和 harness 检查收敛为 Agent 可以执行和理解的反馈入口。</p>
+            </div>
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Step 3</div>
+              <h3>防止上下文漂移</h3>
+              <p>持续检查规则、文档、验证入口和仓库事实的一致性，降低长期维护成本。</p>
             </div>
           </div>
         </section>
@@ -884,7 +1239,7 @@
               <h2>从一纸设计，<br>到真正可落地部署的 Harness 引擎。</h2>
             </div>
             <p class="section-note">
-              这一阶段重点对齐了 CLI 功能、本地 Skills、Rule Linkage 检查，并且通过 make verify 达成了完整的验证 Receipt 机制。
+              这一阶段重点对齐了 CLI 功能、本地 Skills、Rule Linkage 检查，并且开始记录验证日志与 Receipt。
             </p>
           </div>
 
@@ -903,9 +1258,9 @@
                 Agent 操作路径。</p>
             </div>
             <div class="card">
-              <div class="tag"><span class="dot"></span>Validation Runner</div>
-              <h3>make verify 写入 Receipt 凭据</h3>
-              <p>校验运行结果（含时间戳和详细输出）会自动序列化成 JSON 写入 <code>.harnesskit/receipts/runs/</code>，作为 Agent 和 Reviewer 评估仓库健康的证据。
+              <div class="tag"><span class="dot"></span>Validation Log</div>
+              <h3>记录验证日志</h3>
+              <p>验证入口、时间戳和结果说明会被记录为可复查的日志与 Receipt，作为 Agent 和 Reviewer 评估仓库健康的证据。
               </p>
             </div>
           </div>
@@ -914,7 +1269,7 @@
             <div class="status"><span class="check">✓</span><span><b>AGENTS/RULES 结构完全对齐</b>：本仓库实现了严谨自举，核心规则均对应 detail
                 且格式严密。</span></div>
             <div class="status"><span class="check">✓</span><span><b>规则细节一致性</b>：RULES.md 中的每条规则都严格与
-                <code>.harnesskit/rules/RULE-*.md</code> 对应，并包含了 Runner 绑定细节。</span></div>
+                <code>.harnesskit/rules/RULE-*.md</code> 对应，并记录检查方式与验证说明。</span></div>
             <div class="status"><span class="check">✓</span><span><b>文件与脚本收敛</b>：清理了过渡期文件，所有的验证统一收敛至
                 <code>run_validation.py</code> 进行分发。</span></div>
             <div class="status"><span class="check">✓</span><span><b>Linter 强化</b>：Harness-linter-poc
@@ -953,73 +1308,16 @@
             <div class="step">
               <div class="step-index">4</div>
               <h3>Validate (命令验证)</h3>
-              <p>运行 <code>make verify</code> 自动触发完整自检，生成具有时间戳的验证 Receipt 确认仓库无隐患。</p>
+              <p>围绕 <code>make verify</code> 记录完整验证入口和带时间戳的验证日志，供 Agent 和 Reviewer 复查。</p>
             </div>
             <div class="step">
               <div class="step-index">5</div>
               <h3>Preserve (质量防腐)</h3>
-              <p>由 pre-commit 钩子自动触发 Harness Linter POC，拦截所有断链、过期规则或定义漂移。</p>
+              <p>记录 Harness Linter POC 的检查结果，识别断链、过期规则或定义漂移；自动触发与阻断属于后续接入方向。</p>
             </div>
           </div>
         </section>
 
-        <!-- Roadmap Section -->
-        <section id="roadmap">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Future Roadmap</p>
-              <h2>专注做好 Context Preservation，<br>不盲目扩张产品范畴。</h2>
-            </div>
-            <p class="section-note">
-              我们将继续坚定地把当前 MVP 的核心边界控制住。不研发重度的编排和运行时沙箱，确保 HarnessKit 作为一个轻量级、自解释、易上手的工具包存在。
-            </p>
-          </div>
-
-          <div class="matrix">
-            <div class="matrix-item">
-              <strong>近期：Harness Preservation 质量稳固</strong>
-              <p>让 Harness Linter POC 具有更丰富的错误自动修复（autofix）能力，使规则与 Linkage 校验真正做到无感阻断与轻快修复。</p>
-            </div>
-            <div class="matrix-item">
-              <strong>中期：丰富 Validation Probes</strong>
-              <p>从实际项目事实出发，沉淀更多适用于通用技术栈的规则与校验 Probes，使验证能力不仅有，而且深。</p>
-            </div>
-            <div class="matrix-item">
-              <strong>扩展：适配更多集成（Integrations）</strong>
-              <p>待 Codex 集成充分打磨并定型后，考虑接入 Claude Code 以及企业内部的其他智能编码环境集成。</p>
-            </div>
-            <div class="matrix-item">
-              <strong>非目标 (Out of Scope)</strong>
-              <p>不开发 Agent Loop 编排层，不管理虚拟沙箱与多 agent 调度，避免产品焦点在开发早期偏离与失控。</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Decision Points Section -->
-        <section id="ask">
-          <div class="ask">
-            <p class="eyebrow">Decision Points</p>
-            <h2>本阶段汇报期待达成的共识：</h2>
-            <p class="lead">
-              我们希望在以下三个关键维度与团队达成高度一致，从而心无旁骛地在后续阶段加速推进 Context Harness 的体验沉淀。
-            </p>
-
-            <div class="ask-grid">
-              <div class="ask-item">
-                <strong>1. 紧扣 Context Harness 边界</strong>
-                <p>坚守 MVP 范围，优先帮传统团队解决上下文“冷启动编写”与“演进防腐烂”，不做泛化的 CI/CD 平台替代品。</p>
-              </div>
-              <div class="ask-item">
-                <strong>2. 下阶段演进焦点</strong>
-                <p>以 Linter 的稳定度与自动生成/自动修复（autofix）作为核心衡量标准，形成更紧密闭环。</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <footer>
-          HarnessKit 阶段汇报 · 静态 HTML 自包含样式 · 可直接于浏览器双击预览
-        </footer>
       </div>
     </div>
   </main>
