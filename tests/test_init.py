@@ -189,6 +189,18 @@ def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) 
         assert "GITHUB_REPO_URL" not in text, skill
         assert "PROJECT_SPECIFIC_COMPATIBILITY_RULES" not in text, skill
 
+    scan_facts = (project / ".agents/skills/scan-facts/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "candidate facts" in scan_facts
+    assert "User Confirmation Protocol" in scan_facts
+    assert "pause for the user's response" in scan_facts
+
+    harness_init = (project / ".agents/skills/harness-init/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "ask the user to confirm candidate project identity" in harness_init
+
 
 def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()

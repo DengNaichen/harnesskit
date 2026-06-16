@@ -9,7 +9,7 @@ Use this skill as the first user-facing workflow after `harnesskit init`. It coo
 
 ## Workflow
 
-1. Use `$scan-facts` to refresh `.harnesskit/facts.md` from repository evidence.
+1. Use `$scan-facts` to inspect repository evidence and ask the user to confirm candidate project identity, purpose, stack, validation entrypoints, and important boundaries before durable facts are written.
 2. Resolve any high-impact questions that facts cannot settle before writing durable guidance.
 3. Use `$fill-architecture` to update `ARCHITECTURE.md`.
 4. Use `$fill-rules` to update `RULES.md`.
