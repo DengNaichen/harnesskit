@@ -46,12 +46,14 @@ def test_init_selects_integration_from_interactive_menu(
     choices = calls[0]["choices"]
     assert [choice.title for choice in choices] == [
         "Codex (default)",
+        "None / Skip for now",
         "Claude Code",
         "Cursor",
     ]
     assert choices[0].disabled is None
-    assert choices[1].disabled == "coming soon"
+    assert choices[1].disabled is None
     assert choices[2].disabled == "coming soon"
+    assert choices[3].disabled == "coming soon"
 
 
 def test_init_falls_back_to_default_integration_without_tty(monkeypatch) -> None:
@@ -66,12 +68,55 @@ def test_init_falls_back_to_default_integration_without_tty(monkeypatch) -> None
     )
 
 
+def test_init_can_select_no_integration_from_menu(monkeypatch) -> None:
+    fake_console = FakeConsole()
+
+    class FakeQuestion:
+        def ask(self) -> str:
+            return cli_module.NO_INTEGRATION_MENU_VALUE
+
+    monkeypatch.setattr(cli_module, "console", fake_console)
+    monkeypatch.setattr(cli_module, "_has_interactive_terminal", lambda: True)
+    monkeypatch.setattr(
+        cli_module.questionary,
+        "select",
+        lambda *args, **kwargs: FakeQuestion(),
+    )
+
+    assert cli_module._select_integration(None) is None
+
+
 def test_disabled_menu_integrations_are_not_supported_install_targets() -> None:
     runner = CliRunner()
     result = runner.invoke(app, ["init", "demo", "--integration", "claude"])
 
     assert result.exit_code == 1
     assert "unsupported integration 'claude'" in result.output
+
+
+def test_init_with_no_integration_skips_agent_assets(tmp_path: Path) -> None:
+    runner = CliRunner()
+    project = tmp_path / "demo"
+    result = runner.invoke(app, ["init", str(project), "--no-integration"])
+
+    assert result.exit_code == 0, result.output
+    assert (project / "AGENTS.md").is_file()
+    assert (project / "ARCHITECTURE.md").is_file()
+    assert (project / "RULES.md").is_file()
+    assert not (project / ".agents").exists()
+    assert not (project / "CLAUDE.md").exists()
+
+
+def test_init_rejects_conflicting_integration_options(tmp_path: Path) -> None:
+    runner = CliRunner()
+    project = tmp_path / "demo"
+    result = runner.invoke(
+        app,
+        ["init", str(project), "--integration", "codex", "--no-integration"],
+    )
+
+    assert result.exit_code == 1
+    assert "pass either --integration or --no-integration" in result.output
 
 
 def test_init_with_explicit_integration_skips_selector(

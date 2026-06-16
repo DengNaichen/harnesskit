@@ -27,8 +27,10 @@ app = typer.Typer(
 integration_app = typer.Typer(help="Manage agent integrations.", add_completion=False)
 app.add_typer(integration_app, name="integration")
 console = Console()
+NO_INTEGRATION_MENU_VALUE = "__none__"
 INTEGRATION_MENU_OPTIONS = (
     ("codex", "Codex", ""),
+    (NO_INTEGRATION_MENU_VALUE, "None / Skip for now", ""),
     ("claude", "Claude Code", "coming soon"),
     ("cursor", "Cursor", "coming soon"),
 )
@@ -68,6 +70,13 @@ def init_command(
     force: Annotated[
         bool, typer.Option("--force", help="Overwrite existing generated files.")
     ] = False,
+    no_integration: Annotated[
+        bool,
+        typer.Option(
+            "--no-integration",
+            help="Initialize core Context Harness assets without agent integration.",
+        ),
+    ] = False,
     integration: Annotated[
         str | None,
         typer.Option(
@@ -80,7 +89,9 @@ def init_command(
     ] = None,
 ) -> None:
     """Initialize a Context Harness from bundled templates."""
-    selected_integration = _select_integration(integration)
+    selected_integration = _select_integration(
+        integration, no_integration=no_integration
+    )
     try:
         result = init_project(
             project,
@@ -140,8 +151,21 @@ def _print_result_files(result) -> None:
             console.print(f"  {path.relative_to(result.project_path)}")
 
 
-def _select_integration(integration: str | None) -> str:
+def _select_integration(
+    integration: str | None,
+    *,
+    no_integration: bool = False,
+) -> str | None:
+    if integration is not None and no_integration:
+        console.print("[red]error:[/red] pass either --integration or --no-integration")
+        raise typer.Exit(1)
+
+    if no_integration:
+        return None
+
     if integration is not None:
+        if integration.strip().lower() == "none":
+            return None
         return integration
 
     if not _has_interactive_terminal():
@@ -162,11 +186,14 @@ def _select_integration(integration: str | None) -> str:
         console.print("[yellow]Cancelled.[/yellow]")
         raise typer.Exit(1)
 
+    if selected == NO_INTEGRATION_MENU_VALUE:
+        return None
+
     return str(selected)
 
 
 def _integration_menu_choices() -> list[questionary.Choice]:
-    available = set(available_integrations())
+    available = {NO_INTEGRATION_MENU_VALUE, *available_integrations()}
     choices: list[questionary.Choice] = []
     known_menu_integrations: set[str] = set()
 

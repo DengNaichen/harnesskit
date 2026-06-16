@@ -95,6 +95,27 @@ def test_default_integration_is_codex(tmp_path: Path) -> None:
     assert (project / ".agents/skills/harness-init/SKILL.md").is_file()
 
 
+def test_init_without_integration_outputs_core_context_harness_assets(
+    tmp_path: Path,
+) -> None:
+    project = (tmp_path / "demo").resolve()
+
+    init_project(str(project), integration=None)
+
+    assert (project / "AGENTS.md").is_file()
+    assert (project / "ARCHITECTURE.md").is_file()
+    assert (project / "RULES.md").is_file()
+    assert (project / ".harnesskit/facts.md").is_file()
+    assert (project / ".harnesskit/rules/RULE-ENG-001.md").is_file()
+    assert not (project / ".agents").exists()
+    assert not (project / "CLAUDE.md").exists()
+    assert not (project / "Makefile").exists()
+
+    config = read_config(project)
+    assert config["default_integration"] is None
+    assert config["installed_integrations"] == []
+
+
 def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     tmp_path: Path,
 ) -> None:

@@ -53,9 +53,9 @@ def init_project(
     *,
     here: bool = False,
     force: bool = False,
-    integration: str = DEFAULT_INTEGRATION,
+    integration: str | None = DEFAULT_INTEGRATION,
 ) -> InitResult:
-    integration = _validate_integration(integration)
+    integration = _validate_optional_integration(integration)
     project_path = _resolve_project_path(project, here=here)
     template_root = _locate_templates()
 
@@ -65,20 +65,30 @@ def init_project(
     project_path.mkdir(parents=True, exist_ok=True)
 
     context = {"PROJECT_NAME": project_path.name}
+    excluded_paths = set()
+    if integration is None:
+        excluded_paths.update({Path("CLAUDE.md"), Path("Makefile")})
+
     result = _copy_template_tree(
         template_root,
         project_path,
         context,
         force=force,
         excluded_top_dirs={INTEGRATIONS_TEMPLATE_DIR, SKILLS_TEMPLATE_DIR},
+        excluded_paths=excluded_paths,
     )
 
-    integration_result = _install_integration_assets(
-        project_path,
-        integration,
-        context,
-        force=force,
-    )
+    if integration is None:
+        integration_result = InitResult(
+            project_path=project_path, created=[], skipped=[]
+        )
+    else:
+        integration_result = _install_integration_assets(
+            project_path,
+            integration,
+            context,
+            force=force,
+        )
     config_path = _write_config(project_path, integration)
 
     return InitResult(
@@ -126,10 +136,12 @@ def _copy_template_tree(
     *,
     force: bool,
     excluded_top_dirs: Iterable[str] = (),
+    excluded_paths: Iterable[Path] = (),
 ) -> InitResult:
     created: list[Path] = []
     skipped: list[Path] = []
     excluded = set(excluded_top_dirs)
+    excluded_relative_paths = {Path(path) for path in excluded_paths}
 
     for source in sorted(source_root.rglob("*")):
         if source.is_dir():
@@ -140,6 +152,9 @@ def _copy_template_tree(
             continue
 
         relative_path = _template_output_path(source_relative_path)
+        if relative_path in excluded_relative_paths:
+            continue
+
         destination = destination_root / relative_path
         symlink_target = _template_symlink_target(source_relative_path, source)
 
@@ -288,12 +303,18 @@ def _validate_integration(integration: str) -> str:
     return normalized
 
 
+def _validate_optional_integration(integration: str | None) -> str | None:
+    if integration is None:
+        return None
+    return _validate_integration(integration)
+
+
 def _config_path(project_path: Path) -> Path:
     return project_path / HARNESSKIT_DIR / CONFIG_FILE
 
 
-def _write_config(project_path: Path, integration: str) -> Path:
-    integration = _validate_integration(integration)
+def _write_config(project_path: Path, integration: str | None) -> Path:
+    integration = _validate_optional_integration(integration)
     config_path = _config_path(project_path)
     config_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -303,7 +324,7 @@ def _write_config(project_path: Path, integration: str) -> Path:
         installed = []
 
     installed_integrations = [item for item in installed if isinstance(item, str)]
-    if integration not in installed_integrations:
+    if integration is not None and integration not in installed_integrations:
         installed_integrations.append(integration)
 
     config = {
