@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import sys
 from typing import Annotated
 
+import questionary
 import typer
 from rich.console import Console
 
@@ -25,6 +27,11 @@ app = typer.Typer(
 integration_app = typer.Typer(help="Manage agent integrations.", add_completion=False)
 app.add_typer(integration_app, name="integration")
 console = Console()
+INTEGRATION_MENU_OPTIONS = (
+    ("codex", "Codex", ""),
+    ("claude", "Claude Code", "coming soon"),
+    ("cursor", "Cursor", "coming soon"),
+)
 
 
 def _version_callback(value: bool) -> None:
@@ -62,16 +69,25 @@ def init_command(
         bool, typer.Option("--force", help="Overwrite existing generated files.")
     ] = False,
     integration: Annotated[
-        str,
+        str | None,
         typer.Option(
             "--integration",
-            help="Agent integration to install. Currently only 'codex' is supported.",
+            help=(
+                "Agent integration to install. If omitted, HarnessKit opens an "
+                "interactive selector."
+            ),
         ),
-    ] = DEFAULT_INTEGRATION,
+    ] = None,
 ) -> None:
     """Initialize a Context Harness from bundled templates."""
+    selected_integration = _select_integration(integration)
     try:
-        result = init_project(project, here=here, force=force, integration=integration)
+        result = init_project(
+            project,
+            here=here,
+            force=force,
+            integration=selected_integration,
+        )
     except InitError as exc:
         console.print(f"[red]error:[/red] {exc}")
         raise typer.Exit(1) from exc
@@ -122,6 +138,59 @@ def _print_result_files(result) -> None:
         console.print("Skipped existing files:")
         for path in result.skipped:
             console.print(f"  {path.relative_to(result.project_path)}")
+
+
+def _select_integration(integration: str | None) -> str:
+    if integration is not None:
+        return integration
+
+    if not _has_interactive_terminal():
+        console.print(
+            f"[dim]No interactive terminal detected; using {DEFAULT_INTEGRATION}.[/dim]"
+        )
+        return DEFAULT_INTEGRATION
+
+    selected = questionary.select(
+        "Select agent integration",
+        choices=_integration_menu_choices(),
+        default=DEFAULT_INTEGRATION,
+        pointer=">",
+        qmark="",
+    ).ask()
+
+    if selected is None:
+        console.print("[yellow]Cancelled.[/yellow]")
+        raise typer.Exit(1)
+
+    return str(selected)
+
+
+def _integration_menu_choices() -> list[questionary.Choice]:
+    available = set(available_integrations())
+    choices: list[questionary.Choice] = []
+    known_menu_integrations: set[str] = set()
+
+    for key, label, disabled_reason in INTEGRATION_MENU_OPTIONS:
+        known_menu_integrations.add(key)
+        title = f"{label} (default)" if key == DEFAULT_INTEGRATION else label
+        choices.append(
+            questionary.Choice(
+                title=title,
+                value=key,
+                disabled=None if key in available else disabled_reason,
+            )
+        )
+
+    for key in available_integrations():
+        if key in known_menu_integrations:
+            continue
+        choices.append(questionary.Choice(title=key, value=key))
+
+    return choices
+
+
+def _has_interactive_terminal() -> bool:
+    return sys.stdin.isatty() and sys.stdout.isatty()
 
 
 def main() -> None:

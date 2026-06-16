@@ -5,6 +5,7 @@ description = "HarnessKit Context Harness CLI and Codex-facing toolkit."
 requires-python = ">=3.11"
 dependencies = [
     "jinja2>=3.1.6",
+    "questionary>=2.1.1",
     "rich>=15.0.0",
     "typer>=0.26.7",
 ]
