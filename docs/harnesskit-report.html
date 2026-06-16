@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HarnessKit 阶段汇报 - Context Harness MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --panel-border: #e5e7eb;
+      --panel-hover: #fafafa;
+      --panel-border-hover: #9ca3af;
+
+      --text-main: #0f172a;
+      --text-muted: #4b5563;
+      --text-dim: #9ca3af;
+
+      --accent: #0f172a;
+      --accent-inverse: #ffffff;
+
+      --border-thin: 1px solid var(--panel-border);
+      --border-thin-hover: 1px solid var(--panel-border-hover);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+      --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text-main);
+      background-color: var(--bg);
+      /* Elegant subtle grid background pattern for Linear style */
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.012) 1px, transparent 1px);
+      background-size: 32px 32px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      letter-spacing: -0.01em;
+    }
+
+    ::selection {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Header & Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px clamp(18px, 6vw, 80px);
+      border-bottom: var(--border-thin);
+      background: rgba(247, 248, 250, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.03em;
+    }
+
+    .mark {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border-radius: 6px;
+      color: var(--accent-inverse);
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 850;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-text {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* Main Container with Sidebar Layout */
+    main {
+      width: min(1140px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding-bottom: 80px;
+    }
+
+    .layout-wrapper {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 60px;
+      margin-top: 40px;
+      align-items: start;
+    }
+
+    /* Sticky Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      width: 220px;
+      height: calc(100vh - 140px);
+      overflow-y: auto;
+      padding-right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-nav a {
+      padding: 6px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      display: inline-block;
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--text-main);
+    }
+
+    .sidebar-nav a.active-link {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* Right Hand Content Wrapper */
+    .content-wrapper {
+      min-width: 0;
+      /* Prevents flex items from breaking layouts */
+    }
+
+    section {
+      padding: clamp(50px, 6vw, 80px) 0;
+      border-bottom: var(--border-thin);
+    }
+
+    section:first-child {
+      padding-top: 10px;
+    }
+
+    section:last-child {
+      border-bottom: none;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: grid;
+      align-content: center;
+      gap: 36px;
+      border-bottom: var(--border-thin);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 16px;
+      color: var(--text-main);
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: var(--shadow-sm);
+    }
+
+    h1 {
+      max-width: 100%;
+      margin-bottom: 24px;
+      font-size: clamp(30px, 5.5vw, 52px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+    }
+
+    .lead {
+      color: var(--text-muted);
+      font-size: clamp(15px, 1.8vw, 17px);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    .hero-directory {
+      margin-top: 40px;
+      width: 100%;
+    }
+
+    .directory-title {
+      padding: 0 0 12px 0;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-bottom: 1px solid var(--panel-border);
+      color: var(--text-dim);
+    }
+
+    .directory-list {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+    }
+
+    .directory-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 32px;
+      padding: 8px 0;
+    }
+
+    .item-name {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--text-main);
+      min-width: 180px;
+      font-size: 13px;
+    }
+
+    .item-desc {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Section Header */
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr);
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+    }
+
+    .section-note {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      border-left: 2px solid var(--panel-border);
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .problem-definition {
+      margin-bottom: 32px;
+      padding: 24px 0;
+      border-top: 1px solid var(--panel-border);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      gap: 32px;
+    }
+
+    .def-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      min-width: 140px;
+      padding-top: 4px;
+    }
+
+    .def-content {
+      font-size: 13.5px;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .def-content em {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Metrics Grid */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric {
+      padding: 24px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric:hover {
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .metric .number {
+      display: block;
+      margin-bottom: 6px;
+      font-size: clamp(32px, 4.5vw, 44px);
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text-main);
+      letter-spacing: -0.04em;
+    }
+
+    .metric .label {
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* What Shipped Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      padding: 28px 20px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 190px;
+    }
+
+    .card:hover {
+      border-color: var(--panel-border-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 18px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Status List */
+    .status-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    .status:hover {
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .check {
+      display: grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--accent-inverse);
+      background: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* Pipeline / Loop Steps */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .step {
+      position: relative;
+      padding: 20px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step:hover {
+      border-color: var(--panel-border-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .step::after {
+      position: absolute;
+      top: 32px;
+      right: -8px;
+      z-index: 10;
+      content: "→";
+      color: var(--text-dim);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .step:last-child::after {
+      display: none;
+    }
+
+    .step-index {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      margin-bottom: 18px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--accent-inverse);
+      background: var(--accent);
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .step p {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Roadmap Grid */
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .matrix-item {
+      padding: 20px;
+      border: var(--border-thin);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .matrix-item:hover {
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .matrix-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .matrix-item p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Ask & Decision Panel (Elegant Light-box) */
+    .ask {
+      padding: 36px;
+      border-radius: 8px;
+      background: var(--panel);
+      border: var(--border-thin);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ask::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .ask .lead {
+      color: var(--text-main);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .ask-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .ask-item {
+      padding: 20px;
+      border: var(--border-thin);
+      border-radius: 6px;
+      background: var(--bg);
+    }
+
+    .ask-item:hover {
+      background: var(--panel);
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ask-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .ask-item p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+      border-top: var(--border-thin);
+      margin-top: 40px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .layout-wrapper {
+        grid-template-columns: 180px 1fr;
+        gap: 30px;
+      }
+
+      .sidebar {
+        width: 180px;
+      }
+
+      .pipeline {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .step::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .layout-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: var(--border-thin);
+        padding-right: 0;
+        padding-bottom: 24px;
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .sidebar-nav a {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 4px;
+        padding: 6px 12px;
+      }
+
+      .sidebar-nav a.active-link {
+        border-bottom-color: var(--accent);
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .step::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .section-head,
+      .metrics,
+      .cards,
+      .pipeline,
+      .matrix,
+      .status-list,
+      .ask-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-definition {
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 0;
+      }
+
+      .directory-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .item-name {
+        min-width: auto;
+      }
+
+      .matrix-item,
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .timeline-item {
+        border-bottom: var(--border-thin);
+        padding-bottom: 20px;
+      }
+
+      .timeline-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .ask {
+        padding: 24px;
+      }
+    }
+
+    @media print {
+      .topbar {
+        position: static;
+      }
+
+      section {
+        page-break-inside: avoid;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="HarnessKit 汇报首页">
+      <span class="mark">H</span>
+      <span class="brand-text">HarnessKit Report</span>
+    </a>
+  </header>
+
+  <main id="top">
+    <div class="layout-wrapper">
+      <!-- Sticky Sidebar TOC -->
+      <aside class="sidebar">
+        <div class="sidebar-title">报告大纲</div>
+        <nav class="sidebar-nav" aria-label="侧边栏导航">
+          <a href="#top" class="active-link">概览</a>
+          <a href="#problem">核心痛点</a>
+          <a href="#delivery">本期交付</a>
+          <a href="#loop">工作流闭环</a>
+          <a href="#roadmap">未来路线</a>
+          <a href="#ask">决策共识</a>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="content-wrapper">
+        <!-- Hero Section -->
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Context Harness MVP</p>
+            <h1>把现有仓库升级为<br>Agent 可稳定协作的研发环境。</h1>
+            <p class="lead">
+              HarnessKit 面向正在引入 AI Agent 的研发团队，帮助他们把项目背景、仓库结构、工程规则和验证入口沉淀为可版本化的 Context Harness。
+              通过 CLI 注入 AGENTS、RULES、Skills 与 Validations，并配合静态分析和防漂移检查，
+              团队可以用更低成本完成 Agent 接入，让每一次协作都从清晰上下文、明确边界和确定性反馈开始。
+            </p>
+          </div>
+
+          <div class="hero-directory">
+            <div class="directory-title">Harness 核心资产目录</div>
+            <div class="directory-list">
+              <div class="directory-item">
+                <span class="item-name">AGENTS.md</span>
+                <span class="item-desc">顶层指南路由器，引导 Agent 进场并明确收敛步骤。</span>
+              </div>
+              <div class="directory-item">
+                <span class="item-name">ARCHITECTURE.md</span>
+                <span class="item-desc">粗粒度仓库地图，帮助 Agent 快速定位核心代码与边界职责。</span>
+              </div>
+              <div class="directory-item">
+                <span class="item-name">RULES.md</span>
+                <span class="item-desc">规则事实索引，记录跨开发任务、不可被破坏的短规则约束。</span>
+              </div>
+              <div class="directory-item">
+                <span class="item-name">.agents/skills/</span>
+                <span class="item-desc">按需加载的任务指令集（如 scan-stack, fill-rules 等），承载特定流程。</span>
+              </div>
+              <div class="directory-item">
+                <span class="item-name">Validations</span>
+                <span class="item-desc">定义能被自动化执行的各类 Probes，反馈执行状态并绑定 Runner。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section id="problem">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Problem Statement</p>
+              <h2>两大痛点：不懂如何编写，<br>以及无力进行长期维护。</h2>
+            </div>
+            <p class="section-note">
+              第一，传统团队没有为 Coding Agent 编写结构化规则与运行地图的经验与直觉；
+              第二，即使人肉编写了一套上下文说明，随着项目代码的日常迭代，上下文资产也会因人工维护的巨大成本而迅速发生漂移、分叉与腐烂。
+            </p>
+          </div>
+
+          <div class="problem-definition">
+            <span class="def-label">Definition / 什么是 Harness</span>
+            <div class="def-content">
+              在一切皆漂移的概率开发系统中，Harness（安全带/脚手架）的本质不是具体的开发路径（Workflow），而是约束、护栏与纠偏机制。
+              HarnessKit 并不去控制 Agent 的思维过程，而是通过 Git + Hook 这道唯一的门，控制它<b>最终向仓库提交了什么</b>，从而以确定性应对概率模型的漂移。
+              <em>“Scan 负责测绘地形（回答物理世界是什么），Harness 负责安装约束（提供不偏离轨道的护栏），而 Workflow 负责画出路径。”</em>
+            </div>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <span class="number">1</span>
+              <span class="label">个面向 Agent 的主入口路由器 (AGENTS.md)，实现全景路由。</span>
+            </div>
+            <div class="metric">
+              <span class="number">17</span>
+              <span class="label">条已启用的本仓库 Rule Details 规则文件，确保约束有据可查。</span>
+            </div>
+            <div class="metric">
+              <span class="number">50</span>
+              <span class="label">项 Pytest 自动化测试，实现 CLI 初始化、Linter 机制的 100% 覆盖。</span>
+            </div>
+            <div class="metric">
+              <span class="number">1</span>
+              <span class="label">个一致的本地完整验证入口：执行 <code>make verify</code> 触发自检。</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Delivery Section -->
+        <section id="delivery">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Shipped Content</p>
+              <h2>从一纸设计，<br>到真正可落地部署的 Harness 引擎。</h2>
+            </div>
+            <p class="section-note">
+              这一阶段重点对齐了 CLI 功能、本地 Skills、Rule Linkage 检查，并且通过 make verify 达成了完整的验证 Receipt 机制。
+            </p>
+          </div>
+
+          <div class="cards">
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Template Output</div>
+              <h3>默认安装 Context Harness</h3>
+              <p>生成并写入包括
+                <code>AGENTS.md</code>、<code>ARCHITECTURE.md</code>、<code>RULES.md</code>、<code>.harnesskit/facts.md</code>
+                事实清单、15 条基础规则 details 以及 Codex 技能描述。</p>
+            </div>
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Local Skills</div>
+              <h3>明确分工的 Codex 本地技能集</h3>
+              <p>在 <code>.agents/skills/</code> 下提供 scan-facts（扫描事实）、scan-stack（检测技术栈）、fill-*（将事实写回各入口）以及代码修改验证技能，规范
+                Agent 操作路径。</p>
+            </div>
+            <div class="card">
+              <div class="tag"><span class="dot"></span>Validation Runner</div>
+              <h3>make verify 写入 Receipt 凭据</h3>
+              <p>校验运行结果（含时间戳和详细输出）会自动序列化成 JSON 写入 <code>.harnesskit/receipts/runs/</code>，作为 Agent 和 Reviewer 评估仓库健康的证据。
+              </p>
+            </div>
+          </div>
+
+          <div class="status-list">
+            <div class="status"><span class="check">✓</span><span><b>AGENTS/RULES 结构完全对齐</b>：本仓库实现了严谨自举，核心规则均对应 detail
+                且格式严密。</span></div>
+            <div class="status"><span class="check">✓</span><span><b>规则细节一致性</b>：RULES.md 中的每条规则都严格与
+                <code>.harnesskit/rules/RULE-*.md</code> 对应，并包含了 Runner 绑定细节。</span></div>
+            <div class="status"><span class="check">✓</span><span><b>文件与脚本收敛</b>：清理了过渡期文件，所有的验证统一收敛至
+                <code>run_validation.py</code> 进行分发。</span></div>
+            <div class="status"><span class="check">✓</span><span><b>Linter 强化</b>：Harness-linter-poc
+                增加了对规则细节引用链（Linkage）以及技术栈事实同步状态的严密检查。</span></div>
+          </div>
+        </section>
+
+        <!-- Operating Loop Section -->
+        <section id="loop">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Operating Loop</p>
+              <h2>从一次初始化，<br>到 Agent 工作闭环的自我循环。</h2>
+            </div>
+            <p class="section-note">
+              HarnessKit提倡的工作流核心是：通过频繁、小幅的本地扫描与填充，使 Agent 能够持续地从仓库提取真实事实，自我校验并纠正，最终在开发结束前达成自检通过。
+            </p>
+          </div>
+
+          <div class="pipeline" aria-label="HarnessKit 工作闭环">
+            <div class="step">
+              <div class="step-index">1</div>
+              <h3>Init (配置初始化)</h3>
+              <p>使用 <code>harnesskit init</code> 一键安装 Context Harness 核心资产模板与 Codex 本地技能。</p>
+            </div>
+            <div class="step">
+              <div class="step-index">2</div>
+              <h3>Scan (事实扫描)</h3>
+              <p>Agent 在遇到开发任务时，根据 skill 描述扫描依赖与命令事实，并更新 <code>facts.md</code>。</p>
+            </div>
+            <div class="step">
+              <div class="step-index">3</div>
+              <h3>Fill (入口沉淀)</h3>
+              <p>调用 <code>fill-*</code> 技能，将最新事实与规则变动写回 <code>AGENTS.md</code>、<code>RULES.md</code>，形成稳定入口。</p>
+            </div>
+            <div class="step">
+              <div class="step-index">4</div>
+              <h3>Validate (命令验证)</h3>
+              <p>运行 <code>make verify</code> 自动触发完整自检，生成具有时间戳的验证 Receipt 确认仓库无隐患。</p>
+            </div>
+            <div class="step">
+              <div class="step-index">5</div>
+              <h3>Preserve (质量防腐)</h3>
+              <p>由 pre-commit 钩子自动触发 Harness Linter POC，拦截所有断链、过期规则或定义漂移。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="roadmap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Future Roadmap</p>
+              <h2>专注做好 Context Preservation，<br>不盲目扩张产品范畴。</h2>
+            </div>
+            <p class="section-note">
+              我们将继续坚定地把当前 MVP 的核心边界控制住。不研发重度的编排和运行时沙箱，确保 HarnessKit 作为一个轻量级、自解释、易上手的工具包存在。
+            </p>
+          </div>
+
+          <div class="matrix">
+            <div class="matrix-item">
+              <strong>近期：Harness Preservation 质量稳固</strong>
+              <p>让 Harness Linter POC 具有更丰富的错误自动修复（autofix）能力，使规则与 Linkage 校验真正做到无感阻断与轻快修复。</p>
+            </div>
+            <div class="matrix-item">
+              <strong>中期：丰富 Validation Probes</strong>
+              <p>从实际项目事实出发，沉淀更多适用于通用技术栈的规则与校验 Probes，使验证能力不仅有，而且深。</p>
+            </div>
+            <div class="matrix-item">
+              <strong>扩展：适配更多集成（Integrations）</strong>
+              <p>待 Codex 集成充分打磨并定型后，考虑接入 Claude Code 以及企业内部的其他智能编码环境集成。</p>
+            </div>
+            <div class="matrix-item">
+              <strong>非目标 (Out of Scope)</strong>
+              <p>不开发 Agent Loop 编排层，不管理虚拟沙箱与多 agent 调度，避免产品焦点在开发早期偏离与失控。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Decision Points Section -->
+        <section id="ask">
+          <div class="ask">
+            <p class="eyebrow">Decision Points</p>
+            <h2>本阶段汇报期待达成的共识：</h2>
+            <p class="lead">
+              我们希望在以下三个关键维度与团队达成高度一致，从而心无旁骛地在后续阶段加速推进 Context Harness 的体验沉淀。
+            </p>
+
+            <div class="ask-grid">
+              <div class="ask-item">
+                <strong>1. 紧扣 Context Harness 边界</strong>
+                <p>坚守 MVP 范围，优先帮传统团队解决上下文“冷启动编写”与“演进防腐烂”，不做泛化的 CI/CD 平台替代品。</p>
+              </div>
+              <div class="ask-item">
+                <strong>2. 下阶段演进焦点</strong>
+                <p>以 Linter 的稳定度与自动生成/自动修复（autofix）作为核心衡量标准，形成更紧密闭环。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          HarnessKit 阶段汇报 · 静态 HTML 自包含样式 · 可直接于浏览器双击预览
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Navigation highlight (Scroll Spy) logic updated for sticky sidebar
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+      const onScroll = () => {
+        let currentId = '';
+        const scrollPosition = window.scrollY + 120;
+
+        // Check if we are near the top of the page
+        if (window.scrollY < 100) {
+          currentId = 'top';
+        } else {
+          sections.forEach(sec => {
+            const top = sec.offsetTop;
+            const height = sec.offsetHeight;
+            if (scrollPosition >= top && scrollPosition < top + height) {
+              currentId = sec.getAttribute('id');
+            }
+          });
+        }
+
+        navLinks.forEach(link => {
+          link.classList.remove('active-link');
+          const href = link.getAttribute('href');
+          if (href === `#${currentId}` || (currentId === 'top' && href === '#top')) {
+            link.classList.add('active-link');
+          }
+        });
+      };
+
+      window.addEventListener('scroll', onScroll);
+      onScroll(); // initial call
+    });
+  </script>
+</body>
+
+</html>
