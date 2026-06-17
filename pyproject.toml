@@ -1,5 +1,5 @@
 [project]
-name = "harness-kit"
+name = "infharness"
 version = "0.1.1"
 description = "HarnessKit Context Harness CLI and agent-facing toolkit."
 requires-python = ">=3.11"
