@@ -1,6 +1,6 @@
 # HarnessKit
 
-HarnessKit 是一个用于在现有仓库中初始化轻量级 Context Harness 的 CLI 与 Codex-facing toolkit。
+HarnessKit 是一个用于在现有仓库中初始化轻量级 Context Harness 的 CLI 与 agent-facing toolkit。
 
 它的目标是让 AI agent 能够稳定理解一个代码仓库：这个项目是什么、目录如何组织、开发和验证命令是什么、哪些工程规则不能被破坏，并在项目演进中保持这些上下文资产不腐坏、不漂移。这样用户不需要在每次对话里反复解释项目背景。
 
@@ -34,9 +34,9 @@ HarnessKit 把 agent-facing context 拆成三类职责：
 
 这个仓库目前包含：
 
-- `src/harnesskit/`：Python CLI 实现
+- `src/harnesskit/`：Python CLI、初始化引擎和 Context Harness linter runtime
 - `templates/`：`harnesskit init` 会安装到目标仓库的模板文件
-- `harness-linter-poc/`：独立的 Context Harness linter POC
+- `harness-linter-poc/`：旧 linter POC/参考实现
 - `.agents/skills/`：本仓库本地 Codex skills
 - `docs/design/`：AGENTS、ARCHITECTURE、RULES、Validation 和 Harness Builder 的设计说明
 
@@ -46,11 +46,15 @@ HarnessKit 把 agent-facing context 拆成三类职责：
 harnesskit init <project>
 harnesskit init --here
 harnesskit init --here --integration codex
+harnesskit init --here --integration claude
+harnesskit init --here --no-integration
 harnesskit integration list
 harnesskit integration install codex
+harnesskit integration install claude
+harnesskit lint .
 ```
 
-`init` 会把内置模板复制到目标仓库，并写入 `.harnesskit/config.json`。如果目标文件已经存在，默认跳过；传入 `--force` 时才会覆盖。当前唯一支持的 integration 是 `codex`，它也是默认值。
+`init` 会把内置模板复制到目标仓库，并写入 `.harnesskit/config.json`。如果目标文件已经存在，默认跳过；传入 `--force` 时才会覆盖。当前支持的 integration 是 `codex` 和 `claude`，其中 `codex` 是默认值。
 
 ## 本地开发
 
