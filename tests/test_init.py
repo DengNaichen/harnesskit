@@ -62,6 +62,29 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert config["installed_integrations"] == ["codex"]
 
 
+def test_init_with_claude_outputs_claude_companion_without_codex_assets(
+    tmp_path: Path,
+) -> None:
+    project = (tmp_path / "demo").resolve()
+
+    init_project(str(project), integration="claude")
+
+    assert (project / "AGENTS.md").is_file()
+    assert (project / "ARCHITECTURE.md").is_file()
+    assert (project / "RULES.md").is_file()
+    assert (project / ".harnesskit/facts.md").is_file()
+    assert (project / "CLAUDE.md").is_symlink()
+    assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
+    assert not (project / ".agents").exists()
+    assert not (project / "Makefile").exists()
+
+    config = read_config(project)
+    assert config["schema_version"] == 1
+    assert config["project_name"] == "demo"
+    assert config["default_integration"] == "claude"
+    assert config["installed_integrations"] == ["claude"]
+
+
 def test_init_outputs_validation_runner_and_receipt_ignore(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
 
@@ -109,6 +132,13 @@ def test_init_without_integration_outputs_core_context_harness_assets(
     assert not (project / "CLAUDE.md").exists()
     assert not (project / "Makefile").exists()
 
+    architecture = (project / "ARCHITECTURE.md").read_text(encoding="utf-8")
+    assert "{%" not in architecture
+    assert "%}" not in architecture
+    assert "CLAUDE.md" not in architecture
+    assert "[`Makefile`](Makefile)" not in architecture
+    assert "harnesskit integration install codex" in architecture
+
     config = read_config(project)
     assert config["default_integration"] is None
     assert config["installed_integrations"] == []
@@ -142,6 +172,8 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     architecture = (project / "ARCHITECTURE.md").read_text(encoding="utf-8")
     assert "{{" not in architecture
     assert "}}" not in architecture
+    assert "{%" not in architecture
+    assert "%}" not in architecture
     assert "# [PROJECT_NAME] 架构地图" in architecture
     assert "AGENTS.md" in architecture
     assert "RULES.md" in architecture
@@ -193,11 +225,23 @@ def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) 
     assert "candidate facts" in scan_facts
     assert "User Confirmation Protocol" in scan_facts
     assert "pause for the user's response" in scan_facts
+    assert "single-choice MCQ" in scan_facts
+    assert "Confirm all candidate facts and write them" in scan_facts
+    assert "Correct one or more facts before writing" in scan_facts
 
     harness_init = (project / ".agents/skills/harness-init/SKILL.md").read_text(
         encoding="utf-8"
     )
     assert "ask the user to confirm candidate project identity" in harness_init
+    assert "present candidate rule changes for user confirmation" in harness_init
+
+    fill_rules = (project / ".agents/skills/fill-rules/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "candidate rule changes" in fill_rules
+    assert "User Confirmation Protocol" in fill_rules
+    assert "Confirm all candidate rule changes and write them" in fill_rules
+    assert "Correct one or more candidate rules before writing" in fill_rules
 
 
 def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> None:
@@ -230,6 +274,7 @@ def test_agent_guidance_outputs_claude_symlink_from_dereferenced_template(
     template_root.mkdir()
     (template_root / "AGENTS.md").write_text("# Guide\n", encoding="utf-8")
     (template_root / "CLAUDE.md").write_text("# Guide\n", encoding="utf-8")
+    (template_root / "Makefile").write_text("verify:\n", encoding="utf-8")
     (template_root / "skills").mkdir()
     project = tmp_path / "demo"
 
@@ -244,7 +289,7 @@ def test_unsupported_integration_raises(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
 
     with pytest.raises(InitError, match="unsupported integration"):
-        init_project(str(project), integration="claude")
+        init_project(str(project), integration="cursor")
 
 
 def test_existing_files_are_skipped_without_force(tmp_path: Path) -> None:
@@ -305,6 +350,43 @@ def test_install_integration_repairs_missing_codex_skills(tmp_path: Path) -> Non
     assert (project / ".agents/skills/scan-facts/SKILL.md").is_file()
     assert project / ".agents/skills/scan-facts/SKILL.md" in result.created
     config = read_config(project)
+    assert config["installed_integrations"] == ["codex"]
+
+
+def test_install_integration_adds_claude_companion_after_core_init(
+    tmp_path: Path,
+) -> None:
+    project = (tmp_path / "demo").resolve()
+    init_project(str(project), integration=None)
+
+    result = install_integration(project, "claude")
+
+    assert (project / "CLAUDE.md").is_symlink()
+    assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
+    assert project / "CLAUDE.md" in result.created
+    assert not (project / ".agents").exists()
+    assert not (project / "Makefile").exists()
+    config = read_config(project)
+    assert config["default_integration"] == "claude"
+    assert config["installed_integrations"] == ["claude"]
+
+
+def test_install_codex_after_core_init_adds_companion_and_validation_assets(
+    tmp_path: Path,
+) -> None:
+    project = (tmp_path / "demo").resolve()
+    init_project(str(project), integration=None)
+
+    result = install_integration(project, "codex")
+
+    assert (project / "CLAUDE.md").is_symlink()
+    assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
+    assert (project / "Makefile").is_file()
+    assert (project / ".agents/skills/scan-facts/SKILL.md").is_file()
+    assert project / "CLAUDE.md" in result.created
+    assert project / "Makefile" in result.created
+    config = read_config(project)
+    assert config["default_integration"] == "codex"
     assert config["installed_integrations"] == ["codex"]
 
 

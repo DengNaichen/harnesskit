@@ -6,15 +6,15 @@
 
 ## Details
 
-不要静默选择其中一边。先确认可验证来源，再同步 `AGENTS.md`、`RULES.md`、`ARCHITECTURE.md`、skills、facts 或验证入口。
+不要静默选择其中一边。先确认可验证来源，再同步 [AGENTS.md](../../AGENTS.md)、[RULES.md](../../RULES.md)、[ARCHITECTURE.md](../../ARCHITECTURE.md)、skills、facts 或验证入口。
 
 证据：
 
-- `AGENTS.md`
-- `RULES.md`
-- `ARCHITECTURE.md`
-- `.agents/skills/`
-- `harness-linter-poc/`
+- [AGENTS.md](../../AGENTS.md)
+- [RULES.md](../../RULES.md)
+- [ARCHITECTURE.md](../../ARCHITECTURE.md)
+- [.agents/skills/](../../.agents/skills/)
+- [harness-linter-poc/](../../harness-linter-poc/)
 
 验证：
 

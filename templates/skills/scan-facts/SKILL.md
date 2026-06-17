@@ -5,13 +5,13 @@ description: Scan repository facts into .harnesskit/facts.md from verified evide
 
 # Scan Facts
 
-Use this skill to refresh `.harnesskit/facts.md` from repository evidence. This skill is the only generated skill that should create or refresh the facts artifact.
+Use this skill to refresh [.harnesskit/facts.md](../../../.harnesskit/facts.md) from repository evidence. This skill is the only generated skill that should create or refresh the facts artifact.
 
 ## Inputs
 
 Read the smallest useful set of repository-owned evidence:
 
-- Existing guidance: `AGENTS.md`, `CLAUDE.md`, `RULES.md`, `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
+- Existing guidance: [AGENTS.md](../../../AGENTS.md), [CLAUDE.md](../../../CLAUDE.md), [RULES.md](../../../RULES.md), `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
 - Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
 - Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
 - Current state: `[NEEDS CLARIFICATION: ...]` placeholders, todo-checklist marker blocks, missing files, stale paths, or guidance that conflicts with repository files.
@@ -29,18 +29,23 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
    - package/build/test/lint/format entrypoints;
    - important source, test, docs, specs, scripts, and config directories;
    - any high-impact uncertainty that needs human choice.
-3. Ask the user to confirm or correct the candidate facts. If the user corrects a fact, treat the correction as user-confirmed evidence and record it as such.
-4. Only after confirmation, record evidence-backed or user-confirmed facts in `.harnesskit/facts.md`.
+3. Ask the user to confirm or correct the candidate facts using a single-choice MCQ. If the current Codex surface supports a native single-choice UI, use it; otherwise, render the choices as text and wait for the user's letter or correction.
+   - A. Confirm all candidate facts and write them.
+   - B. Correct one or more facts before writing.
+   - C. Skip writing durable facts for now.
+   - D. Write only high-confidence repository facts and keep human-owned items as `[NEEDS CLARIFICATION: ...]`.
+   If the user corrects a fact, treat the correction as user-confirmed evidence and record it as such.
+4. Only after confirmation, record evidence-backed or user-confirmed facts in [.harnesskit/facts.md](../../../.harnesskit/facts.md).
 5. Keep unresolved items as `[NEEDS CLARIFICATION: ...]` with a short note about what evidence is missing.
-6. Do not update `AGENTS.md`, `ARCHITECTURE.md`, `RULES.md`, or other skills from this skill.
-7. If `.harnesskit/facts.md` is missing, recreate it using the same sections as the generated template.
+6. Do not update [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), or other skills from this skill.
+7. If [.harnesskit/facts.md](../../../.harnesskit/facts.md) is missing, recreate it using the same sections as the generated template.
 
 ## User Confirmation Protocol
 
-Use a concise confirmation prompt like:
+Use a concise MCQ confirmation prompt like:
 
 ```text
-I detected these candidate Harness facts. Please confirm or correct them before I write `.harnesskit/facts.md`.
+I detected these candidate Harness facts. Please confirm before I write `.harnesskit/facts.md`.
 
 1. Project name: ...
    Evidence: ...
@@ -56,9 +61,15 @@ I detected these candidate Harness facts. Please confirm or correct them before 
 
 5. Important directories: ...
    Evidence: ...
+
+Choose one:
+A. Confirm all candidate facts and write them.
+B. Correct one or more facts before writing.
+C. Skip writing durable facts for now.
+D. Write only high-confidence repository facts and keep human-owned items as `[NEEDS CLARIFICATION: ...]`.
 ```
 
-Then pause for the user's response. Do not silently write durable facts when the scan includes user-facing project identity, purpose, stack, validation commands, or important boundaries that a human can confirm.
+If a native single-choice UI is available in the current Codex surface, present the four choices with that UI. If not, use the textual MCQ above. Then pause for the user's response. Do not silently write durable facts when the scan includes user-facing project identity, purpose, stack, validation commands, or important boundaries that a human can confirm.
 
 If the user has explicitly asked for a non-interactive scan, or the current environment does not allow follow-up interaction, write high-confidence repository facts and keep all uncertain or human-owned facts as `[NEEDS CLARIFICATION: ...]`.
 

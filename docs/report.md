@@ -2,7 +2,7 @@
 
 ## 一、项目摘要 (Executive Summary)
 
-* **核心定位**：解决 Coding Agent 进入新仓库时，由于项目上下文“过时、漂移”导致的开发失败，构建稳定、可维护的 Agent 运行护栏。
+* **核心定位**：帮助不够 AI Native 的传统研发团队极低成本地在仓库中构建和维护一套面向 Agent 友好的 Context Harness（上下文脚手架），解决“冷启动不知如何编写”与“项目演进导致上下文陈旧漂移”的开发失败问题。
 * **当前进展**：已跑通 **“仓库scanner/analyzer(收集分析, 中间物) -> rules定义 -> 自动化 Guard -> ~~pre-commit 拦截~~”** 的 MVP 全闭环。实测可自动拦截“开发配置变化但 Agent 文档未同步更新”的漂移风险。
 - [ ] 试着思考客户不用git的场景, 别的版本控制工具
 - [ ] 理想的agent.md & arch.md, 具体要包括什么
@@ -35,9 +35,14 @@
 
 ## 三、产品定义与边界划定 (Scope & Alignment)
 
-### 1. 核心定位
-我们要解决的核心痛点是：**Agent 进入具体仓库时，如何获取稳定、可维护且不随项目演进腐烂的上下文。**
-*短期内聚焦于“上下文确定性与防漂移”，长期支持上下文演化，但不以“完全自进化”为当前目标。*
+### 1. 核心定位与痛点
+我们要解决的核心痛点包含两层：
+1. **认知与冷启动障碍（AI Native 转型第一步）**：不够 AI Native 的团队不知道、也写不出一套能让 Agent 稳定理解项目（Agent-friendly）的上下文资产。
+2. **维护与防腐烂难题（演进防护）**：即便人肉整理了一套上下文说明，随着项目的日常迭代，这套上下文资产也会因高昂的人力同步成本而迅速发生漂移、分叉与腐烂。
+
+HarnessKit CLI 作为**脚手架工具**的本质价值是：
+* **初始化时**：一键为传统仓库套用标准的 Agent 契约模型（AGENTS.md / RULES.md / Skills / Validations 最佳实践），解决“怎么写”的冷启动问题。
+* **演进过程中**：通过 Scanner 自动提取事实，并通过 Linter / Guard 提供静态防腐拦截，解决“如何维护”的防漂移问题。
 
 ### 2. 项目边界（Out of Scope）
 为保证聚焦，HarnessKit 当前不涉及以下非本阶段目标的层次：
@@ -72,7 +77,7 @@ flowchart LR
    - **技术栈事实**：识别语言、包管理器、构建工具、测试框架、lint/format 工具。
    - **验证入口**：识别当前仓库已经存在的测试、构建、lint、pre-commit 等可执行检查。
    - **现有上下文资产**：识别已有的 `AGENTS.md`、`CLAUDE.md`、skills、README、架构文档和其他 agent-facing 文档。
-   - **当前状态**：已收敛为 `$scan-stack` skill。
+   - **当前状态**：已收敛为 $scan-facts 加后续 fill skills。
 - [ ] **Repository Map**
    - **仓库结构地图**：识别主要目录、关键文件和入口位置。
    - **当前状态**：MVP 待补齐，当前 `ARCHITECTURE.md` 已作为静态底座。
@@ -161,3 +166,22 @@ flowchart LR
 1. **规范化打包**：将校验逻辑整合入 HarnessKit 核心 CLI，提供一致的命令行体验。
 2. **度量指标建立**：在后续仓库接入中，量化接入 Harness 后 Agent 开发任务的“首次成功率”与“人肉排错耗时”。
 3. **沉淀规范模板**：固化 Codex 等主力 Integration 模板，确保新初始化仓库能直接继承最新的研发契约。
+
+
+
+
+drift -> suggestions? nope.
+- [ ] code, docs, brain? who is the source of turth? , 这部分还是要问人, confuse
+
+怎么引导agent总能注意到?
+skills -> sop ? tricks ?
+
+没有最正确的skills.
+
+- [ ] 组织level的上下文. ?
+
+latent context.
+
+mbti ?
+
+防腐也要用户确认.

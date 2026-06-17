@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 from typing import Annotated
 
 import questionary
@@ -17,11 +18,12 @@ from .init import (
     init_project,
     install_integration,
 )
+from .linter.runner import lint_project, print_json_report, print_text_report
 
 
 app = typer.Typer(
     name="harnesskit",
-    help="HarnessKit Context Harness CLI and Codex-facing toolkit.",
+    help="HarnessKit Context Harness CLI and agent-facing toolkit.",
     add_completion=False,
 )
 integration_app = typer.Typer(help="Manage agent integrations.", add_completion=False)
@@ -31,7 +33,7 @@ NO_INTEGRATION_MENU_VALUE = "__none__"
 INTEGRATION_MENU_OPTIONS = (
     ("codex", "Codex", ""),
     (NO_INTEGRATION_MENU_VALUE, "None / Skip for now", ""),
-    ("claude", "Claude Code", "coming soon"),
+    ("claude", "Claude Code", ""),
     ("cursor", "Cursor", "coming soon"),
 )
 
@@ -55,7 +57,7 @@ def callback(
         ),
     ] = False,
 ) -> None:
-    """HarnessKit Context Harness CLI and Codex-facing toolkit."""
+    """HarnessKit Context Harness CLI and agent-facing toolkit."""
 
 
 @app.command("init")
@@ -121,7 +123,8 @@ def integration_list_command() -> None:
 @integration_app.command("install")
 def integration_install_command(
     integration: Annotated[
-        str, typer.Argument(help="Integration key to install. Currently only 'codex'.")
+        str,
+        typer.Argument(help="Integration key to install, such as 'codex' or 'claude'."),
     ],
     force: Annotated[
         bool, typer.Option("--force", help="Overwrite existing integration files.")
@@ -138,6 +141,35 @@ def integration_install_command(
         f"Installed [cyan]{integration}[/cyan] integration in [green]{result.project_path}[/green]"
     )
     _print_result_files(result)
+
+
+@app.command("lint")
+def lint_command(
+    project: Annotated[str, typer.Argument(help="Project directory to lint.")] = ".",
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Print a machine-readable JSON report."),
+    ] = False,
+    external_markdownlint: Annotated[
+        bool,
+        typer.Option(
+            "--external-markdownlint",
+            help="Run markdownlint-cli2 or markdownlint when installed.",
+        ),
+    ] = False,
+) -> None:
+    """Check Context Harness assets for drift and broken links."""
+    report = lint_project(
+        Path(project),
+        external_markdownlint=external_markdownlint,
+    )
+    if json_output:
+        print_json_report(report)
+    else:
+        print_text_report(report)
+
+    if not report.passed:
+        raise typer.Exit(1)
 
 
 def _print_result_files(result) -> None:

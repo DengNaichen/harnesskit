@@ -9,22 +9,22 @@ Use this skill as the first user-facing workflow after `harnesskit init`. It coo
 
 ## Workflow
 
-1. Use `$scan-facts` to refresh `.harnesskit/facts.md` from repository evidence.
+1. Use $scan-facts to refresh [.harnesskit/facts.md](../../../.harnesskit/facts.md) from repository evidence.
 2. Resolve any high-impact questions that facts cannot settle before writing durable guidance.
-3. Use `$fill-architecture` to update `ARCHITECTURE.md`.
-4. Use `$fill-rules` to update `RULES.md`.
-5. Use `$fill-agents` to update `AGENTS.md`.
-6. Use `$fill-skills` to update project-specific sections inside generated skills.
-7. Review consistency across `.harnesskit/facts.md`, `AGENTS.md`, `ARCHITECTURE.md`, `RULES.md`, `.agents/skills/`, `CLAUDE.md`, and the verification entrypoint.
+3. Use $fill-architecture to update [ARCHITECTURE.md](../../../ARCHITECTURE.md).
+4. Use $fill-rules to update [RULES.md](../../../RULES.md).
+5. Use $fill-agents to update [AGENTS.md](../../../AGENTS.md).
+6. Use $fill-skills to update project-specific sections inside generated skills.
+7. Review consistency across [.harnesskit/facts.md](../../../.harnesskit/facts.md), [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), [.agents/skills/](../../skills/), [CLAUDE.md](../../../CLAUDE.md), and the verification entrypoint.
 
 ## Consistency Review
 
 Check that:
 
-- skills referenced in `AGENTS.md` exist under `.agents/skills/`;
-- `AGENTS.md` routes maps to `ARCHITECTURE.md`, rules to `RULES.md`, and procedures to skills;
-- `RULES.md` command bindings agree with the verification skill and any runner config;
-- `ARCHITECTURE.md` links point to real paths;
+- skills referenced in [AGENTS.md](../../../AGENTS.md) exist under [.agents/skills/](../../skills/);
+- [AGENTS.md](../../../AGENTS.md) routes maps to [ARCHITECTURE.md](../../../ARCHITECTURE.md), rules to [RULES.md](../../../RULES.md), and procedures to skills;
+- [RULES.md](../../../RULES.md) command bindings agree with the verification skill and any runner config;
+- [ARCHITECTURE.md](../../../ARCHITECTURE.md) links point to real paths;
 - unresolved uncertainty remains as `[NEEDS CLARIFICATION: ...]`.
 
 ## Boundaries

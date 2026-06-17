@@ -28,12 +28,12 @@ Ensure work is only marked complete after the repository's own verification chec
 
 ## Quick start
 
-1. Keep this skill at `./.agents/skills/code-change-verification` so it loads automatically for the repository.
+1. Keep this skill at [`.agents/skills/code-change-verification`](./) so it loads automatically for the repository.
 2. Use the commands listed in "Repository verification stack".
 3. Run only commands that are filled with concrete repository commands. Treat `[NEEDS CLARIFICATION: ...]` entries as missing, not optional examples.
 4. Run commands from the repository root, preserving the order documented in this skill.
 5. If a command fails, fix the issue, rerun the relevant verification stack, and report the final status.
-6. If `make verify` reports `not_configured`, fill `CHECKS` in `./.agents/skills/code-change-verification/scripts/run_validation.py` from repository facts before treating it as verification.
+6. If `make verify` reports `not_configured`, fill `CHECKS` in [`scripts/run_validation.py`](scripts/run_validation.py) from repository facts before treating it as verification.
 
 ## Manual workflow
 

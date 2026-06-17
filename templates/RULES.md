@@ -2,18 +2,18 @@
 
 本文件是 agent 约束索引。Rule 不是 workflow，也不是通用工程建议；Rule 只记录这个仓库里永远或局部必须成立的约束。
 
-Skills 教 agent 怎么做一类任务；Rules 告诉 agent 在这个仓库里必须遵守什么；validation 负责把可检查的约束变成可执行反馈。`AGENTS.md` 负责路由，`.agents/skills/` 负责流程，`RULES.md` 只保留短约束句，不负责决定该调用哪个 skill。
+Skills 教 agent 怎么做一类任务；Rules 告诉 agent 在这个仓库里必须遵守什么；validation 负责把可检查的约束变成可执行反馈。[AGENTS.md](AGENTS.md) 负责路由，`.agents/skills/` 负责流程，[RULES.md](RULES.md) 只保留短约束句，不负责决定该调用哪个 skill。
 
-每条规则必须有对应 details 文件：`.harnesskit/rules/<RULE-ID>.md`。`RULES.md` 负责告诉 agent “什么不能破坏”，details 文件负责说明“为什么、证据是什么、如何验证”。
+每条规则必须有对应 details 文件，放在 [.harnesskit/rules/](.harnesskit/rules/)。[RULES.md](RULES.md) 负责告诉 agent “什么不能破坏”，details 文件负责说明“为什么、证据是什么、如何验证”。
 
-除非已经从构建清单、锁文件、脚本、CI 配置、代码托管平台、`.harnesskit/facts.md` 或现有文档中验证，不要把本模板里的示例当作仓库已支持的命令或流程。
+除非已经从构建清单、锁文件、脚本、CI 配置、代码托管平台、[.harnesskit/facts.md](.harnesskit/facts.md) 或现有文档中验证，不要把本模板里的示例当作仓库已支持的命令或流程。
 
 <!-- harnesskit:todo-checklist:start -->
 补全本文件前请确认：
 - 保留已有客户规则；不要未经用户确认重排、合并、删除已有非模板规则。
 - 只有满足“仓库局部、跨任务稳定、违反形态清楚、有事实依据”的内容才写成 Rule。
 - 通用建议、任务步骤、工具教程、临时计划和未确认猜测不要写成 Rule。
-- 新增规则时使用 `RULE-<CATEGORY>-<NUMBER>` 编号，并同步创建 `.harnesskit/rules/<RULE-ID>.md`。
+- 新增规则时使用 `RULE-<CATEGORY>-<NUMBER>` 编号，并同步在 [.harnesskit/rules/](.harnesskit/rules/) 创建 details 文件。
 - 规则正文保持一句话；事实来源、验证方式、runner 绑定和解释写进 details 文件，不需要单独拆成新的规则索引。
 - 无法确认的规则保留 `[NEEDS CLARIFICATION: ...]`，不要强行启用。
 <!-- harnesskit:todo-checklist:end -->

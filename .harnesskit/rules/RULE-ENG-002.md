@@ -2,7 +2,7 @@
 
 ## Rule
 
-新增第三方依赖时，必须同步更新 `pyproject.toml` 和 `uv.lock`。
+新增第三方依赖时，必须同步更新 [pyproject.toml](../../pyproject.toml) 和 [uv.lock](../../uv.lock)。
 
 ## Details
 
@@ -10,9 +10,9 @@
 
 证据：
 
-- `pyproject.toml`
-- `uv.lock`
-- `AGENTS.md`
+- [pyproject.toml](../../pyproject.toml)
+- [uv.lock](../../uv.lock)
+- [AGENTS.md](../../AGENTS.md)
 
 验证：
 

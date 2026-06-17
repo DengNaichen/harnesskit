@@ -10,9 +10,9 @@ HarnessKit 是用于安装和维护 agent-facing context、规则、验证入口
 
 证据：
 
-- `README.md`
-- `docs/ROADMAP.md`
-- `docs/design/DESIGN.md`
+- [README.md](../../README.md)
+- [docs/ROADMAP.md](../../docs/ROADMAP.md)
+- [docs/design/DESIGN.md](../../docs/design/DESIGN.md)
 
 验证：
 

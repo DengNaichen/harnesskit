@@ -1,7 +1,7 @@
 [project]
 name = "harnesskit"
 version = "0.1.0"
-description = "HarnessKit Context Harness CLI and Codex-facing toolkit."
+description = "HarnessKit Context Harness CLI and agent-facing toolkit."
 requires-python = ">=3.11"
 dependencies = [
     "jinja2>=3.1.6",

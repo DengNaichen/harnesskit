@@ -70,10 +70,10 @@
 
 典型例子：
 
-- 兼容性判断放进 `$implementation-strategy`。
-- 完整验证放进 `$code-change-verification`。
-- PR 草稿输出放进 `$pr-draft-summary`。
-- 栈扫描和规则刷新放进 `$scan-stack`。
+- 兼容性判断放进 $implementation-strategy。
+- 完整验证放进 $code-change-verification。
+- PR 草稿输出放进 $pr-draft-summary。
+- 仓库事实扫描放进 $scan-facts，规则刷新放进对应 fill skill。
 
 ### 不虚构 runner
 

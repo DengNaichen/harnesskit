@@ -11,7 +11,7 @@ Ensure work is only marked complete after the repository's available verificatio
 
 ## Quick start
 
-1. Keep this skill at `./.agents/skills/code-change-verification` so it loads automatically for the repository.
+1. Keep this skill at [`.agents/skills/code-change-verification`](./) so it loads automatically for the repository.
 2. If dependencies are not installed or have changed, run `uv sync`.
 3. Run from the repository root:
    ```bash
@@ -23,7 +23,7 @@ Ensure work is only marked complete after the repository's available verificatio
 ## Manual workflow
 
 - If dependencies are not installed or have changed, run `uv sync` first.
-- Run `make verify` from the repository root. This invokes the skill runner at `./.agents/skills/code-change-verification/scripts/run_validation.py`.
+- Run `make verify` from the repository root. This invokes the skill runner at [`scripts/run_validation.py`](scripts/run_validation.py).
 - Confirm the runner wrote `.harnesskit/receipts/latest.json`; cite the receipt path in the final response when useful.
 - Use `make verify-core`, `make hooks`, or individual Make targets only when diagnosing a failure.
 - This repository currently has no type checker or docs build command. Do not invent those checks.

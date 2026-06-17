@@ -15,13 +15,18 @@ from . import __version__
 
 JINJA_TEMPLATE_SUFFIX = ".j2"
 DEFAULT_INTEGRATION = "codex"
-SUPPORTED_INTEGRATIONS = ("codex",)
+CLAUDE_INTEGRATION = "claude"
+SUPPORTED_INTEGRATIONS = (DEFAULT_INTEGRATION, CLAUDE_INTEGRATION)
 CONFIG_SCHEMA_VERSION = 1
 HARNESSKIT_DIR = ".harnesskit"
 CONFIG_FILE = "config.json"
 INTEGRATIONS_TEMPLATE_DIR = "integrations"
 SKILLS_TEMPLATE_DIR = "skills"
 CODEX_SKILL_OUTPUT_DIR = Path(".agents") / "skills"
+INTEGRATION_COMPANION_PATHS = {
+    DEFAULT_INTEGRATION: (Path("CLAUDE.md"), Path("Makefile")),
+    CLAUDE_INTEGRATION: (Path("CLAUDE.md"),),
+}
 TEMPLATE_SYMLINKS = {
     Path("CLAUDE.md"): Path("AGENTS.md"),
 }
@@ -64,10 +69,8 @@ def init_project(
 
     project_path.mkdir(parents=True, exist_ok=True)
 
-    context = {"PROJECT_NAME": project_path.name}
-    excluded_paths = set()
-    if integration is None:
-        excluded_paths.update({Path("CLAUDE.md"), Path("Makefile")})
+    context = _template_context(project_path, integration)
+    excluded_paths = set().union(*INTEGRATION_COMPANION_PATHS.values())
 
     result = _copy_template_tree(
         template_root,
@@ -113,7 +116,7 @@ def install_integration(
     if not _config_path(resolved_project_path).is_file():
         raise InitError("not a harnesskit project; run `harnesskit init --here` first")
 
-    context = {"PROJECT_NAME": resolved_project_path.name}
+    context = _template_context(resolved_project_path, integration)
     result = _install_integration_assets(
         resolved_project_path,
         integration,
@@ -132,7 +135,7 @@ def install_integration(
 def _copy_template_tree(
     source_root: Path,
     destination_root: Path,
-    context: dict[str, str],
+    context: dict[str, object],
     *,
     force: bool,
     excluded_top_dirs: Iterable[str] = (),
@@ -172,10 +175,20 @@ def _copy_template_tree(
     return InitResult(project_path=destination_root, created=created, skipped=skipped)
 
 
+def _template_context(project_path: Path, integration: str | None) -> dict[str, object]:
+    return {
+        "PROJECT_NAME": project_path.name,
+        "INTEGRATION": integration,
+        "HAS_INTEGRATION": integration is not None,
+        "HAS_CODEX_INTEGRATION": integration == DEFAULT_INTEGRATION,
+        "HAS_CLAUDE_INTEGRATION": integration == CLAUDE_INTEGRATION,
+    }
+
+
 def _install_integration_assets(
     project_path: Path,
     integration: str,
-    context: dict[str, str],
+    context: dict[str, object],
     *,
     force: bool,
 ) -> InitResult:
@@ -195,6 +208,16 @@ def _install_integration_assets(
             project_path=project_path, created=[], skipped=[]
         )
 
+    companion_result = _install_companion_assets(
+        project_path, integration, context, force=force
+    )
+
+    integration_result = InitResult(
+        project_path=project_path,
+        created=[*integration_result.created, *companion_result.created],
+        skipped=[*integration_result.skipped, *companion_result.skipped],
+    )
+
     if integration == DEFAULT_INTEGRATION:
         skill_result = _install_shared_skill_assets(project_path, context, force=force)
         return InitResult(
@@ -206,9 +229,27 @@ def _install_integration_assets(
     return integration_result
 
 
+def _install_companion_assets(
+    project_path: Path,
+    integration: str,
+    context: dict[str, object],
+    *,
+    force: bool,
+) -> InitResult:
+    template_root = _locate_templates()
+    companion_paths = INTEGRATION_COMPANION_PATHS.get(integration, ())
+    return _copy_template_paths(
+        template_root,
+        project_path,
+        companion_paths,
+        context,
+        force=force,
+    )
+
+
 def _install_shared_skill_assets(
     project_path: Path,
-    context: dict[str, str],
+    context: dict[str, object],
     *,
     force: bool,
 ) -> InitResult:
@@ -224,6 +265,39 @@ def _install_shared_skill_assets(
         context,
         force=force,
     )
+
+
+def _copy_template_paths(
+    source_root: Path,
+    destination_root: Path,
+    relative_paths: Iterable[Path],
+    context: dict[str, object],
+    *,
+    force: bool,
+) -> InitResult:
+    created: list[Path] = []
+    skipped: list[Path] = []
+
+    for relative_path in relative_paths:
+        source = source_root / relative_path
+        if not source.exists() and not source.is_symlink():
+            raise InitError(f"template asset {relative_path} was not found")
+
+        destination = destination_root / _template_output_path(relative_path)
+        symlink_target = _template_symlink_target(relative_path, source)
+
+        if (destination.exists() or destination.is_symlink()) and not force:
+            skipped.append(destination)
+            continue
+
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if symlink_target is not None:
+            _write_symlink(destination, symlink_target)
+        else:
+            _copy_template(source, destination, context)
+        created.append(destination)
+
+    return InitResult(project_path=destination_root, created=created, skipped=skipped)
 
 
 def _resolve_project_path(project: str | None, *, here: bool) -> Path:
@@ -276,21 +350,42 @@ def _write_symlink(destination: Path, target: Path) -> None:
     destination.symlink_to(target)
 
 
-def _copy_template(source: Path, destination: Path, context: dict[str, str]) -> None:
+def _copy_template(source: Path, destination: Path, context: dict[str, object]) -> None:
     if source.is_symlink():
         _write_symlink(destination, source.readlink())
         return
 
     if source.name.endswith(JINJA_TEMPLATE_SUFFIX):
         text = source.read_text(encoding="utf-8")
-        try:
-            rendered = JINJA_ENV.from_string(text).render(context)
-        except TemplateError as exc:
-            raise InitError(f"failed to render template {source}: {exc}") from exc
-        destination.write_text(rendered, encoding="utf-8")
+        destination.write_text(
+            _render_template(source, text, context), encoding="utf-8"
+        )
+        return
+
+    try:
+        text = source.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        shutil.copy2(source, destination)
+        return
+
+    if _contains_jinja_syntax(text):
+        destination.write_text(
+            _render_template(source, text, context), encoding="utf-8"
+        )
         return
 
     shutil.copy2(source, destination)
+
+
+def _render_template(source: Path, text: str, context: dict[str, object]) -> str:
+    try:
+        return JINJA_ENV.from_string(text).render(context)
+    except TemplateError as exc:
+        raise InitError(f"failed to render template {source}: {exc}") from exc
+
+
+def _contains_jinja_syntax(text: str) -> bool:
+    return "{%" in text or "{{" in text or "{#" in text
 
 
 def _validate_integration(integration: str) -> str:

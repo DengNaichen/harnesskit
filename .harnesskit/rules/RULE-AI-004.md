@@ -10,8 +10,8 @@
 
 证据：
 
-- `templates/RULES.md`
-- `templates/skills/fill-rules/SKILL.md`
+- [templates/RULES.md](../../templates/RULES.md)
+- [templates/skills/fill-rules/SKILL.md](../../templates/skills/fill-rules/SKILL.md)
 
 验证：
 

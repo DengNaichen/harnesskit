@@ -5,13 +5,13 @@ description: Scan repository facts into .harnesskit/facts.md from verified evide
 
 # Scan Facts
 
-Use this skill to refresh `.harnesskit/facts.md` from repository evidence. This skill is the only generated skill that should create or refresh the facts artifact.
+Use this skill to refresh [.harnesskit/facts.md](../../../.harnesskit/facts.md) from repository evidence. This skill is the only generated skill that should create or refresh the facts artifact.
 
 ## Inputs
 
 Read the smallest useful set of repository-owned evidence:
 
-- Existing guidance: `AGENTS.md`, `CLAUDE.md`, `RULES.md`, `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
+- Existing guidance: [AGENTS.md](../../../AGENTS.md), [CLAUDE.md](../../../CLAUDE.md), [RULES.md](../../../RULES.md), `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
 - Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
 - Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
 - Current state: `[NEEDS CLARIFICATION: ...]` placeholders, todo-checklist marker blocks, missing files, stale paths, or guidance that conflicts with repository files.
@@ -21,10 +21,10 @@ Ignore local/generated/vendor noise such as virtual environments, dependency fol
 ## Workflow
 
 1. Inspect repository facts before asking questions.
-2. Record only evidence-backed facts in `.harnesskit/facts.md`.
+2. Record only evidence-backed facts in [.harnesskit/facts.md](../../../.harnesskit/facts.md).
 3. Keep uncertain items as `[NEEDS CLARIFICATION: ...]` with a short note about what evidence is missing.
-4. Do not update `AGENTS.md`, `ARCHITECTURE.md`, `RULES.md`, or other skills from this skill.
-5. If `.harnesskit/facts.md` is missing, recreate it using the same sections as the generated template.
+4. Do not update [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), or other skills from this skill.
+5. If [.harnesskit/facts.md](../../../.harnesskit/facts.md) is missing, recreate it using the same sections as the generated template.
 
 ## Fact Model
 

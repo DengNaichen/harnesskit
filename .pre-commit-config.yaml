@@ -17,8 +17,8 @@ repos:
 
       - id: harness-lint
         name: harness lint
-        entry: python3
-        args: ["harness-linter-poc/app/harness_lint.py", "."]
+        entry: uv
+        args: ["run", "harnesskit", "lint", "."]
         language: system
         pass_filenames: false
 
