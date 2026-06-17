@@ -4,7 +4,7 @@
 
 ## 操作关键事实
 
-- HarnessKit 是 Python 3.11+ 的 Context Harness CLI/toolkit，使用 `uv`；具体技术栈和路径职责看 [ARCHITECTURE.md](ARCHITECTURE.md)。
+- HarnessKit 是 Python 3.11+ 的 Context Harness CLI/toolkit，使用 `uv`；PyPI 分发名是 `infharness`，安装后 console script 仍是 `harnesskit`；具体技术栈和路径职责看 [ARCHITECTURE.md](ARCHITECTURE.md)。
 - 用户可见边界包括 CLI/runtime、[.harnesskit/config.json](.harnesskit/config.json)、模板输出、integration 输出和 `harnesskit lint`。
 - 当前配置 schema version 是 `1`；支持 `codex` 和 `claude` integration，`codex` 是默认值。
 - 模板会写入目标仓库并使用 Jinja `StrictUndefined`；改模板时必须确认渲染上下文。
@@ -27,6 +27,7 @@
 - 修改运行时代码、导出 API、CLI 命令或参数、外部配置、[.harnesskit/config.json](.harnesskit/config.json)、模板输出、测试或其他用户可见行为前，先使用 $implementation-strategy 明确兼容性边界。
 - 影响 [src/harnesskit/](src/harnesskit/)、[templates/](templates/)、[tests/](tests/)、[pyproject.toml](pyproject.toml)、[uv.lock](uv.lock)、Markdown 链接或构建/测试行为的变更，在完成前使用 $code-change-verification。
 - 中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更完成后，按 $pr-draft-summary 输出 PR 草稿块；纯仓库元数据或无行为影响的文档任务可跳过。
+- 发布 PyPI 包时使用 `make publish`，它会通过 [scripts/publish_pypi.sh](scripts/publish_pypi.sh) 运行 `make verify`、清理并重建 `dist/`、再调用 `uv publish`；token 只能来自环境变量或被忽略的本地 `.env`。
 - 模板行为变化要当作用户可见行为处理，通常需要同步 [tests/test_init.py](tests/test_init.py)；`init_project()` 默认跳过已有文件，只有 `--force` 才覆盖。
 - 刷新 [docs/practices/](docs/practices/) 判断指导时，使用 $fill-practices；如果发现新的硬约束候选，再交给 $fill-rules 写入 [RULES.md](RULES.md) 和 details。
 - 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md) 和对应 details 文件。

@@ -6,7 +6,7 @@
 
 ## Details
 
-本规则是 deployment/release 边界，不是发布流程说明。本仓库当前有 package build 配置，也有 [docs/](../../docs/) 下的 Vercel 托管配置；这些事实需要按作用域解读。[docs/](../../docs/) 托管配置只证明文档站点存在相关配置，不能推出 Python package 已配置发布流水线、CI gate、生产部署流程或 release 自动化。
+本规则是 deployment/release 边界，不是发布流程说明。本仓库当前有 package build 配置、手动 PyPI 发布入口，也有 [docs/](../../docs/) 下的 Vercel 托管配置；这些事实需要按作用域解读。[docs/](../../docs/) 托管配置只证明文档站点存在相关配置，不能推出 Python package 已配置 CI gate、生产部署流程或自动 release gate。
 
 适用范围：
 
@@ -26,11 +26,13 @@
 - [docs/.vercel/project.json](../../docs/.vercel/project.json)
 - [pyproject.toml](../../pyproject.toml)
 - [Makefile](../../Makefile)
+- [scripts/publish_pypi.sh](../../scripts/publish_pypi.sh)
 - [AGENTS.md](../../AGENTS.md)
-- 仓库当前没有已证实的 `.github` CI、package release automation 或生产部署 runner。
+- 仓库当前有 `make publish` 手动 PyPI 发布入口；没有已证实的 `.github` CI、自动 release gate 或生产部署 runner。
 
 验证：
 
 - runner：影响 package、模板打包或构建配置时运行 `uv build` 或 `make verify`。
+- runner：手动发布 PyPI 包时使用 `make publish`；它要求 PyPI token 来自环境变量或被忽略的本地 `.env`。
 - review：确认发布、部署、托管和 CI 相关判断都有仓库配置或团队确认支撑。
 - 未配置：当前没有证据表明 package release、CI 或生产部署 gate 会自动阻断变更。

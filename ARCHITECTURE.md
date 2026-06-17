@@ -65,11 +65,12 @@
     - [`test_tech_stack_rules.py`](harness-linter-poc/tests/test_tech_stack_rules.py)：测试技术栈事实检测和漂移检查。
     - [`test_verification_rules.py`](harness-linter-poc/tests/test_verification_rules.py)：测试验证漂移和命令文档检查。
 - [`.agents/skills/`](.agents/skills/)：本仓库工作时使用的 Codex 本地技能。这里应与根目录 `AGENTS.md`、`RULES.md`、模板和验证 runner 保持一致。
+- [`scripts/`](scripts/)：仓库维护脚本；当前包含 [`publish_pypi.sh`](scripts/publish_pypi.sh)，作为 `make publish` 的手动 PyPI 发布入口。
 - [`docs/`](docs/)：产品、设计、实践指导、路线图和进展文档。设计类文档位于 [`docs/design/`](docs/design/)，代码风格、产品体验、安全和可靠性判断指导位于 [`docs/practices/`](docs/practices/)。
 
 ## 关键文件
 
-- [`pyproject.toml`](pyproject.toml)：Python 包元数据、运行时依赖、console script 入口、Hatchling 构建配置和 dev dependency group。
+- [`pyproject.toml`](pyproject.toml)：Python 包元数据、运行时依赖、console script 入口、Hatchling 构建配置和 dev dependency group；PyPI 分发名是 `infharness`，console script 是 `harnesskit`。
 - [`AGENTS.md`](AGENTS.md)：本仓库的顶层 agent 路由指南，指向规则、skills、架构地图和验证入口。
 - [`RULES.md`](RULES.md)：本仓库基于证据沉淀的工程规则、validation 绑定和命令事实。
 - [`README.md`](README.md)：产品定位、MVP 范围、CLI 使用方式和 Context Harness 总览。
@@ -89,6 +90,7 @@ HarnessKit 会在目标仓库中安装或维护这些文件：
 
 当前运行时包刻意保持很小：
 
+- PyPI distribution `infharness`：安装入口；wheel 中包含 `src/harnesskit/` package 和内置模板。
 - `cli.py`：用户可见的 Typer 命令声明和 Rich 输出。
 - `init.py`：初始化、integration 安装、模板渲染、符号链接和配置写入的文件系统行为。
 - `linter/`：Context Harness lint 规则、报告模型和 `harnesskit lint` 运行时。
