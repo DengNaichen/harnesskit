@@ -32,9 +32,10 @@ console = Console()
 NO_INTEGRATION_MENU_VALUE = "__none__"
 INTEGRATION_MENU_OPTIONS = (
     ("codex", "Codex", ""),
-    (NO_INTEGRATION_MENU_VALUE, "None / Skip for now", ""),
     ("claude", "Claude Code", ""),
+    ("infcode", "infCode", "coming soon"),
     ("cursor", "Cursor", "coming soon"),
+    (NO_INTEGRATION_MENU_VALUE, "None / Skip for now", ""),
 )
 
 
