@@ -18,8 +18,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 3. 只保留会立刻改变 agent 行动的事实，例如项目类型、命令 runner、用户可见边界、schema/integration 状态、生成输出边界或 companion 指南行为。
 4. 保持路由简洁：说明规则、架构事实、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。
 5. 工作策略只写触发点和边界。详细步骤放进 skills；除非仓库确实需要固定步骤，否则不要写成固定流程清单。
-6. 只有对应 skill 真实存在时，才引用 `$harness-init`、`$scan-facts`、`$scan-stack`、`$fill-agents`、`$fill-architecture`、`$fill-rules`、`$fill-skills`、`$implementation-strategy`、`$code-change-verification` 和 `$pr-draft-summary`。
-7. 无法确认的内容保留为 `[NEEDS CLARIFICATION: ...]`。
+6. 无法确认的内容保留为 `[NEEDS CLARIFICATION: ...]`。
 
 ## 输出
 
