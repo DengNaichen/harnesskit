@@ -3,7 +3,7 @@ name: fill-architecture
 description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新 ARCHITECTURE.md，使其保持为粗粒度仓库地图。用于 scan-facts 之后更新重要路径、模块职责、生成资产、外部状态和容易混淆的实现边界。
 ---
 
-# Fill Architecture
+# 填充 Architecture
 
 使用本 skill 更新 [ARCHITECTURE.md](../../../ARCHITECTURE.md)，把它保持为给 agent 和贡献者使用的粗粒度仓库地图。它回答“修改前应该先看哪里”，不回答完整 API、完整工作流或详细设计。
 

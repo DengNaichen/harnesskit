@@ -11,6 +11,7 @@ CODEX_SKILLS = (
     ".agents/skills/code-change-verification/SKILL.md",
     ".agents/skills/fill-agents/SKILL.md",
     ".agents/skills/fill-architecture/SKILL.md",
+    ".agents/skills/fill-practices/SKILL.md",
     ".agents/skills/fill-rules/SKILL.md",
     ".agents/skills/fill-skills/SKILL.md",
     ".agents/skills/harness-init/SKILL.md",

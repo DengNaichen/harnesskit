@@ -1,34 +1,36 @@
 ---
 name: harness-init
-description: Orchestrate Context Harness initialization after harnesskit init. Use when bootstrapping or refreshing the generated harness by running scan-facts, fill-agents, fill-architecture, fill-rules, fill-skills, and a final consistency review.
+description: 在 harnesskit init 之后编排 Context Harness 初始化。用于通过 scan-facts、fill-agents、fill-architecture、fill-practices、fill-rules、fill-skills 和最终一致性检查来启动或刷新 generated harness。
 ---
 
-# Harness Init
+# Harness 初始化
 
-Use this skill as the first user-facing workflow after `harnesskit init`. It coordinates the fact-first fill flow without copying every specialized instruction into one large skill.
+把本 skill 作为 `harnesskit init` 之后的第一个用户可见 workflow。它协调 fact-first fill flow，而不是把每个专项指令复制进一个巨大的 skill。
 
-## Workflow
+## 工作流
 
-1. Use $scan-facts to inspect repository evidence and ask the user to confirm candidate project identity, purpose, stack, validation entrypoints, and important boundaries before durable facts are written.
-2. Resolve any high-impact questions that facts cannot settle before writing durable guidance.
-3. Use $fill-architecture to update [ARCHITECTURE.md](../../../ARCHITECTURE.md).
-4. Use $fill-rules to present candidate rule changes for user confirmation, then update [RULES.md](../../../RULES.md) and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files.
-5. Use $fill-agents to update [AGENTS.md](../../../AGENTS.md).
-6. Use $fill-skills to update project-specific sections inside generated skills.
-7. Review consistency across [.harnesskit/facts.md](../../../.harnesskit/facts.md), [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), [.agents/skills/](../../skills/), [CLAUDE.md](../../../CLAUDE.md), and the verification entrypoint.
+1. 使用 $scan-facts 检查仓库证据，并在写入 durable facts 前，请用户确认候选 project identity、purpose、stack、validation entrypoints 和重要边界。
+2. 在写入 durable guidance 前，先解决 facts 无法确定的高影响问题。
+3. 使用 $fill-architecture 更新 [ARCHITECTURE.md](../../../ARCHITECTURE.md)。
+4. 使用 $fill-practices 更新 [docs/practices/](../../../docs/practices/) 判断指导。
+5. 使用 $fill-rules 展示 candidate rule changes 并请求用户确认，然后更新 [RULES.md](../../../RULES.md) 和 [.harnesskit/rules/](../../../.harnesskit/rules/) 下的 `RULE-*.md` 文件。
+6. 使用 $fill-agents 更新 [AGENTS.md](../../../AGENTS.md)。
+7. 使用 $fill-skills 更新 generated skills 中的项目特定 section。
+8. 检查 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、[AGENTS.md](../../../AGENTS.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[RULES.md](../../../RULES.md)、[docs/practices/](../../../docs/practices/)、[.agents/skills/](../../skills/)、[CLAUDE.md](../../../CLAUDE.md) 和 verification entrypoint 的一致性。
 
-## Consistency Review
+## 一致性检查
 
-Check that:
+检查：
 
-- skills referenced in [AGENTS.md](../../../AGENTS.md) exist under [.agents/skills/](../../skills/);
-- [AGENTS.md](../../../AGENTS.md) routes maps to [ARCHITECTURE.md](../../../ARCHITECTURE.md), rules to [RULES.md](../../../RULES.md), and procedures to skills;
-- [RULES.md](../../../RULES.md) command bindings agree with the verification skill and any runner config;
-- [ARCHITECTURE.md](../../../ARCHITECTURE.md) links point to real paths;
-- unresolved uncertainty remains as `[NEEDS CLARIFICATION: ...]`.
+- [AGENTS.md](../../../AGENTS.md) 引用的 skills 都存在于 [.agents/skills/](../../skills/)；
+- [AGENTS.md](../../../AGENTS.md) 将地图路由到 [ARCHITECTURE.md](../../../ARCHITECTURE.md)、rules 路由到 [RULES.md](../../../RULES.md)、procedures 路由到 skills；
+- [docs/practices/](../../../docs/practices/) 承载判断指导，硬约束仍留在 [RULES.md](../../../RULES.md)；
+- [RULES.md](../../../RULES.md) 中的 command bindings 与 verification skill 和 runner config 一致；
+- [ARCHITECTURE.md](../../../ARCHITECTURE.md) 链接指向真实路径；
+- 未解决的不确定性仍保留为 `[NEEDS CLARIFICATION: ...]`。
 
-## Boundaries
+## 边界
 
-- Do not let this skill replace the specialized fill skills; invoke them in order.
-- Do not invent repository facts, commands, CI, branch protection, or release policy.
-- Do not run full runtime verification for guidance-only edits unless the edits also affect runtime code, templates, build/test config, or generated behavior.
+- 不要让本 skill 取代专项 fill skills；按顺序调用它们。
+- 不要虚构 repository facts、commands、CI、branch protection 或 release policy。
+- 对 guidance-only edits 不要运行完整 runtime verification，除非这些编辑也影响运行时代码、模板、构建/测试配置或生成行为。

@@ -1,4 +1,4 @@
-"""Run the repository validation suite and write a lightweight receipt."""
+"""运行仓库验证套件并写入轻量 receipt。"""
 
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ def run_check(check: Check) -> dict[str, Any]:
         result = subprocess.run(check.command, cwd=REPO_ROOT, check=False)
         exit_code = result.returncode
     except FileNotFoundError as error:
-        print(f"Command not found: {error.filename}", file=sys.stderr, flush=True)
+        print(f"未找到命令: {error.filename}", file=sys.stderr, flush=True)
         exit_code = 127
     duration = round(time.monotonic() - started, 3)
 
@@ -133,8 +133,8 @@ def main() -> int:
     write_json(run_path, receipt)
     write_json(latest_path, receipt)
 
-    print(f"\nValidation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
-    print(f"Validation status: {status}", flush=True)
+    print(f"\n验证 receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+    print(f"验证状态: {status}", flush=True)
     return 0 if status == "passed" else 1
 
 

@@ -29,6 +29,7 @@
 - 开始任务前先读 [RULES.md](RULES.md) 或 [NEEDS CLARIFICATION: 本仓库规则入口；未配置时写未配置]，并按需查看规则 details、验证说明或团队确认来源。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [NEEDS CLARIFICATION: 同类架构地图；未配置时写未配置]。
 - 需要产品定位、设计背景、路线图或用户文档时，读 `README.md`、`docs/` 或 [NEEDS CLARIFICATION: 设计文档或未配置]。
+- 涉及代码风格、产品体验、安全或可靠性判断时，按需阅读 [docs/practices/](docs/practices/)；这些文件是判断指导，不替代 [RULES.md](RULES.md) 的硬约束。
 - 触发本地 skill 时，先读对应 skill 文件；当前技能目录是 `.agents/skills/` 或 [NEEDS CLARIFICATION: 未配置]。
 - [.harnesskit/facts.md](.harnesskit/facts.md) 可作为扫描事实快照；高影响判断仍要回到真实仓库文件核对。
 
@@ -45,11 +46,13 @@
 - 修改用户可见行为、公开 API、CLI 命令或参数、外部配置、持久化数据、模板输出或生成资产前，先使用 $implementation-strategy 明确兼容性边界。
 - 影响运行时代码、模板、测试、构建配置、锁文件、Markdown 链接或验证行为的变更，在完成前使用 $code-change-verification。
 - 初次补全或刷新 harness context 时，按需使用 $harness-init 或 $scan-facts。
+- 刷新 [docs/practices/](docs/practices/) 判断指导时，使用 $fill-practices；如果发现新的硬约束候选，再交给 $fill-rules。
 - 中等及以上规模的行为变更完成后，按 $pr-draft-summary 准备交付说明。
 {% else %}
 - 修改用户可见行为、公开 API、CLI 命令或参数、外部配置、持久化数据、模板输出或生成资产前，先明确兼容性边界：[NEEDS CLARIFICATION: implementation-strategy skill、团队流程、人工判断或未配置]。
 - 影响运行时代码、模板、测试、构建配置、锁文件、Markdown 链接或验证行为的变更，在完成前按 [NEEDS CLARIFICATION: code-change-verification skill、真实验证流程或未配置] 验证。
 - 初次补全或刷新 harness context 时，按需使用 [NEEDS CLARIFICATION: harness-init 或 scan-facts skill、对应人工流程或未配置]。
+- 刷新 [docs/practices/](docs/practices/) 判断指导时，按 [NEEDS CLARIFICATION: fill-practices skill、人工流程或未配置] 处理；不要把所有指导直接写成硬规则。
 - 中等及以上规模的行为变更完成后，按 [NEEDS CLARIFICATION: pr-draft-summary skill、仓库 PR 模板、变更摘要要求或未配置] 准备交付说明。
 {% endif %}
 - 发现可复用约定、规则候选、命令漂移或待确认事项时，记录到 [RULES.md](RULES.md) details、[.harnesskit/facts.md](.harnesskit/facts.md)、相关文档、todo 文件或 [NEEDS CLARIFICATION: 未配置]。
@@ -87,4 +90,4 @@
 
 如果 [AGENTS.md](AGENTS.md)、[RULES.md](RULES.md)、[ARCHITECTURE.md](ARCHITECTURE.md)、skills、验证入口、项目命令或仓库事实互相冲突，不要静默选择一边；先核对真实文件，再同步修复漂移的 context 文件。
 
-文档职责保持分离：[AGENTS.md](AGENTS.md) 讲 agent 如何开始和路由，[RULES.md](RULES.md) 讲不能破坏的约束，[ARCHITECTURE.md](ARCHITECTURE.md) 或同类文件讲仓库地图，skills 讲任务流程，`README.md` 和 `docs/` 讲产品与设计背景。
+文档职责保持分离：[AGENTS.md](AGENTS.md) 讲 agent 如何开始和路由，[RULES.md](RULES.md) 讲不能破坏的约束，[ARCHITECTURE.md](ARCHITECTURE.md) 或同类文件讲仓库地图，skills 讲任务流程，[docs/practices/](docs/practices/) 讲判断指导，`README.md` 和 `docs/` 讲产品与设计背景。

@@ -14,6 +14,10 @@
 - RULE-ENG-004: 不要把本仓库未配置的 typecheck、coverage、docs build 或 CI 写成完成条件。([details](.harnesskit/rules/RULE-ENG-004.md))
 - RULE-ENG-005: 发布、部署或托管相关判断必须以仓库配置或团队确认为准，不要把局部 docs 托管配置推断成 package release、CI 或生产部署门槛。([details](.harnesskit/rules/RULE-ENG-005.md))
 
+## 代码风格与维护性
+
+- RULE-STYLE-001: 代码变更必须遵循现有模块边界；跨边界重构需要明确理由和验证。([details](.harnesskit/rules/RULE-STYLE-001.md))
+
 ## AI Coding 规则
 
 - RULE-AI-001: 代码和生成行为判断必须基于已核对的仓库事实。([details](.harnesskit/rules/RULE-AI-001.md))
@@ -34,6 +38,15 @@
 - RULE-ARCH-002: [templates/](templates/) 是用户可见生成输出，模板行为变化必须同步 init 测试。([details](.harnesskit/rules/RULE-ARCH-002.md))
 - RULE-ARCH-003: `harnesskit lint` 的产品入口必须来自 [src/harnesskit/linter/](src/harnesskit/linter/)。([details](.harnesskit/rules/RULE-ARCH-003.md))
 - RULE-ARCH-004: 重要路径、职责或生成资产变化时，必须同步 [ARCHITECTURE.md](ARCHITECTURE.md)。([details](.harnesskit/rules/RULE-ARCH-004.md))
+
+## 产品与体验规则
+
+- RULE-PRODUCT-001: 用户可见文案和生成资产必须明确区分已支持能力、待确认占位和未来愿景。([details](.harnesskit/rules/RULE-PRODUCT-001.md))
+
+## 安全规则
+
+- RULE-SEC-001: 不要把 secret、token、私有凭据或机器特定敏感信息写入模板、facts、rules、报告或生成产物。([details](.harnesskit/rules/RULE-SEC-001.md))
+- RULE-SEC-002: 文件写入必须保持在目标项目内，且默认不得覆盖已有文件，除非用户显式选择覆盖。([details](.harnesskit/rules/RULE-SEC-002.md))
 
 ## 产品 / 领域规则
 

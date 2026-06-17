@@ -1,46 +1,46 @@
 ---
 name: scan-facts
-description: Scan repository facts into .harnesskit/facts.md from verified evidence. Use when bootstrapping or refreshing Context Harness facts before filling AGENTS.md, ARCHITECTURE.md, RULES.md, or project-specific skill sections.
+description: 从已核对证据扫描仓库事实并写入 .harnesskit/facts.md。用于填充 AGENTS.md、ARCHITECTURE.md、RULES.md 或项目特定 skill section 前，启动或刷新 Context Harness facts。
 ---
 
-# Scan Facts
+# 扫描 Facts
 
-Use this skill to refresh [.harnesskit/facts.md](../../../.harnesskit/facts.md) from repository evidence. This skill is the only generated skill that should create or refresh the facts artifact.
+使用本 skill 从仓库证据刷新 [.harnesskit/facts.md](../../../.harnesskit/facts.md)。本 skill 是唯一应该创建或刷新 facts artifact 的 generated skill。
 
-## Inputs
+## 输入
 
-Read the smallest useful set of repository-owned evidence:
+读取最小但足够有用的 repository-owned evidence：
 
-- Existing guidance: [AGENTS.md](../../../AGENTS.md), [CLAUDE.md](../../../CLAUDE.md), [RULES.md](../../../RULES.md), [.agents/skills/](../../skills/) skill files, architecture notes, and relevant docs.
-- Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
-- Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
-- Current state: `[NEEDS CLARIFICATION: ...]` placeholders, todo-checklist marker blocks, missing files, stale paths, or guidance that conflicts with repository files.
+- Existing guidance：[AGENTS.md](../../../AGENTS.md)、[CLAUDE.md](../../../CLAUDE.md)、[RULES.md](../../../RULES.md)、[.agents/skills/](../../skills/) skill files、architecture notes 和相关 docs。
+- Project identity：`README*`、product/design docs、package metadata 和顶层目录名。
+- Tech stack facts：manifests、lockfiles、workspace files、source/test layout、tool config、CI/pre-commit config 和 documented commands。
+- Current state：`[NEEDS CLARIFICATION: ...]` placeholders、todo-checklist marker blocks、missing files、stale paths，或与仓库文件冲突的 guidance。
 
-Ignore local/generated/vendor noise such as virtual environments, dependency folders, caches, build output, downloaded dependencies, and editor metadata unless the user explicitly asks about them.
+忽略 local/generated/vendor 噪音，例如 virtual environments、dependency folders、caches、build output、downloaded dependencies 和 editor metadata，除非用户明确询问。
 
-## Workflow
+## 工作流
 
-1. Inspect repository facts before asking questions.
-2. Record only evidence-backed facts in [.harnesskit/facts.md](../../../.harnesskit/facts.md).
-3. Keep uncertain items as `[NEEDS CLARIFICATION: ...]` with a short note about what evidence is missing.
-4. Do not update [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), or other skills from this skill.
-5. If [.harnesskit/facts.md](../../../.harnesskit/facts.md) is missing, recreate it using the same sections as the generated template.
+1. 在提问前先检查仓库事实。
+2. 只把 evidence-backed facts 记录到 [.harnesskit/facts.md](../../../.harnesskit/facts.md)。
+3. 对不确定事项保留 `[NEEDS CLARIFICATION: ...]`，并简短说明缺少什么证据。
+4. 不要从本 skill 更新 [AGENTS.md](../../../AGENTS.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[RULES.md](../../../RULES.md) 或其他 skills。
+5. 如果 [.harnesskit/facts.md](../../../.harnesskit/facts.md) 缺失，使用 generated template 的相同 sections 重建。
 
-## Fact Model
+## 事实模型
 
-Capture:
+记录：
 
-- Project identity and audience.
-- Languages, runtimes, package managers, frameworks, build tools, test frameworks, linters, formatters, and type checkers.
-- Validation entrypoints: setup, full verify, test, lint, format check, typecheck, coverage, build, docs, link check, hook suite, and CI/platform gates.
-- Repository map candidates: important source, test, docs, config, generated-output, and tooling paths.
-- Agent-facing assets and installed local skills.
-- Rule and Validation candidates with runner evidence.
-- Open questions that repository facts cannot settle.
+- Project identity 和 audience。
+- Languages、runtimes、package managers、frameworks、build tools、test frameworks、linters、formatters 和 type checkers。
+- Validation entrypoints：setup、full verify、test、lint、format check、typecheck、coverage、build、docs、link check、hook suite 和 CI/platform gates。
+- Repository map candidates：重要 source、test、docs、config、generated-output 和 tooling paths。
+- Agent-facing assets 和 installed local skills。
+- 带 runner evidence 的 Rule 与 Validation candidates。
+- 仓库事实无法确定的 open questions。
 
-## Boundaries
+## 边界
 
-- Do not invent commands, tools, URLs, CI, release processes, PR templates, architecture, or compatibility policy.
-- Do not treat generic template examples as evidence that the target repository supports a tool.
-- Do not mark a Validation as deterministic unless a command, script, hook, CI task, or platform setting provides clear pass/fail evidence.
-- Do not run runtime test suites for guidance-only refreshes unless the refresh also changes runtime code, templates, build/test config, or generated behavior.
+- 不要虚构 commands、tools、URLs、CI、release processes、PR templates、architecture 或 compatibility policy。
+- 不要把 generic template examples 当成目标仓库支持某工具的证据。
+- 除非 command、script、hook、CI task 或 platform setting 提供明确 pass/fail 证据，否则不要把 Validation 标记为 deterministic。
+- guidance-only refresh 不要运行 runtime test suites，除非 refresh 也改变运行时代码、模板、构建/测试配置或生成行为。

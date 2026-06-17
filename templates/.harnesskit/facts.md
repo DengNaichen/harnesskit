@@ -1,6 +1,6 @@
 # [PROJECT_NAME] Harness Facts
 
-本文件位于 `.harnesskit/facts.md`，是 `scan -> fill` 工作流的事实交接快照。`$scan-facts` 从仓库事实刷新本文件；`$fill-agents`、`$fill-architecture`、`$fill-rules` 和 `$fill-skills` 消费本文件来更新对应 artifact。
+本文件位于 `.harnesskit/facts.md`，是 `scan -> fill` 工作流的事实交接快照。`$scan-facts` 从仓库事实刷新本文件；`$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills` 消费本文件来更新对应 artifact。
 
 本文件不是仓库事实本身的替代品。填充任何 agent-facing 文档前，仍应优先核对真实源码、清单、脚本、锁文件、CI/hook 配置和现有文档。
 
@@ -8,7 +8,7 @@
 补全本文件前请确认：
 - 每条已确认事实都带有仓库证据路径或团队确认来源。
 - 无法确认的内容保留 `[NEEDS CLARIFICATION: ...]`，不要把模板示例写成事实。
-- facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-rules` 和 `$fill-skills`。
+- facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills`。
 <!-- harnesskit:todo-checklist:end -->
 
 ## Project Identity
@@ -54,6 +54,7 @@
 | `AGENTS.md` | [NEEDS CLARIFICATION: exists / missing / stale] | [NEEDS CLARIFICATION: 事实来源或待处理] |
 | `ARCHITECTURE.md` | [NEEDS CLARIFICATION: exists / missing / stale] | [NEEDS CLARIFICATION: 事实来源或待处理] |
 | `RULES.md` | [NEEDS CLARIFICATION: exists / missing / stale] | [NEEDS CLARIFICATION: 事实来源或待处理] |
+| `docs/practices/` | [NEEDS CLARIFICATION: exists / missing / partial] | [NEEDS CLARIFICATION: 判断指导文件和缺口] |
 | `.agents/skills/` | [NEEDS CLARIFICATION: exists / missing / partial] | [NEEDS CLARIFICATION: 已安装 skills 和缺口] |
 | Companion guides | [NEEDS CLARIFICATION: `CLAUDE.md`、其他入口或 N/A] | [NEEDS CLARIFICATION: 指向关系和一致性] |
 
@@ -63,6 +64,7 @@
 - [NEEDS CLARIFICATION: 新增行为测试规则状态和测试入口]
 - [NEEDS CLARIFICATION: 依赖和锁文件同步规则状态]
 - [NEEDS CLARIFICATION: 文档/context harness 不漂移规则状态]
+- [NEEDS CLARIFICATION: coding/product/security/reliability practices 状态，以及哪些候选应升级为硬规则]
 - [NEEDS CLARIFICATION: lint、format、typecheck、coverage、build、hook、branch protection 等可选规则状态]
 - [NEEDS CLARIFICATION: 需要写入 `RULES.md` 的短规则和对应 `.harnesskit/rules/RULE-*.md` details 文件]
 

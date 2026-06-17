@@ -1,7 +1,7 @@
-"""Run the repository validation suite and write a lightweight receipt.
+"""运行仓库验证套件并写入轻量 receipt。
 
-Configure CHECKS after verifying real commands from this repository's manifests,
-scripts, locks, CI config, or team documentation.
+先从本仓库 manifests、scripts、locks、CI config 或团队文档核对真实命令，
+再配置 CHECKS。
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ def run_check(check: Check) -> dict[str, Any]:
         result = subprocess.run(check.command, cwd=REPO_ROOT, check=False)
         exit_code = result.returncode
     except FileNotFoundError as error:
-        print(f"Command not found: {error.filename}", file=sys.stderr, flush=True)
+        print(f"未找到命令: {error.filename}", file=sys.stderr, flush=True)
         exit_code = 127
     duration = round(time.monotonic() - started, 3)
 
@@ -133,12 +133,12 @@ def main() -> int:
             status="not_configured",
             checks=[],
             notes=[
-                "No validation checks are configured.",
-                "Edit CHECKS in .agents/skills/code-change-verification/scripts/run_validation.py after verifying repository commands.",
+                "尚未配置 validation checks。",
+                "核对仓库命令后，编辑 .agents/skills/code-change-verification/scripts/run_validation.py 中的 CHECKS。",
             ],
         )
-        print("Validation status: not_configured", file=sys.stderr, flush=True)
-        print(f"Validation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+        print("验证状态: not_configured", file=sys.stderr, flush=True)
+        print(f"验证 receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
         return 1
 
     checks: list[dict[str, Any]] = []
@@ -159,8 +159,8 @@ def main() -> int:
         checks=checks,
     )
 
-    print(f"\nValidation receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
-    print(f"Validation status: {status}", flush=True)
+    print(f"\n验证 receipt: {run_path.relative_to(REPO_ROOT)}", flush=True)
+    print(f"验证状态: {status}", flush=True)
     return 0 if status == "passed" else 1
 
 

@@ -1,15 +1,15 @@
 ---
 name: code-change-verification
-description: Run the mandatory verification stack when changes affect runtime code, tests, or build/test behavior.
+description: 当变更影响运行时代码、测试、用户可见生成输出、模板或构建/验证行为时，运行仓库强制验证栈。
 ---
 
-# Code Change Verification
+# 代码变更验证
 
-## Overview
+## 概览
 
-Ensure work is only marked complete after the repository's own verification checks have run. Use this skill when changes affect runtime code, tests, user-facing generated outputs, templates, or build/test configuration. You can skip it for docs-only or repository metadata unless a user asks for the full stack.
+确保只有在仓库自己的 verification checks 运行后，才把工作标记为完成。变更影响运行时代码、测试、用户可见 generated outputs、templates 或 build/test configuration 时使用本 skill。纯文档或仓库元数据变更可跳过，除非用户要求完整验证栈。
 
-## Repository verification stack
+## 仓库验证栈
 
 <!-- harnesskit:todo-checklist:start -->
 补全本节前请确认：
@@ -23,24 +23,24 @@ Ensure work is only marked complete after the repository's own verification chec
 - Lint command: [NEEDS CLARIFICATION: 真实 lint 命令或 N/A]
 - Typecheck command: [NEEDS CLARIFICATION: 真实 typecheck 命令或 N/A]
 - Test command: [NEEDS CLARIFICATION: 真实 test 命令或 N/A]
-- Full verification command: `make verify` after `scripts/run_validation.py` has been configured with repository-verified checks.
-- Notes: `make verify` writes `.harnesskit/receipts/latest.json` and `.harnesskit/receipts/runs/<run_id>.json`; until checks are configured, it records `not_configured` and exits non-zero.
+- Full verification command：在 `scripts/run_validation.py` 已配置 repository-verified checks 后使用 `make verify`。
+- Notes：`make verify` 会写入 `.harnesskit/receipts/latest.json` 和 `.harnesskit/receipts/runs/<run_id>.json`；checks 配置前，它会记录 `not_configured` 并以非零状态退出。
 
-## Quick start
+## 快速开始
 
-1. Keep this skill at [`.agents/skills/code-change-verification`](./) so it loads automatically for the repository.
-2. Use the commands listed in "Repository verification stack".
-3. Run only commands that are filled with concrete repository commands. Treat `[NEEDS CLARIFICATION: ...]` entries as missing, not optional examples.
-4. Run commands from the repository root, preserving the order documented in this skill.
-5. If a command fails, fix the issue, rerun the relevant verification stack, and report the final status.
-6. If `make verify` reports `not_configured`, fill `CHECKS` in [`scripts/run_validation.py`](scripts/run_validation.py) from repository facts before treating it as verification.
+1. 保持本 skill 位于 [`.agents/skills/code-change-verification`](./)，让仓库能自动加载它。
+2. 使用 "仓库验证栈" 中列出的 commands。
+3. 只运行已经填入具体仓库命令的 commands。把 `[NEEDS CLARIFICATION: ...]` 视为缺失项，而不是可选示例。
+4. 从仓库根目录运行命令，并保持本 skill 记录的顺序。
+5. 如果 command 失败，修复问题，重新运行相关 verification stack，并报告最终状态。
+6. 如果 `make verify` 报告 `not_configured`，先根据仓库事实填充 [`scripts/run_validation.py`](scripts/run_validation.py) 中的 `CHECKS`，再把它当作验证入口。
 
-## Manual workflow
+## 手动流程
 
-- If dependency installation is required and the setup command has been filled above, run that setup command before verification.
-- Prefer `make verify` after `scripts/run_validation.py` has been configured.
-- If there is no full verification command, run the filled format, lint, typecheck, and test commands in that order, skipping only entries that remain `[NEEDS CLARIFICATION: ...]`.
-- Do not add new tools or create new verification commands as part of this skill unless the user explicitly asks for that change.
-- Do not treat `[NEEDS CLARIFICATION: ...]` entries or generic examples in templates as proof that the target repository supports those commands.
-- Confirm `.harnesskit/receipts/latest.json` was written and cite the receipt path in the final response when useful.
-- Re-run failed checks after applying fixes so the reported verification matches the final working tree.
+- 如果需要安装依赖，且上方 setup command 已填充，在验证前先运行该 setup command。
+- [`scripts/run_validation.py`](scripts/run_validation.py) 配置完成后，优先使用 `make verify`。
+- 如果没有 full verification command，则按 format、lint、typecheck、test 的顺序运行已填充命令，只跳过仍为 `[NEEDS CLARIFICATION: ...]` 的条目。
+- 除非用户明确要求，不要作为本 skill 的一部分新增工具或创建新的 verification commands。
+- 不要把 `[NEEDS CLARIFICATION: ...]` 条目或 templates 中的通用示例当成目标仓库支持这些命令的证据。
+- 确认 `.harnesskit/receipts/latest.json` 已写入；有帮助时在最终回复中引用 receipt 路径。
+- 修复后重新运行失败检查，确保报告的验证状态对应最终 working tree。

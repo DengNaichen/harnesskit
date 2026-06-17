@@ -1,6 +1,6 @@
 # HarnessKit Harness Facts
 
-本文件位于 `.harnesskit/facts.md`，是 `scan -> fill` 工作流的事实交接快照。`$scan-facts` 从仓库事实刷新本文件；`$fill-agents`、`$fill-architecture`、`$fill-rules` 和 `$fill-skills` 消费本文件来更新对应 artifact。
+本文件位于 `.harnesskit/facts.md`，是 `scan -> fill` 工作流的事实交接快照。`$scan-facts` 从仓库事实刷新本文件；`$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills` 消费本文件来更新对应 artifact。
 
 本文件不是仓库事实本身的替代品。填充任何 agent-facing 文档前，仍应优先核对真实源码、清单、脚本、锁文件、hook 配置和现有文档。
 
@@ -8,7 +8,7 @@
 补全本文件前请确认：
 - 每条已确认事实都带有仓库证据路径或团队确认来源。
 - 无法确认的内容保留 `[NEEDS CLARIFICATION: ...]`，不要把模板示例写成事实。
-- facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-rules` 和 `$fill-skills`。
+- facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills`。
 <!-- harnesskit:todo-checklist:end -->
 
 ## Project Identity
@@ -43,6 +43,7 @@
 - `src/harnesskit/`: packaged CLI/runtime and linter.
 - `templates/`: generated Context Harness assets copied into target repositories.
 - `tests/`: pytest coverage for CLI/init behavior.
+- `docs/practices/`: guidance for coding, product sense, security, and reliability judgments.
 - `.agents/skills/`: local Codex skills used while maintaining this repository.
 - `.harnesskit/rules/`: details files for rules listed in `RULES.md`.
 - `harness-linter-poc/`: old linter POC/reference implementation, not the product entrypoint.
@@ -54,6 +55,7 @@
 | `AGENTS.md` | exists | root agent guide |
 | `ARCHITECTURE.md` | exists | repository map |
 | `RULES.md` | exists | rules index |
+| `docs/practices/` | exists | judgment guidance, not hard rules |
 | `.agents/skills/` | exists | local skills |
 | `CLAUDE.md` | symlink | companion guide pointing at `AGENTS.md` |
 
@@ -63,6 +65,7 @@
 - User-visible behavior changes require tests.
 - Template changes are generated behavior and should be covered by init tests.
 - `harnesskit lint` product behavior lives under `src/harnesskit/linter/`.
+- Practices guide coding/product/security/reliability judgment; only clear hard constraints should be promoted into `RULES.md`.
 
 ## Open Questions
 

@@ -20,7 +20,7 @@
 - `.agents/skills/`：本地 agent skills；具体触发条件应由 [AGENTS.md](AGENTS.md) 路由，执行细节放在各 skill 文件中。
 {% endif %}
 - `.harnesskit/config.json`：HarnessKit 状态文件，记录 schema、项目名、默认 integration 和已安装 integration。
-- [`.harnesskit/facts.md`](.harnesskit/facts.md)：$scan-facts 生成的 scan/fill 事实快照；用于把仓库证据交给 $fill-agents、$fill-architecture、$fill-rules 和 $fill-skills，但不能替代真实仓库事实。
+- [`.harnesskit/facts.md`](.harnesskit/facts.md)：$scan-facts 生成的 scan/fill 事实快照；用于把仓库证据交给 $fill-agents、$fill-architecture、$fill-practices、$fill-rules 和 $fill-skills，但不能替代真实仓库事实。
 {% if HAS_CODEX_INTEGRATION %}
 - [`Makefile`](Makefile)：HarnessKit 安装的验证入口；具体 checks 必须在 `.agents/skills/code-change-verification/scripts/run_validation.py` 中基于仓库事实补全。
 - [`CLAUDE.md`](CLAUDE.md)：companion agent 指南，默认应指向 [AGENTS.md](AGENTS.md)。
@@ -34,6 +34,7 @@
 - [NEEDS CLARIFICATION: 主要源码目录，例如 `src/`、`app/`、`packages/` 或其他真实路径]
 - [NEEDS CLARIFICATION: 主要测试目录，例如 `tests/`、`test/`、`spec/` 或其他真实路径]
 - [NEEDS CLARIFICATION: 主要文档目录，例如 `docs/`、`design/` 或其他真实路径]
+- [`docs/practices/`](docs/practices/)：代码风格、产品体验、安全和可靠性判断指导；不替代 [RULES.md](RULES.md) 的硬约束。
 - [NEEDS CLARIFICATION: 构建、部署、脚本、模板或生成资产目录]
 
 ## 关键文件

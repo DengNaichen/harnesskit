@@ -18,6 +18,7 @@
 - 开始任务前先读 [RULES.md](RULES.md)，并按 [.harnesskit/rules/](.harnesskit/rules/) 查看适用规则的证据、验证方式和例外。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md)，不要把本文件扩写成目录地图。
 - 需要产品定位、MVP 边界、设计背景或路线图时，读 [README.md](README.md) 和 [docs/](docs/)。
+- 涉及代码风格、产品体验、安全或可靠性判断时，按需阅读 [docs/practices/](docs/practices/)；这些文件是判断指导，不替代 [RULES.md](RULES.md) 的硬约束。
 - 触发本地 skill 时，先读 [.agents/skills/](.agents/skills/) 下对应 skill 文件；不要把 skill 正文复制进本文件。
 - [.harnesskit/facts.md](.harnesskit/facts.md) 是扫描事实快照，可用于刷新 context，但高影响判断仍要回到真实仓库文件核对。
 
@@ -27,6 +28,7 @@
 - 影响 [src/harnesskit/](src/harnesskit/)、[templates/](templates/)、[tests/](tests/)、[pyproject.toml](pyproject.toml)、[uv.lock](uv.lock)、Markdown 链接或构建/测试行为的变更，在完成前使用 $code-change-verification。
 - 中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更完成后，按 $pr-draft-summary 输出 PR 草稿块；纯仓库元数据或无行为影响的文档任务可跳过。
 - 模板行为变化要当作用户可见行为处理，通常需要同步 [tests/test_init.py](tests/test_init.py)；`init_project()` 默认跳过已有文件，只有 `--force` 才覆盖。
+- 刷新 [docs/practices/](docs/practices/) 判断指导时，使用 $fill-practices；如果发现新的硬约束候选，再交给 $fill-rules 写入 [RULES.md](RULES.md) 和 details。
 - 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md) 和对应 details 文件。
 - 修改 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [templates/ARCHITECTURE.md](templates/ARCHITECTURE.md) 时，不要机械调用 $fill-architecture；如果 architecture skill 本身也在调整或与当前职责分层原则冲突，先按本文件的分层原则直接处理，并同步修正 skill。
 
@@ -52,4 +54,4 @@
 
 如果 [AGENTS.md](AGENTS.md)、[RULES.md](RULES.md)、[ARCHITECTURE.md](ARCHITECTURE.md)、skills、验证入口或项目命令互相冲突，不要静默选择一边；先用仓库事实核对，再同步修复漂移的 context 文件。
 
-文档职责保持分离：[AGENTS.md](AGENTS.md) 讲 agent 如何开始和路由，[RULES.md](RULES.md) 讲不能破坏的约束，[ARCHITECTURE.md](ARCHITECTURE.md) 讲仓库地图，skills 讲任务流程，[README.md](README.md) 和 [docs/](docs/) 讲产品与设计背景。
+文档职责保持分离：[AGENTS.md](AGENTS.md) 讲 agent 如何开始和路由，[RULES.md](RULES.md) 讲不能破坏的约束，[ARCHITECTURE.md](ARCHITECTURE.md) 讲仓库地图，skills 讲任务流程，[docs/practices/](docs/practices/) 讲判断指导，[README.md](README.md) 和 [docs/](docs/) 讲产品与设计背景。

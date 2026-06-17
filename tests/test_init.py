@@ -23,6 +23,8 @@ SHARED_SKILLS = (
     ".agents/skills/fill-agents/agents/openai.yaml",
     ".agents/skills/fill-architecture/SKILL.md",
     ".agents/skills/fill-architecture/agents/openai.yaml",
+    ".agents/skills/fill-practices/SKILL.md",
+    ".agents/skills/fill-practices/agents/openai.yaml",
     ".agents/skills/fill-rules/SKILL.md",
     ".agents/skills/fill-rules/agents/openai.yaml",
     ".agents/skills/fill-skills/SKILL.md",
@@ -37,6 +39,13 @@ SHARED_SKILLS = (
     ".agents/skills/scan-facts/agents/openai.yaml",
 )
 
+PRACTICE_DOCS = (
+    "docs/practices/CODING.md",
+    "docs/practices/PRODUCT_SENSE.md",
+    "docs/practices/RELIABILITY.md",
+    "docs/practices/SECURITY.md",
+)
+
 
 def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     project = (tmp_path / "demo").resolve()
@@ -48,6 +57,8 @@ def test_init_with_codex_outputs_context_harness_assets(tmp_path: Path) -> None:
     assert (project / "RULES.md").is_file()
     assert (project / "Makefile").is_file()
     assert (project / ".harnesskit/facts.md").is_file()
+    for practice_doc in PRACTICE_DOCS:
+        assert (project / practice_doc).is_file(), practice_doc
     assert (project / "CLAUDE.md").is_file()
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
@@ -73,6 +84,8 @@ def test_init_with_claude_outputs_claude_companion_without_codex_assets(
     assert (project / "ARCHITECTURE.md").is_file()
     assert (project / "RULES.md").is_file()
     assert (project / ".harnesskit/facts.md").is_file()
+    for practice_doc in PRACTICE_DOCS:
+        assert (project / practice_doc).is_file(), practice_doc
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
     assert not (project / ".agents").exists()
@@ -128,6 +141,8 @@ def test_init_without_integration_outputs_core_context_harness_assets(
     assert (project / "RULES.md").is_file()
     assert (project / ".harnesskit/facts.md").is_file()
     assert (project / ".harnesskit/rules/RULE-ENG-001.md").is_file()
+    for practice_doc in PRACTICE_DOCS:
+        assert (project / practice_doc).is_file(), practice_doc
     assert not (project / ".agents").exists()
     assert not (project / "CLAUDE.md").exists()
     assert not (project / "Makefile").exists()
@@ -159,6 +174,7 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "RULES.md" in agents
     assert "$harness-init" in agents
     assert "$scan-facts" in agents
+    assert "docs/practices/" in agents
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
 
@@ -178,6 +194,7 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "AGENTS.md" in architecture
     assert "RULES.md" in architecture
     assert ".harnesskit/facts.md" in architecture
+    assert "docs/practices/" in architecture
     assert "[NEEDS CLARIFICATION:" in architecture
 
     rules = (project / "RULES.md").read_text(encoding="utf-8")
@@ -188,6 +205,9 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "AI Coding 规则" in rules
     assert "技术栈规则" in rules
     assert "架构规则" in rules
+    assert "产品与体验规则" in rules
+    assert "安全规则" in rules
+    assert "RULE-SEC-001" in rules
     assert "RULE-ENG-001" in rules
     assert ".harnesskit/rules/RULE-ENG-001.md" in rules
     assert "[NEEDS CLARIFICATION:" in rules
@@ -202,6 +222,14 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "## Rule" in rule_detail
     assert "## Details" in rule_detail
     assert "[NEEDS CLARIFICATION:" in rule_detail
+
+    for practice_doc in PRACTICE_DOCS:
+        text = (project / practice_doc).read_text(encoding="utf-8")
+        assert "{{" not in text, practice_doc
+        assert "}}" not in text, practice_doc
+        assert "{%" not in text, practice_doc
+        assert "%}" not in text, practice_doc
+        assert "[NEEDS CLARIFICATION:" in text, practice_doc
 
 
 def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) -> None:
@@ -223,25 +251,32 @@ def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) 
         encoding="utf-8"
     )
     assert "candidate facts" in scan_facts
-    assert "User Confirmation Protocol" in scan_facts
-    assert "pause for the user's response" in scan_facts
+    assert "用户确认协议" in scan_facts
+    assert "暂停等待用户回复" in scan_facts
     assert "single-choice MCQ" in scan_facts
-    assert "Confirm all candidate facts and write them" in scan_facts
-    assert "Correct one or more facts before writing" in scan_facts
+    assert "确认所有 candidate facts 并写入" in scan_facts
+    assert "写入前先修正一个或多个 facts" in scan_facts
 
     harness_init = (project / ".agents/skills/harness-init/SKILL.md").read_text(
         encoding="utf-8"
     )
-    assert "ask the user to confirm candidate project identity" in harness_init
-    assert "present candidate rule changes for user confirmation" in harness_init
+    assert "请用户确认候选 project identity" in harness_init
+    assert "展示 candidate rule changes 并请求用户确认" in harness_init
 
     fill_rules = (project / ".agents/skills/fill-rules/SKILL.md").read_text(
         encoding="utf-8"
     )
     assert "candidate rule changes" in fill_rules
-    assert "User Confirmation Protocol" in fill_rules
-    assert "Confirm all candidate rule changes and write them" in fill_rules
-    assert "Correct one or more candidate rules before writing" in fill_rules
+    assert "用户确认协议" in fill_rules
+    assert "确认所有 candidate rule changes 并写入" in fill_rules
+    assert "写入前先修正一个或多个 candidate rules" in fill_rules
+
+    fill_practices = (project / ".agents/skills/fill-practices/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "docs/practices/" in fill_practices
+    assert "判断指导" in fill_practices
+    assert "硬约束不要放进 practices" in fill_practices
 
 
 def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> None:
@@ -257,6 +292,10 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
         ".agents/skills/code-change-verification/SKILL.md",
         ".agents/skills/implementation-strategy/SKILL.md",
         ".agents/skills/pr-draft-summary/SKILL.md",
+        "docs/practices/CODING.md",
+        "docs/practices/PRODUCT_SENSE.md",
+        "docs/practices/RELIABILITY.md",
+        "docs/practices/SECURITY.md",
     ]
     for relative_path in checklist_files:
         text = (project / relative_path).read_text(encoding="utf-8")

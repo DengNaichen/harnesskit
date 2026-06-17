@@ -1,4 +1,4 @@
 interface:
-  display_name: "Fill Agents"
-  short_description: "Fill AGENTS.md from facts"
-  default_prompt: "Use $fill-agents to update AGENTS.md from .harnesskit/facts.md and verified repository evidence."
+  display_name: "填充 Agents"
+  short_description: "从 facts 填充 AGENTS.md"
+  default_prompt: "使用 $fill-agents 从 .harnesskit/facts.md 和已核对的仓库证据更新 AGENTS.md。"

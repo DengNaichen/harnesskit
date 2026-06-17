@@ -65,7 +65,7 @@
     - [`test_tech_stack_rules.py`](harness-linter-poc/tests/test_tech_stack_rules.py)：测试技术栈事实检测和漂移检查。
     - [`test_verification_rules.py`](harness-linter-poc/tests/test_verification_rules.py)：测试验证漂移和命令文档检查。
 - [`.agents/skills/`](.agents/skills/)：本仓库工作时使用的 Codex 本地技能。这里应与根目录 `AGENTS.md`、`RULES.md`、模板和验证 runner 保持一致。
-- [`docs/`](docs/)：产品、设计、路线图和进展文档。设计类文档位于 [`docs/design/`](docs/design/)。
+- [`docs/`](docs/)：产品、设计、实践指导、路线图和进展文档。设计类文档位于 [`docs/design/`](docs/design/)，代码风格、产品体验、安全和可靠性判断指导位于 [`docs/practices/`](docs/practices/)。
 
 ## 关键文件
 
@@ -101,6 +101,7 @@ HarnessKit 会在目标仓库中安装或维护这些文件：
 - [`README.md`](README.md)：产品概览、MVP 边界和 CLI 使用方式。
 - [`AGENTS.md`](AGENTS.md)：本仓库的 agent 操作指南。
 - [`docs/design/`](docs/design/)：AGENTS、RULES、Validation 和 Harness Builder 模型的设计笔记。
+- [`docs/practices/`](docs/practices/)：代码风格、产品体验、安全和可靠性判断指导；不替代 [`RULES.md`](RULES.md) 的硬约束。
 - [`docs/design/ARCHITECTURE.md`](docs/design/ARCHITECTURE.md)：`ARCHITECTURE.md` 的设计说明，解释架构地图如何保持粗粒度、可验证和不漂移。
 - [`docs/design/DESIGN.md`](docs/design/DESIGN.md)：Scan -> Rule -> Validation 产品设计模型。
 - [`docs/ROADMAP.md`](docs/ROADMAP.md)：面向未来的产品和实现路线图。

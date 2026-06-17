@@ -1,49 +1,49 @@
 ---
 name: pr-draft-summary
-description: Create the required PR-ready summary block, branch suggestion, title, and draft description. Use in the final handoff after moderate-or-larger changes to runtime code, tests, examples, build/test configuration, or docs with behavior impact; skip only for trivial or conversation-only tasks, repo-meta/doc-only tasks without behavior impact, or when the user explicitly says not to include the PR draft block.
+description: 生成所需的 PR-ready summary block、branch suggestion、title 和 draft description。用于中等及以上规模的运行时代码、测试、示例、构建/测试配置或有行为影响的文档变更完成后的最终交付；仅在 trivial/conversation-only、无行为影响的 repo-meta/doc-only 任务，或用户明确不要 PR draft block 时跳过。
 ---
 
-# PR Draft Summary
+# PR 草稿总结
 
-## Purpose
-Produce the PR-ready summary required in this repository after substantive code work is complete: a concise summary plus a PR-ready title and draft description that begins with "This pull request <verb> ...". The block should be ready to paste into a PR.
+## 目的
+在实质性代码工作完成后，生成本仓库需要的 PR-ready summary：简短总结、可用 PR title，以及以 "This pull request <verb> ..." 开头的 draft description。输出块应可直接粘贴进 PR。
 
-## When to Trigger
-- The task for this repo is finished (or ready for review) and it touched runtime code, tests, examples, docs with behavior impact, or build/test configuration.
-- Treat this as the default final handoff step for substantive code work. Run it after any required verification or changeset work and before sending the "work complete" response.
-- Skip only for trivial or conversation-only tasks, repo-meta/doc-only tasks without behavior impact, or when the user explicitly says not to include the PR draft block.
+## 触发条件
+- 本仓库任务已完成（或 ready for review），且触及运行时代码、测试、示例、有行为影响的 docs 或构建/测试配置。
+- 对实质性代码工作，把它作为默认 final handoff step。在所需验证或 changeset 工作完成后、发送“完成”回复前执行。
+- 仅在 trivial/conversation-only、无行为影响的 repo-meta/doc-only 任务，或用户明确不要 PR draft block 时跳过。
 
-## Inputs to Collect Automatically (do not ask the user)
-- Current branch: `git rev-parse --abbrev-ref HEAD`.
-- Working tree: `git status -sb`.
-- Untracked files: `git ls-files --others --exclude-standard`.
-- Changed files: `git diff --name-only` (unstaged) and `git diff --name-only --cached` (staged); sizes via `git diff --stat` and `git diff --stat --cached`.
-- Latest release tag: `LATEST_RELEASE_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)`.
-- Base reference (use the branch's upstream, fallback to `origin/main`):
+## 自动收集的输入（不要询问用户）
+- 当前 branch：`git rev-parse --abbrev-ref HEAD`。
+- Working tree：`git status -sb`。
+- Untracked files：`git ls-files --others --exclude-standard`。
+- Changed files：`git diff --name-only`（unstaged）和 `git diff --name-only --cached`（staged）；sizes 用 `git diff --stat` 和 `git diff --stat --cached`。
+- 最新 release tag：`LATEST_RELEASE_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1)`。
+- Base reference（使用当前 branch 的 upstream，fallback 到 `origin/main`）：
   - `BASE_REF=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || echo origin/main)`.
   - `BASE_COMMIT=$(git merge-base --fork-point "$BASE_REF" HEAD || git merge-base "$BASE_REF" HEAD || echo "$BASE_REF")`.
-- Commits ahead of the base fork point: `git log --oneline --no-merges ${BASE_COMMIT}..HEAD`.
-- Category signals for this repo:
-  - Runtime CLI or library behavior: `src/harnesskit/**`
-  - Generated harness/template behavior: `templates/**`
-  - Tests: `tests/**`
-  - Packaging/build metadata: `pyproject.toml`, `uv.lock`
-  - Project/product documentation: `README.md`, `design.md`, `docs/**`
-  - Agent policy and local skills: `AGENTS.md`, `CLAUDE.md`, `.agents/skills/**`
+- Base fork point 之后的 commits：`git log --oneline --no-merges ${BASE_COMMIT}..HEAD`。
+- 本仓库 category signals：
+  - Runtime CLI 或 library behavior：`src/harnesskit/**`
+  - Generated harness/template behavior：`templates/**`
+  - Tests：`tests/**`
+  - Packaging/build metadata：`pyproject.toml`, `uv.lock`
+  - Project/product documentation：`README.md`, `design.md`, `docs/**`
+  - Agent policy 和 local skills：`AGENTS.md`, `CLAUDE.md`, `.agents/skills/**`
 
-## Workflow
-1) Run the commands above without asking the user; compute `BASE_REF`/`BASE_COMMIT` first so later commands reuse them.
-2) If there are no staged/unstaged/untracked changes and no commits ahead of `${BASE_COMMIT}`, reply briefly that no code changes were detected and skip emitting the PR block.
-3) Infer change type from the touched paths listed under "Category signals"; classify as feature, fix, refactor, or docs-with-impact, and flag backward-compatibility risk only when the diff changes released public APIs, external config, persisted data, serialized state, or wire protocols. Judge that risk against `LATEST_RELEASE_TAG`, not unreleased branch-only churn.
-4) Summarize changes in 1–3 short sentences using the key paths (top 5) and `git diff --stat` output; explicitly call out untracked files because `--stat` does not include them. If the working tree is clean but there are commits ahead of `${BASE_COMMIT}`, summarize using those commit messages.
-5) Choose the lead verb for the description: feature → `adds`, bug fix → `fixes`, refactor/perf → `improves` or `updates`, docs-only → `updates`.
-6) Suggest a branch name. If already off main, keep it; otherwise propose `feat/<slug>`, `fix/<slug>`, or `docs/<slug>` based on the primary area.
-7) If the current branch matches `issue-<number>` (digits only), keep that branch suggestion. When an issue number is present and a GitHub remote URL is available from `git remote -v`, reference that issue URL and include an auto-closing line such as `This pull request resolves #<number>.`
-8) Draft the PR title and description using the template below.
-9) Output only the block in "Output Format".
+## 工作流
+1. 运行上述命令，不要询问用户；先计算 `BASE_REF`/`BASE_COMMIT`，让后续命令复用。
+2. 如果没有 staged/unstaged/untracked changes，且 `${BASE_COMMIT}` 之后没有 commits，简短说明未检测到代码变更，并跳过 PR block。
+3. 根据 "Category signals" 下的 touched paths 推断 change type，分类为 feature、fix、refactor 或 docs-with-impact；只有 diff 改变已发布 public APIs、external config、persisted data、serialized state 或 wire protocols 时，才标记 backward-compatibility risk。按 `LATEST_RELEASE_TAG` 判断风险，不按 unreleased branch-only churn 判断。
+4. 用关键路径（top 5）和 `git diff --stat` output 在 1-3 句内总结变化；明确说明 untracked files，因为 `--stat` 不包含它们。如果 working tree 干净但 `${BASE_COMMIT}` 之后有 commits，用 commit messages 总结。
+5. 选择 description lead verb：feature -> `adds`，bug fix -> `fixes`，refactor/perf -> `improves` 或 `updates`，docs-only -> `updates`。
+6. 建议 branch name。如果已经不在 main，保留当前 branch；否则按主要领域建议 `feat/<slug>`、`fix/<slug>` 或 `docs/<slug>`。
+7. 如果当前 branch 匹配 `issue-<number>`（仅数字），保留该 branch suggestion。当存在 issue number 且 `git remote -v` 有 GitHub remote URL 时，引用该 issue URL，并包含类似 `This pull request resolves #<number>.` 的 auto-closing line。
+8. 使用下方模板起草 PR title 和 description。
+9. 只输出 "Output Format" 中的 block。
 
-## Output Format
-When closing out a task, add this concise Markdown block after any brief status note unless the task falls under the documented skip cases or the user says they do not want it.
+## 输出格式
+结束任务时，除非任务属于记录的跳过条件，或用户说不需要，否则在简短状态说明后添加下面的 Markdown block。
 
 ```
 # Pull Request Draft
@@ -61,4 +61,4 @@ git checkout -b <kebab-case suggestion, e.g., feat/add-login-flow>
 <start with "This pull request adds/fixes/improves ..."; explain the background and what changed; use bullets for detail if needed>
 ```
 
-Keep it tight—no redundant prose around the block, and avoid repeating details between changes and the description. Tests do not need to be listed unless specifically requested.
+保持精简：不要在 block 周围添加重复说明，也避免在 changes 和 description 之间重复细节。除非用户特别要求，否则不需要列出 tests。

@@ -3,7 +3,7 @@ name: fill-agents
 description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新 AGENTS.md，使其保持为简洁的 agent 启动入口。用于 scan-facts 之后更新操作关键事实、上下文路由、skill 触发点、验证入口、漂移处理，或同步 root/template AGENTS.md 的结构意图。
 ---
 
-# Fill Agents
+# 填充 Agents
 
 使用本 skill 更新 [AGENTS.md](../../../AGENTS.md)，把它保持为仓库的 agent 启动入口。[AGENTS.md](../../../AGENTS.md) 应只承载少量操作关键事实，并把 agent 路由到规则、架构地图、skills、验证入口和漂移处理。
 
@@ -16,7 +16,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[.agents/skills/](../../skills/) 中的 skill 文件，以及已存在的 [templates/AGENTS.md](../../../templates/AGENTS.md)。
 2. 对高影响声明回到真实仓库文件核对；不要只依赖 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、README 叙述、设计文档或模板示例。
 3. 只保留会立刻改变 agent 行动的事实，例如项目类型、命令 runner、用户可见边界、schema/integration 状态、生成输出边界或 companion 指南行为。
-4. 保持路由简洁：说明规则、架构事实、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。
+4. 保持路由简洁：说明规则、架构事实、实践指导、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。
 5. 工作策略只写触发点和边界。详细步骤放进 skills；除非仓库确实需要固定步骤，否则不要写成固定流程清单。
 6. 无法确认的内容保留为 `[NEEDS CLARIFICATION: ...]`。
 

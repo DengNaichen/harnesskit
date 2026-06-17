@@ -1,11 +1,11 @@
 - [x] agent.md 精简一下
-- [ ] rules要分层
+- [x] rules要分层: 暂时不分
 - [ ] agent hooks 的能力
-- [ ] lint or LLM, corn 
-- [ ] rules 怎么改
+- [ ] lint or LLM, corn
+- [x] rules 怎么改
 - [ ] 设计:
     - [ ] corn job
         - [ ] pr / pre / ci: optional
     - [-] linter
 - [x] 支持Claude code
-- [ ] 生成高质量的rule比放在哪里更关键
+- [x] 生成高质量的rule比放在哪里更关键
