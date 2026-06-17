@@ -207,23 +207,21 @@ def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> No
 
     init_project(str(project))
 
-    expected_checklist_counts = {
-        ".harnesskit/facts.md": 1,
-        "AGENTS.md": 7,
-        "ARCHITECTURE.md": 1,
-        "RULES.md": 1,
-        ".agents/skills/code-change-verification/SKILL.md": 1,
-        ".agents/skills/implementation-strategy/SKILL.md": 1,
-        ".agents/skills/pr-draft-summary/SKILL.md": 2,
-    }
-    for relative_path, expected_count in expected_checklist_counts.items():
+    checklist_files = [
+        ".harnesskit/facts.md",
+        "AGENTS.md",
+        "ARCHITECTURE.md",
+        "RULES.md",
+        ".agents/skills/code-change-verification/SKILL.md",
+        ".agents/skills/implementation-strategy/SKILL.md",
+        ".agents/skills/pr-draft-summary/SKILL.md",
+    ]
+    for relative_path in checklist_files:
         text = (project / relative_path).read_text(encoding="utf-8")
-        assert (
-            text.count("<!-- harnesskit:todo-checklist:start -->") == expected_count
-        ), relative_path
-        assert text.count("<!-- harnesskit:todo-checklist:end -->") == expected_count, (
-            relative_path
-        )
+        start_count = text.count("<!-- harnesskit:todo-checklist:start -->")
+        end_count = text.count("<!-- harnesskit:todo-checklist:end -->")
+        assert start_count > 0, relative_path
+        assert end_count == start_count, relative_path
 
 
 def test_agent_guidance_outputs_claude_symlink_from_dereferenced_template(

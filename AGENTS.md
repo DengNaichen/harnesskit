@@ -8,7 +8,9 @@
 - 用户可见边界包括 CLI/runtime、`.harnesskit/config.json`、模板输出、integration 输出和 `harnesskit lint`。
 - 当前配置 schema version 是 `1`；支持 `codex` 和 `claude` integration，`codex` 是默认值。
 - 模板会写入目标仓库并使用 Jinja `StrictUndefined`；改模板时必须确认渲染上下文。
+- 本仓库 agent 指南、rules、skills 和模板默认面向中文团队语境；除 `name`、命令、路径、代码标识和必要英文术语外，新增或重写语义说明时优先使用中文。
 - 根目录 `AGENTS.md` 是本仓库当前生效的 agent 指南；`templates/AGENTS.md` 是生成到目标仓库的通用模板。两者应保持结构意图一致，但不要求内容一致；不要把本仓库事实无证据复制进模板，也不要把模板占位符当成本仓库事实。
+- `.agents/skills/` 是本仓库当前生效的本地 skills；`templates/skills/` 是生成到目标仓库的通用 skill 模板。两边应保持结构意图一致，但不要求内容一致；不要把本仓库专属流程无证据复制进模板。
 - `CLAUDE.md` 应保持为指向 `AGENTS.md` 的 companion 文件。
 
 ## 上下文路由
