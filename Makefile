@@ -1,4 +1,4 @@
-.PHONY: verify verify-core links lint format test build hooks
+.PHONY: verify verify-core links lint format test build hooks publish
 
 verify:
 	uv run python .agents/skills/code-change-verification/scripts/run_validation.py
@@ -23,3 +23,6 @@ build:
 
 hooks:
 	uv run pre-commit run --all-files
+
+publish:
+	scripts/publish_pypi.sh
