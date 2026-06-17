@@ -66,7 +66,7 @@
     - [`test_verification_rules.py`](harness-linter-poc/tests/test_verification_rules.py)：测试验证漂移和命令文档检查。
 - [`.agents/skills/`](.agents/skills/)：本仓库工作时使用的 Codex 本地技能。这里应与根目录 `AGENTS.md`、`RULES.md`、模板和验证 runner 保持一致。
 - [`scripts/`](scripts/)：仓库维护脚本；当前包含 [`publish_pypi.sh`](scripts/publish_pypi.sh)，作为 `make publish` 的手动 PyPI 发布入口。
-- [`docs/`](docs/)：产品、设计、实践指导、路线图和进展文档。设计类文档位于 [`docs/design/`](docs/design/)，代码风格、产品体验、安全和可靠性判断指导位于 [`docs/practices/`](docs/practices/)。
+- [`docs/`](docs/)：产品、设计、实践指导、路线图、进展文档和 GitHub Pages 静态站点资产。设计类文档位于 [`docs/design/`](docs/design/)，代码风格、产品体验、安全和可靠性判断指导位于 [`docs/practices/`](docs/practices/)。
 
 ## 关键文件
 

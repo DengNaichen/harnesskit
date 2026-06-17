@@ -6,6 +6,7 @@
 
 - HarnessKit 是 Python 3.11+ 的 Context Harness CLI/toolkit，使用 `uv`；PyPI 分发名是 `infharness`，安装后 console script 仍是 `harnesskit`；具体技术栈和路径职责看 [ARCHITECTURE.md](ARCHITECTURE.md)。
 - 用户可见边界包括 CLI/runtime、[.harnesskit/config.json](.harnesskit/config.json)、模板输出、integration 输出和 `harnesskit lint`。
+- [docs/](docs/) 当前作为 GitHub Pages 静态站点资产；不要再把 Vercel 当作本仓库的文档托管事实。
 - 当前配置 schema version 是 `1`；支持 `codex` 和 `claude` integration，`codex` 是默认值。
 - 模板会写入目标仓库并使用 Jinja `StrictUndefined`；改模板时必须确认渲染上下文。
 - 本仓库 agent 指南、rules、skills 和模板默认面向中文团队语境；除 `name`、命令、路径、代码标识和必要英文术语外，新增或重写语义说明时优先使用中文。

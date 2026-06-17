@@ -122,3 +122,7 @@ brew install lychee
 - 维护已安装 harness 的完整性，避免它在使用中腐坏或与仓库事实脱节
 
 后续路线放在 [`docs/ROADMAP.md`](docs/ROADMAP.md)。
+
+## 文档站点
+
+`docs/` 目录可作为 GitHub Pages 静态站点发布；`docs/index.html` 会跳转到当前报告页。
