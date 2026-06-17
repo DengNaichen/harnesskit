@@ -10,10 +10,10 @@
 
 证据：
 
-- `pyproject.toml`
-- `tests/`
-- `harness-linter-poc/tests/`
-- `.pre-commit-config.yaml`
+- [pyproject.toml](../../pyproject.toml)
+- [tests/](../../tests/)
+- [harness-linter-poc/tests/](../../harness-linter-poc/tests/)
+- [.pre-commit-config.yaml](../../.pre-commit-config.yaml)
 
 验证：
 

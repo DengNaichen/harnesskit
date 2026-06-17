@@ -6,7 +6,7 @@
 
 ## Details
 
-本规则是 deployment/release 边界，不是发布流程说明。本仓库当前有 package build 配置，也有 `docs/` 下的 Vercel 托管配置；这些事实需要按作用域解读。`docs/` 托管配置只证明文档站点存在相关配置，不能推出 Python package 已配置发布流水线、CI gate、生产部署流程或 release 自动化。
+本规则是 deployment/release 边界，不是发布流程说明。本仓库当前有 package build 配置，也有 [docs/](../../docs/) 下的 Vercel 托管配置；这些事实需要按作用域解读。[docs/](../../docs/) 托管配置只证明文档站点存在相关配置，不能推出 Python package 已配置发布流水线、CI gate、生产部署流程或 release 自动化。
 
 适用范围：
 
@@ -16,17 +16,17 @@
 
 违反形态：
 
-- 把 `docs/` 的 Vercel 配置写成整个项目的生产部署流程。
+- 把 [docs/](../../docs/) 的 Vercel 配置写成整个项目的生产部署流程。
 - 把没有 runner 证据的 CI、release automation、deployment gate 写成完成条件。
 - 影响 package 或模板打包却没有确认 `uv build` 仍可通过。
 
 证据：
 
-- `docs/vercel.json`
-- `docs/.vercel/project.json`
-- `pyproject.toml`
-- `Makefile`
-- `AGENTS.md`
+- [docs/vercel.json](../../docs/vercel.json)
+- [docs/.vercel/project.json](../../docs/.vercel/project.json)
+- [pyproject.toml](../../pyproject.toml)
+- [Makefile](../../Makefile)
+- [AGENTS.md](../../AGENTS.md)
 - 仓库当前没有已证实的 `.github` CI、package release automation 或生产部署 runner。
 
 验证：

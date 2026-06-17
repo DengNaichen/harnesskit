@@ -14,7 +14,7 @@
 
 目前我们已沉淀了一套轻量、开箱即用的 Harness 原型，并在当前仓库完成自举验证：
 
-1. **统一的 Agent 入口契约 (`AGENTS.md` / `ARCHITECTURE.md`)**
+1. **统一的 Agent 入口契约 ([AGENTS.md](../AGENTS.md) / [ARCHITECTURE.md](../ARCHITECTURE.md))**
    * **价值**：将仓库结构、验证入口、本地 Skills 固化为标准文档。新 Agent 进场无需全量扫描或人肉答疑，实现“首屏即用”。
    - [ ] 这也是rules的一部分.
 2. **确定性反馈工具链 (Harness Linter POC)**
@@ -41,7 +41,7 @@
 2. **维护与防腐烂难题（演进防护）**：即便人肉整理了一套上下文说明，随着项目的日常迭代，这套上下文资产也会因高昂的人力同步成本而迅速发生漂移、分叉与腐烂。
 
 HarnessKit CLI 作为**脚手架工具**的本质价值是：
-* **初始化时**：一键为传统仓库套用标准的 Agent 契约模型（AGENTS.md / RULES.md / Skills / Validations 最佳实践），解决“怎么写”的冷启动问题。
+* **初始化时**：一键为传统仓库套用标准的 Agent 契约模型（[AGENTS.md](../AGENTS.md) / [RULES.md](../RULES.md) / Skills / Validations 最佳实践），解决“怎么写”的冷启动问题。
 * **演进过程中**：通过 Scanner 自动提取事实，并通过 Linter / Guard 提供静态防腐拦截，解决“如何维护”的防漂移问题。
 
 ### 2. 项目边界（Out of Scope）
@@ -76,11 +76,11 @@ flowchart LR
 - [x] **Stack & Context Scan**
    - **技术栈事实**：识别语言、包管理器、构建工具、测试框架、lint/format 工具。
    - **验证入口**：识别当前仓库已经存在的测试、构建、lint、pre-commit 等可执行检查。
-   - **现有上下文资产**：识别已有的 `AGENTS.md`、`CLAUDE.md`、skills、README、架构文档和其他 agent-facing 文档。
+   - **现有上下文资产**：识别已有的 [AGENTS.md](../AGENTS.md)、[CLAUDE.md](../CLAUDE.md)、skills、README、架构文档和其他 agent-facing 文档。
    - **当前状态**：已收敛为 $scan-facts 加后续 fill skills。
 - [ ] **Repository Map**
    - **仓库结构地图**：识别主要目录、关键文件和入口位置。
-   - **当前状态**：MVP 待补齐，当前 `ARCHITECTURE.md` 已作为静态底座。
+   - **当前状态**：MVP 待补齐，当前 [ARCHITECTURE.md](../ARCHITECTURE.md) 已作为静态底座。
 - [ ] **Risk Signals**
    - **初始风险点**：发现断链、缺失文件、过期验证命令、placeholder、未成对 marker 等确定性问题。
    - **当前状态**：暂不纳入 MVP，后续可作为 guard/audit 能力扩展。
@@ -90,24 +90,24 @@ flowchart LR
 
 #### 2. Rules & Guards (规则与自动化防漂移)
 - [x] **Harness 资产完整性规则**
-   - `AGENTS.md` 和 `CLAUDE.md` 必须存在且非空。
-   - `.harnesskit/config.json` 必须存在、JSON 合法，并符合当前 schema 和 integration 约束。
+   - [AGENTS.md](../AGENTS.md) 和 [CLAUDE.md](../CLAUDE.md) 必须存在且非空。
+   - [.harnesskit/config.json](../.harnesskit/config.json) 必须存在、JSON 合法，并符合当前 schema 和 integration 约束。
    - 已安装的 Codex integration 必须具备对应本地 skills。
 - [x] **Agent 入口与 skill 路由规则**
-   - `CLAUDE.md` 应指向 `AGENTS.md`，避免多份入口说明漂移。
-   - `AGENTS.md` 中引用的 `$skill` 必须真实存在于 `.agents/skills/`。
-   - 每个 `SKILL.md` 必须具备 `name` 和 `description` frontmatter。
+   - [CLAUDE.md](../CLAUDE.md) 应指向 [AGENTS.md](../AGENTS.md)，避免多份入口说明漂移。
+   - [AGENTS.md](../AGENTS.md) 中引用的 `$skill` 必须真实存在于 [.agents/skills/](../.agents/skills/)。
+   - 每个 skill 文件必须具备 `name` 和 `description` frontmatter。
 - [x] **Markdown 与 marker 结构规则**
    - 本地 Markdown 链接必须指向真实存在的文件。
    - `harnesskit:todo-checklist`、`harnesskit:tech-stack`、`harnesskit:verification` marker 必须成对。
    - 占位说明不能长期残留在架构说明中。
 - [x] **Repository Map 规则**
-   - `ARCHITECTURE.md` 中声明的路径必须真实存在。
+   - [ARCHITECTURE.md](../ARCHITECTURE.md) 中声明的路径必须真实存在。
    - 使用 `harnesskit:coverage=direct-children` 时，目录的直接子项必须被文档覆盖，或显式 ignore。
    - coverage hint 必须使用合法语法。
 - [x] **Tech Stack Drift 规则**
    - 文档中的技术栈块必须和仓库事实一致。
-   - 包管理器、测试框架、构建后端、CLI 框架等不能和 `pyproject.toml`、lockfile、测试目录等证据冲突。
+   - 包管理器、测试框架、构建后端、CLI 框架等不能和 [pyproject.toml](../pyproject.toml)、lockfile、测试目录等证据冲突。
 - [x] **Verification Drift 规则**
    - 如果仓库事实表明使用 `pytest`，agent-facing 文档不能继续要求 `unittest`。
    - 如果仓库声明了 Ruff，验证契约必须记录 Ruff lint。
@@ -117,7 +117,7 @@ flowchart LR
    - 下一步需要把上述 rules 映射到 linter issue code，例如 `skill.reference.missing`、`architecture.coverage_missing`、`verification.stale_test_framework`。
    - 映射表应标注 severity、检查方式和是否属于 MVP。
 - [ ] **Promotion Path**
-   - 当前 linter 仍是 `harness-linter-poc/`。
+   - 当前 linter 仍是 [harness-linter-poc/](../harness-linter-poc/)。
    - 后续需要决定哪些 guard 进入正式 HarnessKit CLI、pre-commit 或 CI 集成。
 
 ---
@@ -149,7 +149,7 @@ flowchart LR
 #### 4. Experience Memory & Harness Evolution (经验记忆与上下文自演进)
 - [ ] **Experience Memory**
    - 从真实任务中记录可复用经验：有效命令、反复出现的问题、误导 agent 的旧规则、缺失的验证入口、需要补充的项目事实。
-   - 区分短期任务记录和长期稳定记忆：短期内容先进入 `RULES.md` 的待确认项或任务记录，反复验证后再沉淀到 `AGENTS.md`、skills、架构文档或 guard。
+   - 区分短期任务记录和长期稳定记忆：短期内容先进入 [RULES.md](../RULES.md) 的待确认项或任务记录，反复验证后再沉淀到 [AGENTS.md](../AGENTS.md)、skills、架构文档或 guard。
    - 可参考 OpenClaw 的 memory 思路：把长期事实、偏好、决策和每日运行记录放进可读、可编辑的文件，而不是只留在对话上下文里。
 - [ ] **Improvement Evaluation**
    - 对候选改进建立评估门槛：它解决了什么失败模式、影响哪个 skill/rule/guard、是否有验证方式、是否值得进入默认模板。

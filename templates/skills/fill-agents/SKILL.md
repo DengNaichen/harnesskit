@@ -7,13 +7,13 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 
 使用本 skill 更新 [AGENTS.md](../../../AGENTS.md)，把它保持为仓库的 agent 启动入口。[AGENTS.md](../../../AGENTS.md) 应只承载少量操作关键事实，并把 agent 路由到规则、架构地图、skills、验证入口和漂移处理。
 
-AGENTS.md 不是项目知识库。完整目录地图放到 ARCHITECTURE.md，约束放到 RULES.md，任务流程放到 `.agents/skills/`，产品背景放到 README.md 或 docs。
+[AGENTS.md](../../../AGENTS.md) 不是项目知识库。完整目录地图放到 [ARCHITECTURE.md](../../../ARCHITECTURE.md)，约束放到 [RULES.md](../../../RULES.md)，任务流程放到 [.agents/skills/](../../skills/)，产品背景放到 `README.md` 或 `docs/`。
 
-当仓库同时存在 `templates/AGENTS.md` 时，根目录指南和模板指南要保持结构意图一致，但不要求内容一致。根目录 AGENTS.md 描述当前仓库；`templates/AGENTS.md` 是生成到目标仓库的通用模板。不要把当前仓库事实无证据复制进模板，也不要把模板占位符当成当前仓库事实。
+当仓库同时存在 `templates/AGENTS.md` 时，根目录指南和模板指南要保持结构意图一致，但不要求内容一致。根目录 [AGENTS.md](../../../AGENTS.md) 描述当前仓库；`templates/AGENTS.md` 是生成到目标仓库的通用模板。不要把当前仓库事实无证据复制进模板，也不要把模板占位符当成当前仓库事实。
 
 ## 工作流
 
-1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、`.agents/skills/*/SKILL.md`，以及已存在的 `templates/AGENTS.md`。
+1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[.agents/skills/](../../skills/) 中的 skill 文件，以及已存在的 `templates/AGENTS.md`。
 2. 对高影响声明回到真实仓库文件核对；不要只依赖 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、README 叙述、设计文档或模板示例。
 3. 只保留会立刻改变 agent 行动的事实，例如项目类型、命令 runner、用户可见边界、schema/integration 状态、生成输出边界或 companion 指南行为。
 4. 保持路由简洁：说明规则、架构事实、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。

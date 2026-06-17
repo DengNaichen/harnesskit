@@ -17,7 +17,7 @@ Use this skill to update project-specific sections inside generated skills. It c
 
 ## Output
 
-Update `.agents/skills/*/SKILL.md` files only when their project-specific placeholders can be resolved from facts and repository evidence.
+Update files under [.agents/skills/](../../skills/) only when their project-specific placeholders can be resolved from facts and repository evidence.
 
 ## Boundaries
 

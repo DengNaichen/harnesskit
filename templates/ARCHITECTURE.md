@@ -17,7 +17,7 @@
 - [`AGENTS.md`](AGENTS.md)：agent 操作入口和顶层路由器。
 - [`RULES.md`](RULES.md)：工程规则、validation 绑定和项目命令事实来源。
 {% if HAS_CODEX_INTEGRATION %}
-- `.agents/skills/`：本地 agent skills；具体触发条件应由 [AGENTS.md](AGENTS.md) 路由，执行细节放在各 skill 的 `SKILL.md`。
+- `.agents/skills/`：本地 agent skills；具体触发条件应由 [AGENTS.md](AGENTS.md) 路由，执行细节放在各 skill 文件中。
 {% endif %}
 - `.harnesskit/config.json`：HarnessKit 状态文件，记录 schema、项目名、默认 integration 和已安装 integration。
 - [`.harnesskit/facts.md`](.harnesskit/facts.md)：$scan-facts 生成的 scan/fill 事实快照；用于把仓库证据交给 $fill-agents、$fill-architecture、$fill-rules 和 $fill-skills，但不能替代真实仓库事实。

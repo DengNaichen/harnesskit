@@ -13,7 +13,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 
 ## 工作流
 
-1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、`.agents/skills/*/SKILL.md`，以及已存在的 [templates/AGENTS.md](../../../templates/AGENTS.md)。
+1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[.agents/skills/](../../skills/) 中的 skill 文件，以及已存在的 [templates/AGENTS.md](../../../templates/AGENTS.md)。
 2. 对高影响声明回到真实仓库文件核对；不要只依赖 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、README 叙述、设计文档或模板示例。
 3. 只保留会立刻改变 agent 行动的事实，例如项目类型、命令 runner、用户可见边界、schema/integration 状态、生成输出边界或 companion 指南行为。
 4. 保持路由简洁：说明规则、架构事实、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。

@@ -11,7 +11,7 @@ Use this skill to refresh [.harnesskit/facts.md](../../../.harnesskit/facts.md) 
 
 Read the smallest useful set of repository-owned evidence:
 
-- Existing guidance: [AGENTS.md](../../../AGENTS.md), [CLAUDE.md](../../../CLAUDE.md), [RULES.md](../../../RULES.md), `.agents/skills/*/SKILL.md`, architecture notes, and relevant docs.
+- Existing guidance: [AGENTS.md](../../../AGENTS.md), [CLAUDE.md](../../../CLAUDE.md), [RULES.md](../../../RULES.md), [.agents/skills/](../../skills/) skill files, architecture notes, and relevant docs.
 - Project identity: `README*`, product/design docs, package metadata, and top-level directory names.
 - Tech stack facts: manifests, lockfiles, workspace files, source/test layout, tool config, CI/pre-commit config, and documented commands.
 - Current state: `[NEEDS CLARIFICATION: ...]` placeholders, todo-checklist marker blocks, missing files, stale paths, or guidance that conflicts with repository files.

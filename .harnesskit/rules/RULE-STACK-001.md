@@ -6,15 +6,15 @@ Python 命令优先通过 `uv run ...` 使用仓库环境执行。
 
 ## Details
 
-本仓库使用 `uv` 管理环境和命令。运行测试、lint、format、pre-commit、CLI 或 Python 调试命令时优先使用 `uv run ...`；具体本地开发命令维护在 `README.md`。
+本仓库使用 `uv` 管理环境和命令。运行测试、lint、format、pre-commit、CLI 或 Python 调试命令时优先使用 `uv run ...`；具体本地开发命令维护在 [README.md](../../README.md)。
 
 证据：
 
-- `AGENTS.md`
-- `README.md`
-- `pyproject.toml`
-- `uv.lock`
-- `Makefile`
+- [AGENTS.md](../../AGENTS.md)
+- [README.md](../../README.md)
+- [pyproject.toml](../../pyproject.toml)
+- [uv.lock](../../uv.lock)
+- [Makefile](../../Makefile)
 
 验证：
 

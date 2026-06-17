@@ -10,11 +10,11 @@
 
 证据：
 
-- `AGENTS.md`
-- `pyproject.toml`
-- `Makefile`
-- `.agents/skills/code-change-verification/SKILL.md`
-- `RULES.md`
+- [AGENTS.md](../../AGENTS.md)
+- [pyproject.toml](../../pyproject.toml)
+- [Makefile](../../Makefile)
+- [.agents/skills/code-change-verification/SKILL.md](../../.agents/skills/code-change-verification/SKILL.md)
+- [RULES.md](../../RULES.md)
 
 验证：
 

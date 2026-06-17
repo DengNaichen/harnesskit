@@ -1,14 +1,14 @@
 # ARCHITECTURE.md 设计说明
 
-`ARCHITECTURE.md` 是给 agent 和贡献者使用的仓库地图。它不应该成为完整设计文档、API 参考、文件清单或历史说明，而应该帮助读者在修改前快速判断：某个职责属于哪里、哪些路径是关键入口、哪些边界不应该被随手跨越。
+[ARCHITECTURE.md](../../ARCHITECTURE.md) 是给 agent 和贡献者使用的仓库地图。它不应该成为完整设计文档、API 参考、文件清单或历史说明，而应该帮助读者在修改前快速判断：某个职责属于哪里、哪些路径是关键入口、哪些边界不应该被随手跨越。
 
-本文件只说明 `ARCHITECTURE.md` 应该如何设计，不记录当前仓库自己的完整架构地图。具体项目的架构地图应写在该项目根目录的 `ARCHITECTURE.md` 或同类文件中。
+本文件只说明 [ARCHITECTURE.md](../../ARCHITECTURE.md) 应该如何设计，不记录当前仓库自己的完整架构地图。具体项目的架构地图应写在该项目根目录的 [ARCHITECTURE.md](../../ARCHITECTURE.md) 或同类文件中。
 
 ## 核心定位
 
-`ARCHITECTURE.md` 的核心定位是 agent-facing context 的仓库地图。它回答“代码和文档在哪里、各自负责什么、修改某类行为应该先看哪里”。
+[ARCHITECTURE.md](../../ARCHITECTURE.md) 的核心定位是 agent-facing context 的仓库地图。它回答“代码和文档在哪里、各自负责什么、修改某类行为应该先看哪里”。
 
-一个好的 `ARCHITECTURE.md` 应能快速回答：
+一个好的 [ARCHITECTURE.md](../../ARCHITECTURE.md) 应能快速回答：
 
 - 主要源码、测试、模板、文档和配置目录在哪里。
 - 每个关键目录或文件负责什么。
@@ -17,7 +17,7 @@
 - 新增、删除或移动重要模块时，哪些地图条目需要同步。
 - 哪些边界不应该混淆，例如运行时代码和 POC、模板输出和项目自身文档、设计说明和当前实现状态。
 
-它不负责说明 agent 应该按什么流程工作，那是 `AGENTS.md` 的职责；也不负责定义工程规则和 Validation，那是 `RULES.md` 的职责；更不负责承载长篇产品背景和设计讨论，那些应放在 `README.md` 或 `docs/` 中。
+它不负责说明 agent 应该按什么流程工作，那是 [AGENTS.md](../../AGENTS.md) 的职责；也不负责定义工程规则和 Validation，那是 [RULES.md](../../RULES.md) 的职责；更不负责承载长篇产品背景和设计讨论，那些应放在 [README.md](../../README.md) 或 [docs/](../) 中。
 
 ## 设计原则
 
@@ -31,13 +31,13 @@
 
 ### 不复制其他文档
 
-`ARCHITECTURE.md` 可以链接到 `README.md`、`AGENTS.md`、`RULES.md`、skills 和设计文档，但不应该吞掉它们的内容。它只维护地图和职责边界：
+[ARCHITECTURE.md](../../ARCHITECTURE.md) 可以链接到 [README.md](../../README.md)、[AGENTS.md](../../AGENTS.md)、[RULES.md](../../RULES.md)、skills 和设计文档，但不应该吞掉它们的内容。它只维护地图和职责边界：
 
-- 产品定位放在 `README.md`。
-- agent 工作流程放在 `AGENTS.md`。
-- 工程规则和 Validation 放在 `RULES.md`。
-- 具体技能流程放在 `.agents/skills/*/SKILL.md`。
-- 长期设计讨论放在 `docs/`。
+- 产品定位放在 [README.md](../../README.md)。
+- agent 工作流程放在 [AGENTS.md](../../AGENTS.md)。
+- 工程规则和 Validation 放在 [RULES.md](../../RULES.md)。
+- 具体技能流程放在 [.agents/skills/](../../.agents/skills/) 中的 skill 文件。
+- 长期设计讨论放在 [docs/](../)。
 
 ### 以仓库事实为准
 
@@ -68,7 +68,7 @@
 
 ## 推荐结构
 
-一个实用的 `ARCHITECTURE.md` 通常包含：
+一个实用的 [ARCHITECTURE.md](../../ARCHITECTURE.md) 通常包含：
 
 1. 文件定位：说明这是粗粒度仓库地图，不是工作流规范或 API 文档。
 2. 顶层地图：列出主要源码、测试、模板、文档、工具和 agent harness 目录。
@@ -81,9 +81,9 @@
 
 ## 模板和项目版的差异
 
-模板版 `ARCHITECTURE.md` 不能假设目标仓库已经有某些目录、语言或工具。它可以提供结构骨架、coverage marker 示例和 `[NEEDS CLARIFICATION: ...]` 占位符，但项目事实必须等待目标仓库补全。
+模板版 [ARCHITECTURE.md](../../templates/ARCHITECTURE.md) 不能假设目标仓库已经有某些目录、语言或工具。它可以提供结构骨架、coverage marker 示例和 `[NEEDS CLARIFICATION: ...]` 占位符，但项目事实必须等待目标仓库补全。
 
-项目版 `ARCHITECTURE.md` 则应该更具体：
+项目版 [ARCHITECTURE.md](../../ARCHITECTURE.md) 则应该更具体：
 
 - 写真实路径和真实职责。
 - 删除已补全的占位符。
@@ -93,13 +93,13 @@
 
 ## 更新时机
 
-以下变化通常需要同步检查 `ARCHITECTURE.md`：
+以下变化通常需要同步检查 [ARCHITECTURE.md](../../ARCHITECTURE.md)：
 
 - 新增、删除或重命名主要目录、模块或关键入口文件。
 - 运行时代码、模板、测试、文档或工具链职责发生变化。
 - 新增重要生成资产或改变生成目标路径。
 - 引入新的 POC、integration、skill 或验证 runner。
-- `AGENTS.md`、`RULES.md` 或 skills 中引用了新的重要路径。
+- [AGENTS.md](../../AGENTS.md)、[RULES.md](../../RULES.md) 或 skills 中引用了新的重要路径。
 - linter coverage hint 失败，说明地图和仓库结构已经漂移。
 
 如果只是移动内部 helper，且不改变 agent 首先应该查看的位置，可以不更新架构地图。
@@ -108,8 +108,8 @@
 
 当项目本身正在设计 context harness 时，设计文档和当前地图要分开：
 
-- 设计文档说明 `ARCHITECTURE.md` 应该怎么设计。
-- 根目录 `ARCHITECTURE.md` 说明当前仓库真实的目录职责。
-- 模板 `ARCHITECTURE.md` 如果存在，应说明目标仓库初始化后如何补全自己的架构地图。
+- 设计文档说明 [ARCHITECTURE.md](../../ARCHITECTURE.md) 应该怎么设计。
+- 根目录 [ARCHITECTURE.md](../../ARCHITECTURE.md) 说明当前仓库真实的目录职责。
+- 模板 [ARCHITECTURE.md](../../templates/ARCHITECTURE.md) 如果存在，应说明目标仓库初始化后如何补全自己的架构地图。
 
 这三层不要互相复制。设计文档保持抽象稳定，项目地图跟随仓库事实更新，模板则保持保守和待确认。

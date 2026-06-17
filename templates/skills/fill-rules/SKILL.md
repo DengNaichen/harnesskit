@@ -5,13 +5,13 @@ description: Fill or refresh short RULES.md entries and .harnesskit/rules/RULE-*
 
 # Fill Rules
 
-Use this skill to update [RULES.md](../../../RULES.md) as the short constraint index and `.harnesskit/rules/RULE-*.md` as the details layer.
+Use this skill to update [RULES.md](../../../RULES.md) as the short constraint index and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files as the details layer.
 
 ## Workflow
 
 1. Read [.harnesskit/facts.md](../../../.harnesskit/facts.md), current [RULES.md](../../../RULES.md), [.harnesskit/rules/](../../../.harnesskit/rules/), validation scripts, manifests, hook/CI config, and agent guidance.
 2. Only promote an item into a Rule when it is repository-local or explicitly adopted, stable across tasks, has a clear violation shape, and is supported by evidence.
-3. Before writing [RULES.md](../../../RULES.md) or `.harnesskit/rules/RULE-*.md`, present candidate rule changes to the user as a single-choice MCQ. If the current Codex surface supports a native single-choice UI, use it; otherwise, render the choices as text and wait for the user's letter or correction.
+3. Before writing [RULES.md](../../../RULES.md) or [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files, present candidate rule changes to the user as a single-choice MCQ. If the current Codex surface supports a native single-choice UI, use it; otherwise, render the choices as text and wait for the user's letter or correction.
    - A. Confirm all candidate rule changes and write them.
    - B. Correct one or more candidate rules before writing.
    - C. Skip writing rule changes for now.
@@ -52,7 +52,7 @@ If a native single-choice UI is available in the current Codex surface, present 
 
 ## Output
 
-Update [RULES.md](../../../RULES.md) and `.harnesskit/rules/RULE-*.md` only. If [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), or skills need matching changes, invoke the corresponding fill skill.
+Update [RULES.md](../../../RULES.md) and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files only. If [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), or skills need matching changes, invoke the corresponding fill skill.
 
 ## Boundaries
 

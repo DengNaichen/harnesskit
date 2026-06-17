@@ -29,7 +29,7 @@
 - 开始任务前先读 [RULES.md](RULES.md) 或 [NEEDS CLARIFICATION: 本仓库规则入口；未配置时写未配置]，并按需查看规则 details、验证说明或团队确认来源。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [NEEDS CLARIFICATION: 同类架构地图；未配置时写未配置]。
 - 需要产品定位、设计背景、路线图或用户文档时，读 `README.md`、`docs/` 或 [NEEDS CLARIFICATION: 设计文档或未配置]。
-- 触发本地 skill 时，先读对应 `SKILL.md`；当前技能目录是 `.agents/skills/` 或 [NEEDS CLARIFICATION: 未配置]。
+- 触发本地 skill 时，先读对应 skill 文件；当前技能目录是 `.agents/skills/` 或 [NEEDS CLARIFICATION: 未配置]。
 - [.harnesskit/facts.md](.harnesskit/facts.md) 可作为扫描事实快照；高影响判断仍要回到真实仓库文件核对。
 
 ## 工作策略

@@ -18,7 +18,7 @@
 - 开始任务前先读 [RULES.md](RULES.md)，并按 [.harnesskit/rules/](.harnesskit/rules/) 查看适用规则的证据、验证方式和例外。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md)，不要把本文件扩写成目录地图。
 - 需要产品定位、MVP 边界、设计背景或路线图时，读 [README.md](README.md) 和 [docs/](docs/)。
-- 触发本地 skill 时，先读对应 `SKILL.md`；不要把 skill 正文复制进本文件。
+- 触发本地 skill 时，先读 [.agents/skills/](.agents/skills/) 下对应 skill 文件；不要把 skill 正文复制进本文件。
 - [.harnesskit/facts.md](.harnesskit/facts.md) 是扫描事实快照，可用于刷新 context，但高影响判断仍要回到真实仓库文件核对。
 
 ## 工作策略

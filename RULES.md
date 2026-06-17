@@ -32,7 +32,7 @@
 
 - RULE-ARCH-001: CLI/runtime 行为以 [src/harnesskit/](src/harnesskit/) 和对应测试为事实来源。([details](.harnesskit/rules/RULE-ARCH-001.md))
 - RULE-ARCH-002: [templates/](templates/) 是用户可见生成输出，模板行为变化必须同步 init 测试。([details](.harnesskit/rules/RULE-ARCH-002.md))
-- RULE-ARCH-003: `harnesskit lint` 的产品入口必须来自 `src/harnesskit/linter/`。([details](.harnesskit/rules/RULE-ARCH-003.md))
+- RULE-ARCH-003: `harnesskit lint` 的产品入口必须来自 [src/harnesskit/linter/](src/harnesskit/linter/)。([details](.harnesskit/rules/RULE-ARCH-003.md))
 - RULE-ARCH-004: 重要路径、职责或生成资产变化时，必须同步 [ARCHITECTURE.md](ARCHITECTURE.md)。([details](.harnesskit/rules/RULE-ARCH-004.md))
 
 ## 产品 / 领域规则

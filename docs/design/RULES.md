@@ -1,6 +1,6 @@
 # Rules 说明
 
-`RULES.md` 是给团队和 agent 共用的短规则索引。它不教 agent 怎么完成一类任务，也不承载完整项目地图；它只记录这个仓库里永远或局部必须遵守的约束。
+[RULES.md](../../RULES.md) 是给团队和 agent 共用的短规则索引。它不教 agent 怎么完成一类任务，也不承载完整项目地图；它只记录这个仓库里永远或局部必须遵守的约束。
 
 Context Harness 中三类资产的边界是：
 
@@ -8,19 +8,19 @@ Context Harness 中三类资产的边界是：
 - **Rules** 告诉 agent 在这个仓库里必须遵守什么约束。
 - **Validations** 负责把可检查的约束转成验证反馈，并记录它们在哪些 runner 中执行。
 
-`AGENTS.md` 负责路由：告诉 agent 什么时候读 `RULES.md`、什么时候触发 skill、什么时候运行 validation。`RULES.md` 不应该替代 `AGENTS.md` 或 skill。
+[AGENTS.md](../../AGENTS.md) 负责路由：告诉 agent 什么时候读 [RULES.md](../../RULES.md)、什么时候触发 skill、什么时候运行 validation。[RULES.md](../../RULES.md) 不应该替代 [AGENTS.md](../../AGENTS.md) 或 skill。
 
 ## 怎么使用
 
 - 先以仓库事实为准，不要把模板里的示例当成已经启用的规则。
-- 在 `RULES.md` 中保留短规则句，让 agent 能快速扫描。
-- 把规则的解释、证据、例外和 validation 绑定放到 `.harnesskit/rules/RULE-*.md` 或对应设计文档。
+- 在 [RULES.md](../../RULES.md) 中保留短规则句，让 agent 能快速扫描。
+- 把规则的解释、证据、例外和 validation 绑定放到 [.harnesskit/rules/](../../.harnesskit/rules/) 中的 `RULE-*.md` 或对应设计文档。
 - 暂时确认不了的规则使用 `[NEEDS CLARIFICATION: ...]`，不要写成强制完成门槛。
 - 修改验证入口、工具链、模板输出、架构边界或团队约定时，同步更新对应 rule、detail 文件和相关 skill。
 
 ## 当前结构
 
-推荐把 `RULES.md` 分成面向工程实践的规则类别：
+推荐把 [RULES.md](../../RULES.md) 分成面向工程实践的规则类别：
 
 - **通用工程实践**：大多数代码库都适用的约束，例如新增行为必须有测试、依赖声明必须同步。
 - **AI Coding 规则**：约束 agent 如何读取 context、处理漂移、避免凭空补全事实。
@@ -52,6 +52,6 @@ Rule 是开发时的行为约束，比如“新增行为必须有测试”或“
 
 - [`../../RULES.md`](../../RULES.md)：HarnessKit 当前仓库已经确认或待确认的规则。
 - [`../../templates/RULES.md`](../../templates/RULES.md)：安装到目标仓库时使用的通用模板。
-- [`AGENTS.md`](AGENTS.md)：`AGENTS.md` 的设计说明，解释 agent 操作入口如何消费规则和技能。
-- [`ARCHITECTURE.md`](ARCHITECTURE.md)：`ARCHITECTURE.md` 的设计说明，解释架构地图如何承载目录职责和边界。
+- [`AGENTS.md`](AGENTS.md)：[AGENTS.md](../../AGENTS.md) 的设计说明，解释 agent 操作入口如何消费规则和技能。
+- [`ARCHITECTURE.md`](ARCHITECTURE.md)：[ARCHITECTURE.md](../../ARCHITECTURE.md) 的设计说明，解释架构地图如何承载目录职责和边界。
 - [`DESIGN.md`](DESIGN.md)：Rule / Validation 模型背后的产品设计说明。

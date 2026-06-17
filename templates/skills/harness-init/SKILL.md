@@ -12,7 +12,7 @@ Use this skill as the first user-facing workflow after `harnesskit init`. It coo
 1. Use $scan-facts to inspect repository evidence and ask the user to confirm candidate project identity, purpose, stack, validation entrypoints, and important boundaries before durable facts are written.
 2. Resolve any high-impact questions that facts cannot settle before writing durable guidance.
 3. Use $fill-architecture to update [ARCHITECTURE.md](../../../ARCHITECTURE.md).
-4. Use $fill-rules to present candidate rule changes for user confirmation, then update [RULES.md](../../../RULES.md) and `.harnesskit/rules/RULE-*.md`.
+4. Use $fill-rules to present candidate rule changes for user confirmation, then update [RULES.md](../../../RULES.md) and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files.
 5. Use $fill-agents to update [AGENTS.md](../../../AGENTS.md).
 6. Use $fill-skills to update project-specific sections inside generated skills.
 7. Review consistency across [.harnesskit/facts.md](../../../.harnesskit/facts.md), [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), [RULES.md](../../../RULES.md), [.agents/skills/](../../skills/), [CLAUDE.md](../../../CLAUDE.md), and the verification entrypoint.

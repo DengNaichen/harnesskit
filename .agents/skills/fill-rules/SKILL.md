@@ -5,7 +5,7 @@ description: Fill or refresh short RULES.md entries and .harnesskit/rules/RULE-*
 
 # Fill Rules
 
-Use this skill to update [RULES.md](../../../RULES.md) as the short constraint index and `.harnesskit/rules/RULE-*.md` as the details layer.
+Use this skill to update [RULES.md](../../../RULES.md) as the short constraint index and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files as the details layer.
 
 ## Workflow
 
@@ -20,7 +20,7 @@ Use this skill to update [RULES.md](../../../RULES.md) as the short constraint i
 
 ## Output
 
-Update [RULES.md](../../../RULES.md) and `.harnesskit/rules/RULE-*.md` only. If [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), or skills need matching changes, invoke the corresponding fill skill.
+Update [RULES.md](../../../RULES.md) and [.harnesskit/rules/](../../../.harnesskit/rules/) `RULE-*.md` files only. If [AGENTS.md](../../../AGENTS.md), [ARCHITECTURE.md](../../../ARCHITECTURE.md), or skills need matching changes, invoke the corresponding fill skill.
 
 ## Boundaries
 
