@@ -43,7 +43,7 @@
 
 - 修改用户可见行为、公开 API、CLI 命令或参数、外部配置、持久化数据、模板输出或生成资产前，先明确兼容性边界：[NEEDS CLARIFICATION: 使用 `$implementation-strategy`、团队流程、人工判断或未配置]。
 - 影响运行时代码、模板、测试、构建配置、锁文件、Markdown 链接或验证行为的变更，在完成前按 [NEEDS CLARIFICATION: `$code-change-verification`、真实验证流程或未配置] 验证。
-- 初次补全或刷新 harness context 时，按需使用 [NEEDS CLARIFICATION: `$harness-init`、`$scan-facts`、`$scan-stack`、对应人工流程或未配置]。
+- 初次补全或刷新 harness context 时，按需使用 [NEEDS CLARIFICATION: `$harness-init`、`$scan-facts`、对应人工流程或未配置]。
 - 中等及以上规模的行为变更完成后，按 [NEEDS CLARIFICATION: `$pr-draft-summary`、仓库 PR 模板、变更摘要要求或未配置] 准备交付说明。
 - 发现可复用约定、规则候选、命令漂移或待确认事项时，记录到 [NEEDS CLARIFICATION: `RULES.md` details、`.harnesskit/facts.md`、相关文档、todo 文件或未配置]。
 

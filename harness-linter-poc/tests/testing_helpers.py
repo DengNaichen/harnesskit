@@ -57,7 +57,6 @@ def make_project(root: Path) -> Path:
         "implementation-strategy",
         "pr-draft-summary",
         "scan-facts",
-        "scan-stack",
     ):
         write_skill(project, skill_name, f"# {skill_name}\n")
 

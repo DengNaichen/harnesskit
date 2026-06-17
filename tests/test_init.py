@@ -35,8 +35,6 @@ SHARED_SKILLS = (
     ".agents/skills/pr-draft-summary/agents/openai.yaml",
     ".agents/skills/scan-facts/SKILL.md",
     ".agents/skills/scan-facts/agents/openai.yaml",
-    ".agents/skills/scan-stack/SKILL.md",
-    ".agents/skills/scan-stack/agents/openai.yaml",
 )
 
 

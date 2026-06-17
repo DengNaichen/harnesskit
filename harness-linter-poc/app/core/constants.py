@@ -17,7 +17,6 @@ CODEX_SKILLS = (
     ".agents/skills/implementation-strategy/SKILL.md",
     ".agents/skills/pr-draft-summary/SKILL.md",
     ".agents/skills/scan-facts/SKILL.md",
-    ".agents/skills/scan-stack/SKILL.md",
 )
 HARNESS_MARKDOWN_GLOBS = (
     "README.md",
