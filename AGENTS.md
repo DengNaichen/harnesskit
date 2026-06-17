@@ -28,6 +28,7 @@
 - 中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更完成后，按 `$pr-draft-summary` 输出 PR 草稿块；纯仓库元数据或无行为影响的文档任务可跳过。
 - 模板行为变化要当作用户可见行为处理，通常需要同步 `tests/test_init.py`；`init_project()` 默认跳过已有文件，只有 `--force` 才覆盖。
 - 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 `RULES.md` 和对应 details 文件。
+- 修改 `ARCHITECTURE.md` 或 `templates/ARCHITECTURE.md` 时，不要机械调用 `$fill-architecture`；如果 architecture skill 本身也在调整或与当前职责分层原则冲突，先按本文件的分层原则直接处理，并同步修正 skill。
 
 ## 验证入口
 
