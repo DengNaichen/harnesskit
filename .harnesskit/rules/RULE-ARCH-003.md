@@ -2,19 +2,20 @@
 
 ## Rule
 
-不要把 `harness-linter-poc/` 当成打包 runtime 或外部 CLI API。
+`harnesskit lint` 的产品入口必须来自 `src/harnesskit/linter/`，不要继续把 `harness-linter-poc/` 当成主入口。
 
 ## Details
 
-`harness-linter-poc/` 是独立 Context Harness linter POC，用于自举验证和 pre-commit。它当前不属于 `src/harnesskit` 包运行时，也不是对外 CLI API。
+`src/harnesskit/linter/` 是当前打包进 CLI 的 Context Harness linter runtime，`harnesskit lint`、pre-commit 和未来对外 lint 行为都应以这里为事实来源。`harness-linter-poc/` 只保留为旧 POC/参考实现，不再作为新增功能或用户入口的首要修改位置。
 
 证据：
 
 - `ARCHITECTURE.md`
+- `src/harnesskit/linter/`
 - `harness-linter-poc/`
 - `.pre-commit-config.yaml`
 
 验证：
 
-- review 负责确认变更没有把 POC 当成 runtime/API。
-- harness lint tests 只证明 linter POC 自身行为，不证明 runtime 边界。
+- review 负责确认新增 lint 行为落在 `src/harnesskit/linter/` 和 `harnesskit lint`。
+- `uv run harnesskit lint .` 和 CLI 测试负责证明产品入口可用。
