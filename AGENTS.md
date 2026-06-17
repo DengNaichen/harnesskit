@@ -28,21 +28,22 @@
 
 ### 兼容性边界
 
-HarnessKit 是 Context Harness CLI 和 Codex-facing toolkit。以下面向外部使用者或目标仓库，修改前必须明确兼容性决策：
+HarnessKit 是 Context Harness CLI 和 agent-facing toolkit。以下面向外部使用者或目标仓库，修改前必须明确兼容性决策：
 
 - Typer CLI：`harnesskit init`、`harnesskit integration list`、`harnesskit integration install`、参数、退出行为和用户可见消息。
 - 持久配置：目标仓库中的 `.harnesskit/config.json`，当前 `schema_version` 为 `1`。
 - 模板输出：`templates/` 以及 integration 模板会复制或渲染到目标仓库，属于用户可见行为。
-- 支持的 integration：当前仅支持 `codex`，并且它是默认值。
+- 支持的 integration：当前支持 `codex` 和 `claude`；`codex` 是默认值。
 - Jinja 模板使用 `StrictUndefined`；新增模板变量必须同步提供渲染上下文，或明确保留为目标仓库中的 TODO。
 
 ### 当前实现边界
 
-HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及保护 harness 资产不腐坏的 linter/Validation 原型。修改前先分清边界：
+HarnessKit 现在同时在构建可安装到目标仓库的 CLI/toolkit，以及保护 harness 资产不腐坏的 linter/Validation 能力。修改前先分清边界：
 
 - `src/harnesskit/` 是打包发布的 CLI/runtime；这里的改动按产品行为处理，会影响 `harnesskit init`、integration 命令和 `.harnesskit/config.json` 写入。
+- `src/harnesskit/linter/` 是打包进 CLI 的 Context Harness linter runtime；这里的改动会影响 `harnesskit lint`、pre-commit 和 harness 质量检查。
 - `templates/` 是写入目标仓库的 harness 输出；这里的改动按用户可见模板行为处理，并同步 `tests/test_init.py`。
-- `harness-linter-poc/` 是独立的 Context Harness linter POC，用于本仓库自举验证；它当前不属于 `src/harnesskit` 包运行时，也不是对外 CLI API，但会影响 `make verify`、pre-commit 和 harness 质量检查。
+- `harness-linter-poc/` 是 linter 的旧 POC/参考实现；不要把它当成新的用户入口或新增功能的首要修改位置。
 - `docs/design/` 记录设计理念；不要把设计文档里的“应该如何设计”误写成当前项目已经实现的状态。
 
 ## 上下文入口
