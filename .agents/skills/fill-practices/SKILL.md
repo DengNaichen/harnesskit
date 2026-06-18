@@ -19,7 +19,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 ## Practice 文件
 
 - `CODING.md`: 从真实代码中提取编码约定，回答“这个项目里代码应该长什么样”。优先写代码组织、模块职责、命名和风格、测试约定、注释和文档边界；不要写成通用“如何写好代码”建议。
-- `PRODUCT_SENSE.md`: product north star、CLI UX、模板体验、lint messages 和用户信任。
+- `PRODUCT_SENSE.md`: 从真实 README、docs、产品 surface、CLI/API/UI、templates、config、generated output 和用户反馈中提取产品定位、surface、配置/生成输出/文档职责和风险边界，回答“这个项目里，什么算产品体验”；不要写成通用产品设计建议。
 - `SECURITY.md`: secret handling、文件写入、path safety、依赖和报告/输出泄漏。
 - `RELIABILITY.md`: 受保护边界、验证策略、失败处理、兼容性和 drift prevention。
 
@@ -30,6 +30,14 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 - 记录稳定的命名、错误处理、注释、测试和生成输出风格；没有证据的地方保留 `[NEEDS CLARIFICATION: ...]`。
 - 如果发现的是“不能破坏”的硬约束，只在这里说明背景，并把规则候选交给 `$fill-rules`。
 - 删除泛化内容，例如“保持简单”“避免过度抽象”“写可维护代码”，除非能落到本仓库的具体边界或例子上。
+
+## 填写 `PRODUCT_SENSE.md`
+
+- 先从 README、docs、真实用户入口、CLI/API/UI、runtime behavior、templates、config、generated output、integrations 和用户反馈中提取当前产品事实，不要凭愿景补充“应该”。
+- 写清楚产品定位、目标用户、主要使用场景、当前支持的 product surface，以及哪些能力不是当前默认体验。
+- 对配置、默认值、模板、生成输出、导入/导出、报告、lint messages 或文档站等用户可见 surface，说明它们的职责边界和容易误导用户的风险。
+- 区分已支持能力、可选配置、演示内容、路线图、上游背景和待确认信息；没有证据的地方保留 `[NEEDS CLARIFICATION: ...]`。
+- 删除泛化内容，例如“提升可用性”“保持一致体验”“增强用户信任”，除非能落到本仓库的具体入口、输出、配置或文档职责。
 
 ## 边界
 
