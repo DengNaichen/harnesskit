@@ -16,9 +16,11 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [AGENTS.md](../../../AGENTS.md)、[RULES.md](../../../RULES.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[.agents/skills/](../../skills/) 中的 skill 文件，以及已存在的 [templates/AGENTS.md](../../../templates/AGENTS.md)。
 2. 对高影响声明回到真实仓库文件核对；不要只依赖 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、README 叙述、设计文档或模板示例。
 3. 只保留会立刻改变 agent 行动的事实，例如项目类型、命令 runner、用户可见边界、schema/integration 状态、生成输出边界或 companion 指南行为。
-4. 保持路由简洁：说明规则、架构事实、实践指导、产品/设计背景、本地 skills、扫描事实和验证入口在哪里。
+4. 保持路由简洁：说明规则、架构事实、实践指导、产品/设计背景、本地 skills 和验证入口在哪里。
 5. 工作策略只写触发点和边界。详细步骤放进 skills；除非仓库确实需要固定步骤，否则不要写成固定流程清单。
-6. 无法确认的内容保留为 `[NEEDS CLARIFICATION: ...]`。
+6. 如果当前 [AGENTS.md](../../../AGENTS.md) 已有人写的编码原则、协作原则或操作偏好，并且会影响 agent 行动，可以保留为精简章节；不要未经用户要求删除、重排或合并这类手写内容。
+7. `.harnesskit/facts.md` 是 scan/fill 管道输入，不是日常 agent 工作的默认阅读入口。填充 [AGENTS.md](../../../AGENTS.md) 时可以用它刷新事实，但最终指南应优先路由到规则、架构图、实践文档、skills、验证入口和真实仓库文件。
+8. 无法确认的内容保留为 `[NEEDS CLARIFICATION: ...]`。
 
 ## 输出
 
@@ -27,6 +29,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 推荐的根目录结构：
 
 - 职责或定位说明
+- 编码原则或协作原则
 - 操作关键事实
 - 上下文路由
 - 工作策略或 skill 触发点
@@ -40,3 +43,4 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 - 不要虚构验证命令、CI、分支保护、PR 模板或发布流程。
 - 不要把 [templates/AGENTS.md](../../../templates/AGENTS.md) 里的示例或占位符写成当前仓库事实。
 - 不要把 [.harnesskit/facts.md](../../../.harnesskit/facts.md) 当成高影响声明的唯一事实来源；必须回到仓库文件核对。
+- 不要把 scan/fill 过程中的临时 checklist、头脑风暴笔记或待整理草稿写进最终 [AGENTS.md](../../../AGENTS.md)；除非用户明确要求，这些内容应先收敛成规则、实践指导、待确认事项或删除。
