@@ -66,9 +66,8 @@
 - 中等及以上规模的运行时代码、测试、模板、构建配置或有行为影响的文档变更完成后，按 $pr-draft-summary 输出 PR 草稿块；纯仓库元数据或无行为影响的文档任务可跳过。
 - 发布 PyPI 包时使用 `make publish`，它会通过 [scripts/publish_pypi.sh](scripts/publish_pypi.sh) 运行 `make verify`、清理并重建 `dist/`、再调用 `uv publish`；token 只能来自环境变量或被忽略的本地 `.env`。
 - 模板行为变化要当作用户可见行为处理，通常需要同步 [tests/test_init.py](tests/test_init.py)；`init_project()` 默认跳过已有文件，只有 `--force` 才覆盖。
-- 刷新 [docs/practices/](docs/practices/) 判断指导时，使用 $fill-practices；如果发现新的硬约束候选，再交给 $fill-rules 写入 [RULES.md](RULES.md) 和 details。
-- 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md) 和对应 details 文件。
-- 修改 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [templates/ARCHITECTURE.md](templates/ARCHITECTURE.md) 时，不要机械调用 $fill-architecture；如果 architecture skill 本身也在调整或与当前职责分层原则冲突，先按本文件的分层原则直接处理，并同步修正 skill。
+- 修改 HarnessKit 相关文档时，不要调用对应 fill skill；这些 skill 本身也属于需要同步核对的 harness 文档。先按目标态直接修改，再同步 root/template/skill/tests/linter 中确有职责关联的部分。
+- 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md)，复杂背景放入 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [docs/practices/](docs/practices/)，可执行检查放入验证入口或 runner。
 
 ## 验证入口
 
