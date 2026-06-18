@@ -1,4 +1,4 @@
 interface:
   display_name: "填充 Rules"
-  short_description: "填充短规则和 details"
-  default_prompt: "使用 $fill-rules 从 facts 和已核对的 validation runner 证据更新 RULES.md 与 .harnesskit/rules/RULE-*.md。"
+  short_description: "填充短规则索引"
+  default_prompt: "使用 $fill-rules 从 facts 和已核对的仓库证据更新 RULES.md 短规则索引；可执行检查进入 guardrails 或 verification runner。"
