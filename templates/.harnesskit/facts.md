@@ -7,6 +7,8 @@
 <!-- harnesskit:todo-checklist:start -->
 补全本文件前请确认：
 - 每条已确认事实都带有仓库证据路径或团队确认来源。
+- 每条事实按 `confirmed`、`candidate`、`absent` 或 `conflict` 标注状态；只有 confirmed facts 才能直接驱动硬规则或用户可见结论。
+- 对需要后续填充的事实记录 target hint，例如 AGENTS、ARCHITECTURE、RULES、docs/practices、skills、validation runner 或 facts-only。
 - 无法确认的内容保留 `[NEEDS CLARIFICATION: ...]`，不要把模板示例写成事实。
 - facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills`。
 <!-- harnesskit:todo-checklist:end -->
@@ -17,6 +19,19 @@
 - **Project purpose**: [NEEDS CLARIFICATION: README、产品文档或团队确认中的项目定位]
 - **Primary audience**: [NEEDS CLARIFICATION: 使用者、维护者或目标集成]
 - **Evidence**: [NEEDS CLARIFICATION: 事实来源路径]
+
+## Fact Quality Model
+
+| Status | Meaning | Fill behavior |
+| --- | --- | --- |
+| confirmed | 源码、配置、脚本、测试、runner 或团队确认支持 | 可进入对应 artifact |
+| candidate | 来自文档、惯例或间接线索，尚未核对实现 | 保留为待确认，不升级为硬规则 |
+| absent | 已检查合理 evidence，未发现对应能力、runner 或配置 | 可用于说明未配置能力 |
+| conflict | evidence source 不一致 | 进入漂移处理，不静默选择 |
+
+| Fact | Status | Evidence | Target hint | Stale risk |
+| --- | --- | --- | --- | --- |
+| [NEEDS CLARIFICATION: 高价值事实] | [NEEDS CLARIFICATION: confirmed / candidate / absent / conflict] | [NEEDS CLARIFICATION: 路径或团队确认] | [NEEDS CLARIFICATION: AGENTS / ARCHITECTURE / RULES / practices / skills / validation / facts-only] | [NEEDS CLARIFICATION: 何时需要复核] |
 
 ## Tech Stack
 

@@ -190,6 +190,12 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "}}" not in facts
     assert "Harness Facts" in facts
     assert ".harnesskit/facts.md" in facts
+    assert "Fact Quality Model" in facts
+    assert "confirmed" in facts
+    assert "candidate" in facts
+    assert "absent" in facts
+    assert "conflict" in facts
+    assert "Target hint" in facts
     assert "[NEEDS CLARIFICATION:" in facts
 
     architecture = (project / "ARCHITECTURE.md").read_text(encoding="utf-8")
@@ -252,6 +258,11 @@ def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) 
     assert "single-choice MCQ" in scan_facts
     assert "确认所有 candidate facts 并写入" in scan_facts
     assert "写入前先修正一个或多个 facts" in scan_facts
+    assert "证据路由" in scan_facts
+    assert "事实准入和状态" in scan_facts
+    assert "扫描深度" in scan_facts
+    assert "target hint" in scan_facts
+    assert "exhaustive 项目文档扫描" in scan_facts
 
     harness_init = (project / ".agents/skills/harness-init/SKILL.md").read_text(
         encoding="utf-8"

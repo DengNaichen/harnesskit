@@ -7,6 +7,8 @@
 <!-- harnesskit:todo-checklist:start -->
 补全本文件前请确认：
 - 每条已确认事实都带有仓库证据路径或团队确认来源。
+- 每条事实按 `confirmed`、`candidate`、`absent` 或 `conflict` 标注状态；只有 confirmed facts 才能直接驱动硬规则或用户可见结论。
+- 对需要后续填充的事实记录 target hint，例如 AGENTS、ARCHITECTURE、RULES、docs/practices、skills、validation runner 或 facts-only。
 - 无法确认的内容保留 `[NEEDS CLARIFICATION: ...]`，不要把模板示例写成事实。
 - facts 刷新后，按需运行 `$fill-agents`、`$fill-architecture`、`$fill-practices`、`$fill-rules` 和 `$fill-skills`。
 <!-- harnesskit:todo-checklist:end -->
@@ -17,6 +19,21 @@
 - **Project purpose**: Context Harness CLI/toolkit，用于在目标仓库初始化和维护 agent-facing context assets。
 - **Primary audience**: 使用 HarnessKit 初始化目标仓库的开发者和维护 Context Harness 的 agent。
 - **Evidence**: `README.md`, `pyproject.toml`, `src/harnesskit/`
+
+## Fact Quality Model
+
+| Status | Meaning | Fill behavior |
+| --- | --- | --- |
+| confirmed | 源码、配置、脚本、测试、runner 或团队确认支持 | 可进入对应 artifact |
+| candidate | 来自文档、惯例或间接线索，尚未核对实现 | 保留为待确认，不升级为硬规则 |
+| absent | 已检查合理 evidence，未发现对应能力、runner 或配置 | 可用于说明未配置能力 |
+| conflict | evidence source 不一致 | 进入漂移处理，不静默选择 |
+
+| Fact | Status | Evidence | Target hint | Stale risk |
+| --- | --- | --- | --- | --- |
+| HarnessKit 是 Python 3.11+ Context Harness CLI/toolkit，PyPI 分发名是 `infharness`，console script 是 `harnesskit` | confirmed | `pyproject.toml`, `README.md`, `src/harnesskit/cli.py` | AGENTS, ARCHITECTURE | package metadata、entry point 或 release docs 变化时复核 |
+| 完整验证入口是 `make verify` | confirmed | `Makefile`, `.agents/skills/code-change-verification/SKILL.md` | AGENTS, RULES, validation runner | Makefile 或 verification skill 变化时复核 |
+| 当前未证实 typecheck、coverage gate、docs build 或 CI 完成条件 | absent | `pyproject.toml`, `Makefile`, `.pre-commit-config.yaml`, `.github/` 缺失 | AGENTS, RULES | 新增 runner、CI 或 docs build 配置时复核 |
 
 ## Tech Stack
 
