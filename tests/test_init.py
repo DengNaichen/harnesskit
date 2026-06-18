@@ -175,6 +175,13 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "$harness-init" in agents
     assert "$scan-facts" in agents
     assert "docs/practices/" in agents
+    assert "scan/fill 管道的中间产物" in agents
+    assert "可作为扫描事实快照" not in agents
+    assert "## 编码原则" in agents
+    assert "## 1. 编码前先思考" in agents
+    assert "## 2. 简单优先" in agents
+    assert "## 3. 外科手术式改动" in agents
+    assert "## 4. 核实优先" in agents
     assert (project / "CLAUDE.md").is_symlink()
     assert (project / "CLAUDE.md").readlink() == Path("AGENTS.md")
 
@@ -266,6 +273,12 @@ def test_shared_skill_outputs_do_not_leak_template_placeholders(tmp_path: Path) 
     assert "docs/practices/" in fill_practices
     assert "判断指导" in fill_practices
     assert "硬约束不要放进 practices" in fill_practices
+
+    fill_agents = (project / ".agents/skills/fill-agents/SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "scan/fill 管道输入" in fill_agents
+    assert "临时 checklist" in fill_agents
 
 
 def test_generated_placeholder_sections_include_checklists(tmp_path: Path) -> None:

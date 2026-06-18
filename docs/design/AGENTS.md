@@ -53,6 +53,8 @@
 
 不要从模板、习惯或其他仓库复制命令。验证入口、测试框架、包管理器、构建方式和 CI 状态必须来自仓库清单、锁文件、脚本、配置或人工确认。
 
+`.harnesskit/facts.md` 这类扫描快照适合作为 scan/fill 管道的输入，不应该成为日常 agent 工作的默认事实入口。项目版 [AGENTS.md](../../AGENTS.md) 可以说明 facts 如何刷新上下文，但高影响判断仍应路由回真实源码、配置、脚本、文档和验证 runner。
+
 ### 把规则放在 [RULES.md](../../RULES.md)
 
 [AGENTS.md](../../AGENTS.md) 应说明如何消费 [RULES.md](../../RULES.md)：
@@ -97,14 +99,15 @@
 一个实用的 [AGENTS.md](../../AGENTS.md) 通常包含：
 
 1. 文件定位：说明这是 agent 操作入口，不是产品说明。
-2. 强制 skill：列出触发条件和对应 skill 路径。
-3. [RULES.md](../../RULES.md) 使用方式：说明 Rule 和 Validation 是规则源。
-4. 可跳过验证的低风险情况。
-5. 兼容性边界：列出 CLI、配置、模板、schema 等敏感面。
-6. 关键入口索引：只列少量入口路径，并指向 [ARCHITECTURE.md](../../ARCHITECTURE.md) 获取完整仓库地图。
-7. 操作指南：写开发流程、验证入口和失败处理。
-8. Validation 与 Runner 绑定：说明命令、hook、CI 或平台 gate 的证据。
-9. 审查关注点：列出最容易出错的行为边界。
+2. 少量编码原则或协作原则：说明 agent 默认应如何思考、收敛和核对事实。
+3. 强制 skill：列出触发条件和对应 skill 路径。
+4. [RULES.md](../../RULES.md) 使用方式：说明 Rule 和 Validation 是规则源。
+5. 可跳过验证的低风险情况。
+6. 兼容性边界：列出 CLI、配置、模板、schema 等敏感面。
+7. 关键入口索引：只列少量入口路径，并指向 [ARCHITECTURE.md](../../ARCHITECTURE.md) 获取完整仓库地图。
+8. 操作指南：写开发流程、验证入口和失败处理。
+9. Validation 与 Runner 绑定：说明命令、hook、CI 或平台 gate 的证据。
+10. 审查关注点：列出最容易出错的行为边界。
 
 模板版 [AGENTS.md](../../templates/AGENTS.md) 可以保留 TODO checklist 和 `[NEEDS CLARIFICATION: ...]` 占位符；项目版 [AGENTS.md](../../AGENTS.md) 应尽量删掉已经完成的 checklist，留下已确认事实。
 
@@ -125,6 +128,7 @@
 - 写真实验证入口。
 - 写已经确认的 skill 触发条件。
 - 写当前没有配置的工具，避免 agent 虚构完成门槛。
+- 可以保留少量人工写入且会影响 agent 行动的编码原则或协作偏好，但 scan/fill 过程中的临时 checklist、头脑风暴和草稿不应进入最终版。
 
 ## 更新时机
 
