@@ -2,6 +2,42 @@
 
 本文件是 HarnessKit 仓库的 agent 启动入口：保留少量会影响操作判断的事实，并把 agent 路由到规则、架构地图、skills 和验证入口。它不是项目知识库；完整目录职责看 [ARCHITECTURE.md](ARCHITECTURE.md)，工程约束看 [RULES.md](RULES.md)，具体流程看 [.agents/skills/](.agents/skills/)，产品背景看 [README.md](README.md) 和 [docs/](docs/)。
 
+## 编码原则
+
+## 1. 编码前先思考
+
+**不要假设，不要掩盖困惑。**
+
+实现之前：
+- 先说明关键假设和不确定性。
+- 多解读或高影响任务先确认，不要默默选择。
+- 有更简单的方案时主动指出；不清楚就停下来问。
+
+## 2. 简单优先
+
+**用最少的代码解决问题。不要做推测性的扩展。**
+
+- 不加用户没有要求的功能、抽象、配置项或兜底逻辑。
+- 能用简单实现解决，就不要引入额外结构。
+- 如果实现明显过重，先收敛到更小方案。
+
+## 3. 外科手术式改动
+
+**只改必须改的地方。只清理你自己造成的问题。**
+
+- 不顺手改进相邻代码、注释或格式；不重构无关代码。
+- 匹配现有风格，即使你会用不同方式实现。
+- 只清理自己造成的未使用代码；发现无关死代码只说明。
+- 未经用户明确要求，不要重排、合并或删除已有的用户手写规则、配置或文档结构。
+
+## 4. 核实优先
+
+**做判断前先核对真实文件。不要把二手信息当成事实。**
+
+- 涉及运行时行为、配置、依赖、安全边界或模块职责的判断，必须回到源码、配置文件、脚本或构建清单核对。
+- 不要把 README 中的演示说明、设计愿景、旧文档或中间产物当成当前实现事实。
+- 发现文档、规则、skills 或验证入口互相冲突时，先核对仓库真实文件，再决定哪边是对的，不要静默选一边继续走。
+
 ## 操作关键事实
 
 - HarnessKit 是 Python 3.11+ 的 Context Harness CLI/toolkit，使用 `uv`；PyPI 分发名是 `infharness`，安装后 console script 仍是 `harnesskit`；具体技术栈和路径职责看 [ARCHITECTURE.md](ARCHITECTURE.md)。
@@ -21,7 +57,7 @@
 - 需要产品定位、MVP 边界、设计背景或路线图时，读 [README.md](README.md) 和 [docs/](docs/)。
 - 涉及代码风格、产品体验、安全或可靠性判断时，按需阅读 [docs/practices/](docs/practices/)；这些文件是判断指导，不替代 [RULES.md](RULES.md) 的硬约束。
 - 触发本地 skill 时，先读 [.agents/skills/](.agents/skills/) 下对应 skill 文件；不要把 skill 正文复制进本文件。
-- [.harnesskit/facts.md](.harnesskit/facts.md) 是扫描事实快照，可用于刷新 context，但高影响判断仍要回到真实仓库文件核对。
+- [.harnesskit/facts.md](.harnesskit/facts.md) 是 scan/fill 管道的中间事实快照，可用于刷新 context；日常高影响判断仍要回到真实仓库文件核对，不把 facts 当成最终指南。
 
 ## 工作策略
 
