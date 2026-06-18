@@ -1,11 +1,11 @@
 ---
 name: fill-rules
-description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新 RULES.md 短规则索引。用于 scan-facts 之后更新可执行规则；validation、guardrail 和 runner bindings 应进入对应 guardrail 或 verification artifact。
+description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新 RULES.md 短规则索引。用于 scan-facts 之后更新可执行规则；validation context、检查方式和 runner bindings 应进入对应验证 artifact 或 runner。
 ---
 
 # 填充 Rules
 
-使用本 skill 更新 [RULES.md](../../../RULES.md) 作为短约束索引。Rules 只回答“这个仓库里什么必须始终成立”：包括绝对不能做什么、必须遵守什么，以及哪些项目特定不变量不能被破坏；背景、判断指导和可执行检查分别进入 [ARCHITECTURE.md](../../../ARCHITECTURE.md)、[docs/practices/](../../../docs/practices/) 和 [.harnesskit/guardrails/](../../../.harnesskit/guardrails/) / verification runner。
+使用本 skill 更新 [RULES.md](../../../RULES.md) 作为短约束索引。Rules 只回答“这个仓库里什么必须始终成立”：包括绝对不能做什么、必须遵守什么，以及哪些项目特定不变量不能被破坏；背景、判断指导和可执行检查分别进入 [ARCHITECTURE.md](../../../ARCHITECTURE.md)、[docs/practices/](../../../docs/practices/) 和 verification artifact / runner。
 
 Rules 必须满足：
 
@@ -15,20 +15,20 @@ Rules 必须满足：
 
 ## 工作流
 
-1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [RULES.md](../../../RULES.md)、validation scripts、guardrails、manifests、hook/CI config 和 agent guidance。
+1. 读取 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、当前 [RULES.md](../../../RULES.md)、validation scripts、manifests、hook/CI config 和 agent guidance。
 2. 只有当事项是仓库本地约束或已明确采纳、跨任务稳定、有清晰违规形态，并且有证据支撑时，才升级为 Rule。
 3. 写入 [RULES.md](../../../RULES.md) 前，把 candidate rule changes 作为 single-choice MCQ 展示给用户。如果当前 Codex surface 支持 native single-choice UI，就使用它；否则把选项渲染成文本并等待用户字母或修正。
    - A. 确认所有 candidate rule changes 并写入。
    - B. 写入前先修正一个或多个 candidate rules。
    - C. 暂时跳过 rule changes 写入。
    - D. 只写入 high-confidence repository rules，其余保留为 `[NEEDS CLARIFICATION: ...]`。
-   如果用户修正规则、分类、guardrail coverage 或 runner status，把该修正视为 user-confirmed evidence，并记录到适当 artifact。
+   如果用户修正规则、分类、validation coverage 或 runner status，把该修正视为 user-confirmed evidence，并记录到适当 artifact。
 4. category headings 只用于组织；不要把 general engineering、AI coding、stack、architecture 或 domain 等分类本身当成启用规则的证据。
 5. [RULES.md](../../../RULES.md) 中每条 rule 保持为一句短约束，不要求也不默认创建 `RULE-*.md` details。
-6. 将 rationale、evidence、caveats 和 examples 放入 architecture 或 practices；将 validation context、runner bindings 和可执行检查放入 guardrails 或 verification skill。
+6. 将 rationale、evidence、caveats 和 examples 放入 architecture 或 practices；将 validation context、runner bindings 和可执行检查放入验证说明、pre-commit hook、linter runtime 或其他 runner。
 7. 对 unsupported 或 unverified rules 标记为 `[NEEDS CLARIFICATION: ...]`、`N/A`、`未配置` 或 `不适用`，不要从示例直接启用。
-8. 区分 rule、guardrail/check 和 runner；没有 runner 证据时，不要声称某个检查会阻断变更。
-9. 除非用户明确要求迁移，否则保留已有客户手写 rules 和结构。
+8. 区分 rule、validation/check 和 runner；没有 runner 证据时，不要声称某个检查会阻断变更。
+9. 除非用户明确要求迁移，否则保留已有客户手写 rules、结构和可选 `.harnesskit/rules/RULE-*.md` details。
 
 ## 用户确认协议
 
@@ -41,7 +41,7 @@ Rules 必须满足：
    约束: ...
    分类: ...
    证据: ...
-   Guardrail / validation coverage: ...
+   Validation coverage: ...
    Runner / binding: ...
 
 2. 保留未解决事项: ...
@@ -58,7 +58,9 @@ D. 只写入 high-confidence repository rules，其余保留为 `[NEEDS CLARIFIC
 
 ## 输出
 
-只更新 [RULES.md](../../../RULES.md)。如果 [AGENTS.md](../../../AGENTS.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[docs/practices/](../../../docs/practices/)、guardrails 或 skills 需要匹配变更，调用对应 fill skill 或直接更新对应 artifact。
+只更新 [RULES.md](../../../RULES.md)。如果 [AGENTS.md](../../../AGENTS.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[docs/practices/](../../../docs/practices/)、verification artifacts 或 skills 需要匹配变更，调用对应 fill skill 或直接更新对应 artifact。
+
+已有 `.harnesskit/rules/RULE-*.md` details 可以作为可选背景保留；不要因为新增或更新 rule 就默认创建 details。只有用户明确要求迁移、补充背景，或目标仓库仍采用 details 层时，才更新对应 details 文件。
 
 ## 边界
 

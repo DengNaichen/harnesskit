@@ -140,7 +140,7 @@ def test_init_without_integration_outputs_core_context_harness_assets(
     assert (project / "ARCHITECTURE.md").is_file()
     assert (project / "RULES.md").is_file()
     assert (project / ".harnesskit/facts.md").is_file()
-    assert (project / ".harnesskit/rules/RULE-ENG-001.md").is_file()
+    assert not (project / ".harnesskit/rules/RULE-ENG-001.md").exists()
     for practice_doc in PRACTICE_DOCS:
         assert (project / practice_doc).is_file(), practice_doc
     assert not (project / ".agents").exists()
@@ -201,27 +201,16 @@ def test_agent_guidance_outputs_do_not_leak_template_placeholders(
     assert "{{" not in rules
     assert "}}" not in rules
     assert "Harness Rules" in rules
-    assert "通用工程实践" in rules
-    assert "AI Coding 规则" in rules
-    assert "技术栈规则" in rules
-    assert "架构规则" in rules
-    assert "产品与体验规则" in rules
+    assert "Rules 不要求一条规则对应一个 details 文件" in rules
+    assert "技术栈与命名空间规则" in rules
+    assert "架构与模块依赖规则" in rules
+    assert "构建与运行脚本规则" in rules
     assert "安全规则" in rules
-    assert "RULE-SEC-001" in rules
-    assert "RULE-ENG-001" in rules
-    assert ".harnesskit/rules/RULE-ENG-001.md" in rules
+    assert "RULE-SEC-001" not in rules
+    assert "RULE-ENG-001" not in rules
+    assert ".harnesskit/rules/RULE-ENG-001.md" not in rules
     assert "[NEEDS CLARIFICATION:" in rules
-    assert ".harnesskit/facts.md" in rules
-
-    rule_detail = (project / ".harnesskit/rules/RULE-ENG-001.md").read_text(
-        encoding="utf-8"
-    )
-    assert "{{" not in rule_detail
-    assert "}}" not in rule_detail
-    assert "# RULE-ENG-001" in rule_detail
-    assert "## Rule" in rule_detail
-    assert "## Details" in rule_detail
-    assert "[NEEDS CLARIFICATION:" in rule_detail
+    assert ".harnesskit/facts.md" not in rules
 
     for practice_doc in PRACTICE_DOCS:
         text = (project / practice_doc).read_text(encoding="utf-8")

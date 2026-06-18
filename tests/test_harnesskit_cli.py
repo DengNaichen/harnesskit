@@ -153,6 +153,26 @@ def test_lint_passes_generated_project_without_integration(tmp_path: Path) -> No
     assert "Harness lint passed" in lint_result.output
 
 
+def test_lint_allows_rules_without_detail_files(tmp_path: Path) -> None:
+    runner = CliRunner()
+    project = tmp_path / "demo"
+
+    init_result = runner.invoke(app, ["init", str(project), "--no-integration"])
+    assert init_result.exit_code == 0, init_result.output
+
+    rules = project / "RULES.md"
+    rules.write_text(
+        rules.read_text(encoding="utf-8")
+        + "\n- RULE-TEST-001: Keep the generated rule summary short.\n",
+        encoding="utf-8",
+    )
+
+    lint_result = runner.invoke(app, ["lint", str(project)])
+
+    assert lint_result.exit_code == 0, lint_result.output
+    assert "rule.detail.missing" not in lint_result.output
+
+
 def test_init_rejects_conflicting_integration_options(tmp_path: Path) -> None:
     runner = CliRunner()
     project = tmp_path / "demo"

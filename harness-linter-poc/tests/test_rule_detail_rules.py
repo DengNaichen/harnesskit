@@ -31,14 +31,14 @@ The reason.
     return path
 
 
-def test_rules_entries_require_matching_detail_file(tmp_path: Path) -> None:
+def test_rules_entries_do_not_require_matching_detail_file(tmp_path: Path) -> None:
     project = make_project(tmp_path)
     write_rules(project, "- RULE-ENG-001: Do the thing.\n")
 
     report = lint_project(project)
 
-    assert not report.passed
-    assert_issue(report, "rule.detail.missing")
+    assert report.passed
+    assert not any(issue.code == "rule.detail.missing" for issue in report.issues)
 
 
 def test_rule_detail_heading_must_match_rule_id(tmp_path: Path) -> None:

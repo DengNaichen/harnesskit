@@ -14,9 +14,9 @@ Context Harness 中三类资产的边界是：
 
 - 先以仓库事实为准，不要把模板里的示例当成已经启用的规则。
 - 在 [RULES.md](../../RULES.md) 中保留短规则句，让 agent 能快速扫描。
-- 把规则的解释、证据、例外和 validation 绑定放到 [.harnesskit/rules/](../../.harnesskit/rules/) 中的 `RULE-*.md` 或对应设计文档。
+- 复杂解释、证据和例外可以放到 [.harnesskit/rules/](../../.harnesskit/rules/) 中的可选 `RULE-*.md`、[ARCHITECTURE.md](../../ARCHITECTURE.md)、[docs/practices/](../practices/) 或对应设计文档；不要要求每条 rule 都有 details 文件。
 - 暂时确认不了的规则使用 `[NEEDS CLARIFICATION: ...]`，不要写成强制完成门槛。
-- 修改验证入口、工具链、模板输出、架构边界或团队约定时，同步更新对应 rule、detail 文件和相关 skill。
+- 修改验证入口、工具链、模板输出、架构边界或团队约定时，同步更新对应 rule、相关背景文档、skill 和 runner 说明。
 
 ## 当前结构
 
@@ -28,12 +28,12 @@ Context Harness 中三类资产的边界是：
 - **架构规则**：和目录边界、模块职责、生成资产、运行时代码边界相关的约束。
 - **产品 / 领域规则**：和当前项目定位、业务语义或不可破坏的领域约束相关的规则。
 
-每条规则在索引里应尽量是一句话。详情文件再使用稳定字段：
+每条规则在索引里应尽量是一句话。只有当某条规则需要独立背景层时，才补可选 details 文件，并使用稳定字段：
 
 - **Rule**：重复短规则句，方便详情文件独立阅读。
 - **Details**：解释适用范围、例外和容易误判的地方。
 - **Evidence**：列出支撑规则的仓库事实、配置、脚本、文档或人工确认来源。
-- **Validation**：说明可执行检查、runner 绑定和当前执行/阻断强度。
+Validation 和 runner 绑定不要求放在 details 文件里；它们可以进入验证入口、pre-commit hook、linter runtime、CI 配置或对应说明文档。
 
 ## Rule、Skill 和 Validation
 

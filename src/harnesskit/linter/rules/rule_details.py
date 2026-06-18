@@ -22,22 +22,23 @@ def check_rule_details(project_path: Path, issues: list[Issue]) -> None:
     if not rule_ids:
         return
 
-    for rule_id in sorted(rule_ids):
-        detail_path = project_path / ".harnesskit" / "rules" / f"{rule_id}.md"
-        if not detail_path.is_file():
+    for detail_path in sorted(project_path.glob(RULE_DETAIL_GLOB)):
+        detail_id = detail_path.stem
+        if detail_id not in rule_ids:
             issues.append(
                 issue(
-                    "error",
-                    "rule.detail.missing",
+                    "warning",
+                    "rule.detail.orphan",
                     project_path,
-                    "RULES.md rule is missing a matching detail file",
-                    rules_path,
-                    found=rule_id,
-                    expected=f".harnesskit/rules/{rule_id}.md",
+                    "rule detail file has no matching RULES.md entry",
+                    detail_path,
+                    found=detail_id,
+                    expected="optional .harnesskit/rules/RULE-*.md files should correspond to a RULES.md entry",
                 )
             )
             continue
 
+        rule_id = detail_id
         detail_text = detail_path.read_text(encoding="utf-8")
         first_line = detail_text.splitlines()[0].strip() if detail_text else ""
         if first_line != f"# {rule_id}":
@@ -65,21 +66,6 @@ def check_rule_details(project_path: Path, issues: list[Issue]) -> None:
                         expected=required_section,
                     )
                 )
-
-    for detail_path in sorted(project_path.glob(RULE_DETAIL_GLOB)):
-        detail_id = detail_path.stem
-        if detail_id not in rule_ids:
-            issues.append(
-                issue(
-                    "warning",
-                    "rule.detail.orphan",
-                    project_path,
-                    "rule detail file has no matching RULES.md entry",
-                    detail_path,
-                    found=detail_id,
-                    expected="every .harnesskit/rules/RULE-*.md file should be referenced from RULES.md",
-                )
-            )
 
     check_rule_summary_length(project_path, rules_path, rules_text, issues)
 

@@ -13,7 +13,7 @@ description: 从 .harnesskit/facts.md 和已核对的仓库证据填充或刷新
 2. 对高影响声明回到 source、tests、templates、scripts、manifests、hooks 和已有 docs 核对。
 3. 只更新 practice guidance：项目事实、职责边界、约定形态、风险区域、examples 和少量必要 review questions。
 4. 硬约束不要放进 practices，除非它们也已出现在 [RULES.md](../../../RULES.md)，或明确标记为 candidate rules。
-5. 如果 practice 暴露了新的稳定硬约束，说明应由 `$fill-rules` 添加或更新对应 `RULE-*.md` details；不要在这里静默升级。
+5. 如果 practice 暴露了新的稳定硬约束，说明应由 `$fill-rules` 判断是否进入 [RULES.md](../../../RULES.md)；不要在这里静默升级。
 6. 当仓库证据不足时，用 `[NEEDS CLARIFICATION: ...]` 保留不确定性。
 
 ## Practice 文件
