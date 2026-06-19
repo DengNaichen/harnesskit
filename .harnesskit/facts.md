@@ -62,7 +62,7 @@
 - `tests/`: pytest coverage for CLI/init behavior.
 - `docs/practices/`: guidance for coding, product sense, security, and reliability judgments.
 - `.agents/skills/`: local Codex skills used while maintaining this repository.
-- `.harnesskit/rules/`: optional details/background files for rules that need more context.
+- `.harnesskit/rules/`: optional historical details/background files; `RULES.md` no longer requires one details file per rule.
 - `harness-linter-poc/`: old linter POC/reference implementation, not the product entrypoint.
 
 ## Agent-Facing Assets

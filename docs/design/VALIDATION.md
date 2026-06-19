@@ -2,7 +2,7 @@
 
 Validation 是把 Rule 变成可验证约束的机制。[RULES.md](../../RULES.md) 说明团队和 agent 应该遵守什么；Validation 说明其中哪些部分可以被检查、如何检查、在哪里运行，以及 runner 具备什么执行或阻断强度。
 
-本文件只说明 Validation 应该如何设计，不记录当前仓库已经绑定了哪些 Validation。具体项目的 Validation 状态、命令和 runner 证据应写在该项目自己的 [RULES.md](../../RULES.md)、agent 指南、验证入口或平台配置中。
+本文件只说明 Validation 应该如何设计，不记录当前仓库已经绑定了哪些 Validation。具体项目的 Validation 状态、命令和 runner 证据应写在 agent 指南、验证入口、runner、hook、CI 或平台配置中；[RULES.md](../../RULES.md) 只保留必须遵守的短约束。
 
 ## 核心概念
 
@@ -109,7 +109,7 @@ Validation 只运行而不留记录时，只能证明“当下命令结束了”
 
 一个项目可以把 Validation 信息分散到不同层级，但每一层应职责清晰：
 
-- [RULES.md](../../RULES.md)：描述 Rule、适用范围、Validation 类型、Runner 证据和当前状态。
+- [RULES.md](../../RULES.md)：描述必须遵守的短 Rule；不承载完整 Validation 状态、Runner 证据或命令清单。
 - Agent 指南：告诉 agent 在什么情况下必须运行哪些验证入口。
 - Skill runner：封装确定性 Validation 的执行逻辑，并写入 receipt。
 - 统一验证入口：把确定性 Validation 收敛为一个稳定命令，通常调用 skill runner 或项目脚本。
