@@ -13,7 +13,7 @@ description: 在 harnesskit init 之后编排 Context Harness 初始化。用于
 2. 在写入 durable guidance 前，先解决 facts 无法确定的高影响问题。
 3. 使用 $fill-architecture 更新 [ARCHITECTURE.md](../../../ARCHITECTURE.md)。
 4. 使用 $fill-practices 更新 [docs/practices/](../../../docs/practices/) 判断指导。
-5. 使用 $fill-rules 展示 candidate rule changes 并请求用户确认，然后更新 [RULES.md](../../../RULES.md) 和 [.harnesskit/rules/](../../../.harnesskit/rules/) 下的 `RULE-*.md` 文件。
+5. 使用 $fill-rules 展示 candidate rule changes 并请求用户确认，然后更新 [RULES.md](../../../RULES.md)；只有目标仓库仍采用 details 层、用户明确要求补充背景，或现有 `.harnesskit/rules/RULE-*.md` 需要同步时，才更新可选 rule details。
 6. 使用 $fill-agents 更新 [AGENTS.md](../../../AGENTS.md)。
 7. 使用 $fill-skills 更新 generated skills 中的项目特定 section。
 8. 检查 [.harnesskit/facts.md](../../../.harnesskit/facts.md)、[AGENTS.md](../../../AGENTS.md)、[ARCHITECTURE.md](../../../ARCHITECTURE.md)、[RULES.md](../../../RULES.md)、[docs/practices/](../../../docs/practices/)、[.agents/skills/](../../skills/)、[CLAUDE.md](../../../CLAUDE.md) 和 verification entrypoint 的一致性。
