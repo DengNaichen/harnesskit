@@ -35,7 +35,7 @@
 ## 和其他文件的分工
 
 - [AGENTS.md](../../AGENTS.md)：agent 操作入口，写执行路径、触发条件和完成要求。
-- [RULES.md](../../RULES.md)：工程规则清单，写 Rule 状态、事实来源、agent 契约、Validation 类型和 Validation。
+- [RULES.md](../../RULES.md)：工程规则清单，写必须始终成立的短约束；背景、判断指导和 runner 细节放到对应 artifact。
 - [ARCHITECTURE.md](../../ARCHITECTURE.md)：仓库地图，写主要目录、关键文件和职责边界。
 - [.agents/skills/](../../.agents/skills/) 中的 skill 文件：具体流程说明，写技能触发后的步骤和命令。
 - [Makefile](../../Makefile)、脚本或 CI 配置：承载可执行入口，不把命令细节长期复制在多个文档里。
@@ -60,8 +60,8 @@
 [AGENTS.md](../../AGENTS.md) 应说明如何消费 [RULES.md](../../RULES.md)：
 
 - 开始任务前，根据变更范围查看相关 Rule。
-- 执行时遵守对应 agent 契约。
-- 交付前运行已绑定 Validation。
+- 执行时遵守对应短规则约束。
+- 交付前按 agent 指南、skill 或 runner 说明运行已绑定 Validation。
 - [RULES.md](../../RULES.md) 中待确认或未配置的规则不能当作完成门槛。
 
 这样可以避免 [AGENTS.md](../../AGENTS.md) 和 [RULES.md](../../RULES.md) 各写一套规则后互相漂移。
@@ -101,7 +101,7 @@
 1. 文件定位：说明这是 agent 操作入口，不是产品说明。
 2. 少量编码原则或协作原则：说明 agent 默认应如何思考、收敛和核对事实。
 3. 强制 skill：列出触发条件和对应 skill 路径。
-4. [RULES.md](../../RULES.md) 使用方式：说明 Rule 和 Validation 是规则源。
+4. [RULES.md](../../RULES.md) 使用方式：说明 Rule 是约束源，Validation 和 runner 证据应从验证入口或对应 artifact 核对。
 5. 可跳过验证的低风险情况。
 6. 兼容性边界：列出 CLI、配置、模板、schema 等敏感面。
 7. 关键入口索引：只列少量入口路径，并指向 [ARCHITECTURE.md](../../ARCHITECTURE.md) 获取完整仓库地图。
@@ -138,7 +138,7 @@
 - 变更 CLI、配置、模板输出或持久 schema。
 - 变更测试、lint、format、build、pre-commit、CI 或验证入口。
 - 新增、删除或重命名本地 skill。
-- [RULES.md](../../RULES.md) 中的规则状态、Validation 或命令绑定发生变化。
+- [RULES.md](../../RULES.md) 中的短规则，或验证入口、runner、skill 中的 Validation/命令绑定发生变化。
 - [ARCHITECTURE.md](../../ARCHITECTURE.md) 的目录职责发生变化。
 
 如果只改 [AGENTS.md](../../AGENTS.md) 而不改对应的 [RULES.md](../../RULES.md)、skill 或验证入口，应该确认这是有意的；否则很可能是在制造新的 context drift。

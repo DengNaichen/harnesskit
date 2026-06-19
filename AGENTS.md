@@ -52,7 +52,7 @@
 
 ## 上下文路由
 
-- 开始任务前先读 [RULES.md](RULES.md)，并按 [.harnesskit/rules/](.harnesskit/rules/) 查看适用规则的证据、验证方式和例外。
+- 开始任务前先读 [RULES.md](RULES.md)，并按需查看 [ARCHITECTURE.md](ARCHITECTURE.md)、[docs/practices/](docs/practices/) 和验证入口中的背景、判断指导或可执行反馈。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md)，不要把本文件扩写成目录地图。
 - 需要产品定位、MVP 边界、设计背景或路线图时，读 [README.md](README.md) 和 [docs/](docs/)。
 - 涉及代码风格、产品体验、安全或可靠性判断时，按需阅读 [docs/practices/](docs/practices/)；这些文件是判断指导，不替代 [RULES.md](RULES.md) 的硬约束。
@@ -67,7 +67,7 @@
 - 发布 PyPI 包时使用 `make publish`，它会通过 [scripts/publish_pypi.sh](scripts/publish_pypi.sh) 运行 `make verify`、清理并重建 `dist/`、再调用 `uv publish`；token 只能来自环境变量或被忽略的本地 `.env`。
 - 模板行为变化要当作用户可见行为处理，通常需要同步 [tests/test_init.py](tests/test_init.py)；`init_project()` 默认跳过已有文件，只有 `--force` 才覆盖。
 - 修改 HarnessKit 相关文档时，不要调用对应 fill skill；这些 skill 本身也属于需要同步核对的 harness 文档。先按目标态直接修改，再同步 root/template/skill/tests/linter 中确有职责关联的部分。
-- 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md)，复杂背景放入 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [docs/practices/](docs/practices/)，可执行检查放入验证入口或 runner。
+- 不要未经用户明确要求重排、合并、删除已有客户手写规则；新增稳定规则时，同步 [RULES.md](RULES.md)，复杂背景放入 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [docs/practices/](docs/practices/)，可执行检查放入验证入口、linter runtime、pre-commit hook 或其他 runner。
 
 ## 验证入口
 

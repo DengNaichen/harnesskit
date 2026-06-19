@@ -62,7 +62,7 @@
 - 不要规定必须列出每条 rule；只说明 agent 如何找到并使用适用规则。
 <!-- harnesskit:todo-checklist:end -->
 
-- 开始任务前先读 [RULES.md](RULES.md) 或 [NEEDS CLARIFICATION: 本仓库规则入口；未配置时写未配置]，并按需查看规则 details、验证说明或团队确认来源。
+- 开始任务前先读 [RULES.md](RULES.md) 或 [NEEDS CLARIFICATION: 本仓库规则入口；未配置时写未配置]，并按需查看 [ARCHITECTURE.md](ARCHITECTURE.md)、[docs/practices/](docs/practices/)、可选 rule details、验证说明或团队确认来源。
 - 涉及路径职责、实现边界、生成资产或旧/新实现取舍时，读 [ARCHITECTURE.md](ARCHITECTURE.md) 或 [NEEDS CLARIFICATION: 同类架构地图；未配置时写未配置]。
 - 需要产品定位、设计背景、路线图或用户文档时，读 `README.md`、`docs/` 或 [NEEDS CLARIFICATION: 设计文档或未配置]。
 - 涉及代码风格、产品体验、安全或可靠性判断时，按需阅读 [docs/practices/](docs/practices/)；这些文件是判断指导，不替代 [RULES.md](RULES.md) 的硬约束。
@@ -91,7 +91,7 @@
 - 刷新 [docs/practices/](docs/practices/) 判断指导时，按 [NEEDS CLARIFICATION: fill-practices skill、人工流程或未配置] 处理；不要把所有指导直接写成硬规则。
 - 中等及以上规模的行为变更完成后，按 [NEEDS CLARIFICATION: pr-draft-summary skill、仓库 PR 模板、变更摘要要求或未配置] 准备交付说明。
 {% endif %}
-- 发现可复用约定、规则候选、命令漂移或待确认事项时，记录到 [RULES.md](RULES.md) details、相关文档、todo 文件、可执行护栏或 [NEEDS CLARIFICATION: 未配置]。
+- 发现可复用约定、规则候选、命令漂移或待确认事项时，按职责记录到 [RULES.md](RULES.md)、[ARCHITECTURE.md](ARCHITECTURE.md)、[docs/practices/](docs/practices/)、可选 rule details、todo 文件、验证 runner 或 [NEEDS CLARIFICATION: 未配置]。
 
 ## 验证入口
 
